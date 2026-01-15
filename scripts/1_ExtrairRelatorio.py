@@ -11,7 +11,11 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, WebDriverException
+from selenium.common.exceptions import (
+    TimeoutException,
+    WebDriverException,
+    SessionNotCreatedException,
+)
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logs_dir = os.path.join(base_dir, "logs")
@@ -49,15 +53,22 @@ XPATHS = {
         "botao_proximo": "//*[@id='tabsReport']/div/div[1]/div/div[2]/button",
     },
     "selecao_equipamentos": {
-        "unidade": "",  # Adicione o XPath aqui
-        "frente": "",   # Adicione o XPath aqui
-        "tipo_equipamento": "", # Adicione o XPath aqui
-        "frota": "",    # Adicione o XPath aqui
+        "botao_selecionar_inicio": '//*[@id="tabsReport"]/div/div[2]/div/div[1]/div/div/span/button',
+        "botao_selecionar_tudo_unidade": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[1]/multi-select/div/div[1]/div/label',  
+        "botao_selecionar_tudo_frente": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[2]/multi-select/div/div[1]/div/label',  
+        "lista_tipo_equipamento": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[3]/multi-select/div/div[2]', 
+        "botao_selecionar_tudo_frota": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[4]/multi-select/div/div[1]/div/label',
+        "botao_selecionar": "/html/body/div[1]/div/div/div[2]/div[2]/button[2]",
+        "botao_proximo": '//*[@id="tabsReport"]/div/div[2]/div/div[2]/button[2]'
     },
     "parametros": {
-        "data_inicio": "", # Adicione o XPath aqui
-        "data_fim": "",    # Adicione o XPath aqui
-        "tipo_arquivo": "", # Adicione o XPath aqui
+        "data_inicial": '//*[@id="tabsReport"]/div/div[5]/div/div[1]/div[1]/div/date-range-selector/div/div[1]/div/div/span/button',
+        "data_inicial_calendario":'/html/body/div[7]/ul',
+        "data_final": '//*[@id="tabsReport"]/div/div[5]/div/div[1]/div[1]/div/date-range-selector/div/div[2]/div/div/span/button',
+        "data_final_calendario":'/html/body/div[8]/ul',
+        "tipo_arquivo": '//*[@id="filter-dropdown-button-3"]',
+        "tipo_arquivo_opcao": '//*[@id="fileTypeField"]/div/div/div[1]/ul/li[3]/a',
+        "botao_gerar": '//*[@id="tabsReport"]/div/div[2]/div/div[2]/button[2]'
     }
 }
 
@@ -136,10 +147,20 @@ def carregar_configuracoes():
         return None
 
 
-def abrir_navegador_com_perfil_padrao():
+def abrir_navegador_com_perfil_padrao(config=None):
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    download_path = os.path.join(base_dir, "dados")
+    
+    # Define pasta de download (padrão 'dados' ou via config)
+    nome_pasta_download = "dados"
+    if config:
+        try:
+            nome_pasta_download = config["automacao"]["parametros"].get("download_dir", "dados")
+        except KeyError:
+            pass
+            
+    download_path = os.path.join(base_dir, nome_pasta_download)
     os.makedirs(download_path, exist_ok=True)
+    logging.info(f"Pasta de download configurada: {download_path}")
 
     logging.info("Configurando Chrome com perfil clonado para Selenium.")
 
@@ -165,7 +186,29 @@ def abrir_navegador_com_perfil_padrao():
     logging.info(f"User Data Dir Selenium: {user_data_dir}")
     logging.info("Abrindo Chrome com o perfil clonado, incluindo extensões.")
 
-    driver = webdriver.Chrome(options=chrome_options)
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+    except SessionNotCreatedException as e:
+        logging.error("Falha ao iniciar Chrome com perfil clonado.")
+        logging.error(str(e))
+        logging.info("Tentando iniciar Chrome com perfil padrão (sem clone).")
+
+        chrome_options_fallback = Options()
+        chrome_options_fallback.add_argument(
+            "--disable-blink-features=AutomationControlled"
+        )
+        chrome_options_fallback.add_experimental_option(
+            "excludeSwitches", ["enable-automation"]
+        )
+        chrome_options_fallback.add_experimental_option(
+            "useAutomationExtension", False
+        )
+        chrome_options_fallback.add_argument("--disable-infobars")
+        chrome_options_fallback.add_experimental_option("detach", True)
+        chrome_options_fallback.add_experimental_option("prefs", prefs)
+
+        driver = webdriver.Chrome(options=chrome_options_fallback)
+
     driver.execute_script(
         "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
     )
@@ -337,6 +380,235 @@ def preencher_assistente_geracao(driver):
         logging.error(traceback.format_exc())
 
 
+def selecionar_equipamentos(driver, config):
+    dados_selecao = XPATHS["selecao_equipamentos"]
+    cfg_selecao = config["automacao"]["selecao_equipamentos"]
+    espera = WebDriverWait(driver, 10)
+
+    logging.info("--- Iniciando seleção de equipamentos ---")
+
+    try:
+        botao_inicio = dados_selecao.get("botao_selecionar_inicio")
+        if botao_inicio:
+            try:
+                logging.info("Clicando no botão de início de seleção de equipamentos.")
+                btn_inicio = espera.until(
+                    EC.element_to_be_clickable((By.XPATH, botao_inicio))
+                )
+                btn_inicio.click()
+                time.sleep(1)
+            except Exception as e:
+                logging.warning(f"Não foi possível clicar no botão inicial de seleção: {e}")
+
+        if cfg_selecao.get("unidade") == "Selecionar Tudo":
+            xpath_unidade = dados_selecao.get("botao_selecionar_tudo_unidade")
+            if xpath_unidade:
+                logging.info("Selecionando todas as unidades.")
+                btn_unidade = espera.until(
+                    EC.element_to_be_clickable((By.XPATH, xpath_unidade))
+                )
+                btn_unidade.click()
+                time.sleep(1)
+
+        if cfg_selecao.get("frente") == "Selecionar Tudo":
+            xpath_frente = dados_selecao.get("botao_selecionar_tudo_frente")
+            if xpath_frente:
+                logging.info("Selecionando todas as frentes.")
+                btn_frente = espera.until(
+                    EC.element_to_be_clickable((By.XPATH, xpath_frente))
+                )
+                btn_frente.click()
+                time.sleep(1)
+
+        tipos_config = cfg_selecao.get("tipo_equipamento", [])
+        if tipos_config:
+            lista_xpath = dados_selecao.get("lista_tipo_equipamento")
+            if lista_xpath:
+                logging.info(
+                    f"Tipos de equipamento desejados (config): {', '.join(tipos_config)}"
+                )
+
+                container = espera.until(
+                    EC.presence_of_element_located((By.XPATH, lista_xpath))
+                )
+
+                def normalizar_texto(s):
+                    return " ".join(s.split()).lower()
+
+                alvos_normalizados = {normalizar_texto(t) for t in tipos_config}
+                logging.info(
+                    f"Alvos normalizados: {', '.join(sorted(alvos_normalizados))}"
+                )
+
+                checkboxes = container.find_elements(By.CSS_SELECTOR, "div.checkbox")
+                logging.info(f"Total de checkboxes encontrados: {len(checkboxes)}")
+
+                for cb in checkboxes:
+                    try:
+                        label = cb.find_element(By.TAG_NAME, "label")
+                    except Exception:
+                        logging.warning("Checkbox sem label, ignorando.")
+                        continue
+
+                    # Captura o texto completo do label
+                    # Evita a lógica de spans que estava duplicando hífens (ex: "53 - - Caminhão")
+                    combinado = label.text.strip()
+                    if not combinado:
+                        # Tenta via atributo se .text falhar (elemento oculto ou similar)
+                        combinado = label.get_attribute("textContent").strip()
+
+                    # Remove hífens duplicados se houver (segurança extra)
+                    combinado = combinado.replace(" - - ", " - ")
+
+                    chave = normalizar_texto(combinado)
+                    logging.info(
+                        f"Checkbox encontrado: combinado='{combinado}', normalizado='{chave}'"
+                    )
+
+                    if chave not in alvos_normalizados:
+                        continue
+
+                    logging.info(f"Match com config, selecionando: {combinado}")
+
+                    alvo_click = label
+                    try:
+                        if not alvo_click.is_displayed():
+                            driver.execute_script(
+                                "arguments[0].scrollIntoView(true);", alvo_click
+                            )
+                            time.sleep(0.5)
+
+                        if alvo_click.is_enabled():
+                            alvo_click.click()
+                            logging.info(f"Clique realizado em: {combinado}")
+                            time.sleep(1.0)
+                    except Exception as e:
+                        logging.warning(
+                            f"Falha ao clicar na opção de equipamento '{combinado}': {e}"
+                        )
+
+        if cfg_selecao.get("frota") == "Selecionar Tudo":
+            xpath_frota = dados_selecao.get("botao_selecionar_tudo_frota")
+            if xpath_frota:
+                logging.info("Selecionando todas as frotas.")
+                btn_frota = espera.until(
+                    EC.element_to_be_clickable((By.XPATH, xpath_frota))
+                )
+                btn_frota.click()
+                time.sleep(1)
+
+        # Clicar em "Selecionar" (Confirmar seleção)
+        xpath_botao_selecionar = dados_selecao.get("botao_selecionar")
+        if xpath_botao_selecionar:
+            logging.info("Confirmando seleção de equipamentos (Botão Selecionar)...")
+            btn_selecionar = espera.until(
+                EC.element_to_be_clickable((By.XPATH, xpath_botao_selecionar))
+            )
+            btn_selecionar.click()
+            time.sleep(2)
+
+        # Clicar em "Próximo"
+        xpath_botao_proximo = dados_selecao.get("botao_proximo")
+        if xpath_botao_proximo:
+            logging.info("Avançando para próxima etapa (Botão Próximo)...")
+            btn_proximo = espera.until(
+                EC.element_to_be_clickable((By.XPATH, xpath_botao_proximo))
+            )
+            btn_proximo.click()
+            time.sleep(2)
+
+        logging.info("Seleção de equipamentos finalizada.")
+
+    except Exception as e:
+        logging.error(f"Erro ao selecionar equipamentos: {e}")
+        logging.error(traceback.format_exc())
+
+
+def definir_data_js(driver, elemento, data_valor):
+    """
+    Define o valor de um campo de data via JavaScript e dispara eventos de mudança.
+    Isso é útil para campos readonly ou controlados por datepickers complexos.
+    """
+    driver.execute_script("arguments[0].value = arguments[1];", elemento, data_valor)
+    driver.execute_script("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", elemento)
+    driver.execute_script("arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", elemento)
+    driver.execute_script("arguments[0].dispatchEvent(new Event('blur', { bubbles: true }));", elemento)
+
+
+def gerar_relatorio(driver, config):
+    dados_parametros = XPATHS["parametros"]
+    cfg_parametros = config["automacao"]["parametros"]
+    espera = WebDriverWait(driver, 10)
+
+    logging.info("--- Iniciando geração do relatório ---")
+
+    try:
+        # Preencher Data Inicial
+        # O XPath no config aponta para o botão de abrir o calendário (.../span/button)
+        # Assumimos que o input está no mesmo nível do span ou próximo.
+        # Estratégia: Substituir '/span/button' por '/input' para achar o campo real.
+        xpath_botao_ini = dados_parametros.get("data_inicial")
+        val_data_ini = cfg_parametros.get("data_inicial")
+        
+        if xpath_botao_ini and val_data_ini:
+            logging.info(f"Tentando preencher Data Inicial: {val_data_ini}")
+            xpath_input_ini = xpath_botao_ini.replace("/span/button", "/input")
+            try:
+                campo_ini = espera.until(EC.presence_of_element_located((By.XPATH, xpath_input_ini)))
+                definir_data_js(driver, campo_ini, val_data_ini)
+                logging.info("Data Inicial injetada via JS.")
+            except Exception as e:
+                logging.warning(f"Falha ao injetar Data Inicial no input (tentativa JS): {e}")
+
+        # Preencher Data Final
+        xpath_botao_fim = dados_parametros.get("data_final")
+        val_data_fim = cfg_parametros.get("data_final")
+        
+        if xpath_botao_fim and val_data_fim:
+            logging.info(f"Tentando preencher Data Final: {val_data_fim}")
+            xpath_input_fim = xpath_botao_fim.replace("/span/button", "/input")
+            try:
+                campo_fim = espera.until(EC.presence_of_element_located((By.XPATH, xpath_input_fim)))
+                definir_data_js(driver, campo_fim, val_data_fim)
+                logging.info("Data Final injetada via JS.")
+            except Exception as e:
+                logging.warning(f"Falha ao injetar Data Final no input (tentativa JS): {e}")
+
+        # Selecionar Tipo de Arquivo
+        xpath_dropdown = dados_parametros.get("tipo_arquivo")
+        xpath_opcao = dados_parametros.get("tipo_arquivo_opcao")
+        val_tipo_arq = cfg_parametros.get("tipo_arquivo")
+        
+        if xpath_dropdown and val_tipo_arq:
+            logging.info(f"Selecionando Tipo de Arquivo: {val_tipo_arq}")
+            dropdown = espera.until(EC.element_to_be_clickable((By.XPATH, xpath_dropdown)))
+            dropdown.click()
+            time.sleep(1)
+            
+            if xpath_opcao:
+                # Clica na opção configurada (XLS)
+                opcao = espera.until(EC.element_to_be_clickable((By.XPATH, xpath_opcao)))
+                opcao.click()
+                time.sleep(1)
+        
+        # Clicar em "Gerar"
+        xpath_botao_gerar = dados_parametros.get("botao_gerar")
+        if xpath_botao_gerar:
+            logging.info("Clicando em 'Gerar'...")
+            btn_gerar = espera.until(
+                EC.element_to_be_clickable((By.XPATH, xpath_botao_gerar))
+            )
+            btn_gerar.click()
+            logging.info("Botão 'Gerar' clicado. Aguardando processamento...")
+            time.sleep(5) # Aguarda um pouco o início do processamento/download
+
+        logging.info("Etapa de geração finalizada.")
+
+    except Exception as e:
+        logging.error(f"Erro ao gerar relatório: {e}")
+        logging.error(traceback.format_exc())
+
+
 def main():
     logging.info(">>> Iniciando automação <<<")
 
@@ -347,11 +619,13 @@ def main():
             logging.error("Configurações inválidas. Encerrando.")
             return
 
-        driver = abrir_navegador_com_perfil_padrao()
+        driver = abrir_navegador_com_perfil_padrao(config)
 
         fazer_login(driver, config)
         ir_para_tela_de_relatorios(driver)
         preencher_assistente_geracao(driver)
+        selecionar_equipamentos(driver, config)
+        gerar_relatorio(driver, config)
 
         logging.info(">>> Automação concluída <<<")
 
