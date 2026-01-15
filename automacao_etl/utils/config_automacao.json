@@ -4,8 +4,8 @@
       "url_login": "https://cerradao.saas-solinftec.com/#!/login/"
     },
     "credenciais": {
-      "username": "",
-      "senha": ""
+      "username": "jhonatan.brunozzi",
+      "senha": "Cerradao@123"
     },
     "chrome": {
       "user_data_dir": "C:\\Users\\%USERNAME%\\AppData\\Local\\Google\\Chrome\\User Data",
@@ -19,7 +19,7 @@
       "unidade": "Selecionar Tudo",
       "frente": ["Selecionar Tudo"],
       "tipo_equipamento": ["1 - COLHEDORA", "2 - TRANSBORDO", "53 - Caminhão de Vinhaça"],
-      "frota":"Selecionar Tudo"
+      "frota": ["Selecionar Tudo"]
     },
     "parametros": {
       "data_inicial": "05/10/2025",

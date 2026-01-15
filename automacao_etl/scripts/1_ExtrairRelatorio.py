@@ -61,6 +61,7 @@ XPATHS = {
         "lista_frente": "/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[2]/multi-select/div/div[2]",
         "lista_tipo_equipamento": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[3]/multi-select/div/div[2]', 
         "botao_selecionar_tudo_frota": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[4]/multi-select/div/div[1]/div/label',
+        "lista_frota": "/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[4]/multi-select/div/div[2]",
         "botao_selecionar": "/html/body/div[1]/div/div/div[2]/div[2]/button[2]",
         "botao_proximo": '//*[@id="tabsReport"]/div/div[2]/div/div[2]/button[2]'
     },
@@ -137,30 +138,6 @@ def carregar_configuracoes():
         logging.info(f"Lendo: {caminho_config}")
         with open(caminho_config, "r", encoding="utf-8") as f:
             config_geral = json.load(f)
-
-        env_usuario = os.environ.get("SOLINFTEC_USERNAME")
-        env_senha = os.environ.get("SOLINFTEC_SENHA")
-        try:
-            cred = config_geral["automacao"]["credenciais"]
-            if env_usuario:
-                cred["username"] = env_usuario
-            if env_senha:
-                cred["senha"] = env_senha
-        except Exception:
-            pass
-
-        usuario_cfg = (
-            config_geral.get("automacao", {}).get("credenciais", {}).get("username")
-        )
-        senha_cfg = (
-            config_geral.get("automacao", {}).get("credenciais", {}).get("senha")
-        )
-        if not usuario_cfg or not senha_cfg:
-            logging.error(
-                "Credenciais ausentes. Preencha automacao.credenciais no JSON ou defina "
-                "SOLINFTEC_USERNAME e SOLINFTEC_SENHA no ambiente."
-            )
-            return None
 
         url_login = config_geral["automacao"]["urls"]["url_login"]
         logging.info(f"URL de login identificada: {url_login}")
@@ -581,11 +558,68 @@ def selecionar_equipamentos(driver, config):
                             f"Falha ao clicar na opção de equipamento '{combinado}': {e}"
                         )
 
-        if cfg_selecao.get("frota") == "Selecionar Tudo":
+        frota_cfg = cfg_selecao.get("frota")
+        frota_selecionar_tudo = (
+            frota_cfg == "Selecionar Tudo"
+            or (
+                isinstance(frota_cfg, list)
+                and any(normalizar_texto(x) == "selecionar tudo" for x in frota_cfg)
+            )
+        )
+
+        if frota_selecionar_tudo:
             xpath_frota = dados_selecao.get("botao_selecionar_tudo_frota")
             if xpath_frota:
                 logging.info("Selecionando todas as frotas.")
                 clicar(xpath_frota)
+        elif isinstance(frota_cfg, list) and frota_cfg:
+            lista_frota_xpath = dados_selecao.get("lista_frota")
+            if lista_frota_xpath:
+                logging.info(
+                    f"Frotas desejadas (config): {', '.join(str(x) for x in frota_cfg)}"
+                )
+
+                container_frota = espera.until(
+                    EC.visibility_of_element_located((By.XPATH, lista_frota_xpath))
+                )
+                alvos_frota = {normalizar_texto(str(t)) for t in frota_cfg}
+
+                checkboxes_frota = container_frota.find_elements(
+                    By.CSS_SELECTOR, "div.checkbox"
+                )
+                logging.info(
+                    f"Total de frotas encontradas (checkboxes): {len(checkboxes_frota)}"
+                )
+
+                for cb in checkboxes_frota:
+                    try:
+                        label = cb.find_element(By.TAG_NAME, "label")
+                        texto = label.text.strip() or (
+                            label.get_attribute("textContent") or ""
+                        ).strip()
+                    except Exception:
+                        continue
+
+                    texto = texto.replace(" - - ", " - ")
+                    chave = normalizar_texto(texto)
+                    if chave not in alvos_frota:
+                        continue
+
+                    ja_selecionado = "btn-success" in (cb.get_attribute("class") or "")
+                    if ja_selecionado:
+                        logging.info(f"Frota já selecionada: {texto}")
+                        continue
+
+                    logging.info(f"Selecionando frota: {texto}")
+                    driver.execute_script(
+                        "arguments[0].scrollIntoView({block: 'center'});", label
+                    )
+                    time.sleep(0.2)
+                    try:
+                        label.click()
+                    except Exception:
+                        driver.execute_script("arguments[0].click();", label)
+                    time.sleep(0.4)
 
         # Clicar em "Selecionar" (Confirmar seleção)
         xpath_botao_selecionar = dados_selecao.get("botao_selecionar")
