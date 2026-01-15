@@ -1,0 +1,31 @@
+{
+  "automacao": {    
+    "urls": {
+      "url_login": "https://cerradao.saas-solinftec.com/#!/login/"
+    },
+    "credenciais": {
+      "username": "",
+      "senha": ""
+    },
+    "chrome": {
+      "user_data_dir": "C:\\Users\\%USERNAME%\\AppData\\Local\\Google\\Chrome\\User Data",
+      "profile_directory": "Default"
+    },
+    "opcoes_relatorio": {
+      "tipo_relatorio": "Linha do Tempo",
+      "relatorio": "Regional/Unidade/Frente/Equipamento - Detalhado"
+    },
+    "selecao_equipamentos": {
+      "unidade": "Selecionar Tudo",
+      "frente": ["Selecionar Tudo"],
+      "tipo_equipamento": ["1 - COLHEDORA", "2 - TRANSBORDO", "53 - Caminhão de Vinhaça"],
+      "frota":"Selecionar Tudo"
+    },
+    "parametros": {
+      "data_inicial": "05/10/2025",
+      "data_final": "11/10/2025",
+      "tipo_arquivo":"XLS",
+      "download_dir": "dados"
+    }
+  }
+}

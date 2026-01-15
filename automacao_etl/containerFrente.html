@@ -1,0 +1,860 @@
+<div class="eqselection-column">
+                    <h4>Frente</h4>
+                    <multi-select select-all-event-name="equipmentProfileAllFrontSelected" on-select="handlerViewStateFront()" source="allFronts" label="descGrupoEquipamento"> <div class="panel panel-default">
+
+    <!----><div ng-if="!$ctrl.maxSelection" class="panel-heading">
+        <!----><div ng-if="!$ctrl.maxSelection" class="checkbox">
+            <label>
+                <input type="checkbox" name="checkAll" indeterminate-checkbox="" child-list="$ctrl.source | filter:searchText" property="selected" ng-model="selectedModel" event-name="equipmentProfileAllFrontSelected" data-cy="" class="ng-untouched ng-valid ng-not-empty ng-dirty ng-valid-parse">
+                Selecionar Tudo
+            </label>
+        </div><!---->
+    </div><!---->
+
+    <div class="panel-body max-height-panel-body custom-scroll" style="min-height: 250px; height: 250px; overflow: scroll; overflow-x: hidden;">
+        <!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    ADUBAÇÃO AÉREA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    ADUBAÇÃO CEREAIS
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    ALEX TERRAPLANAGEM
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    ALVES E NOGUEIRA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    APOIO FRENTE 01 RECOLHEDORA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    APOIO FRENTE 02 RECOLHEDORA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    APOIO INDUSTRIA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    ARMAC LOCACOES
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    AUTOPROPELIDO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    BRIGADA UC
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO BASCULANTE
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO CANAVIEIRO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO CARGA SECA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO COMBOIO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO GRAOS
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO MUNCK
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO PIPA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO PRANCHA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO RODO TORTA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAMINHÃO TANQUE
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CAT CP54B
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CERRADAO - CONCENTRADOR SOLINFNET
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    COLHEITA LEGUMINOSA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CORTE SOQUEIRA 1
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    CORTE SOQUEIRA 2
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    ENTRESSAFRA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    EQUIPAMENTO APOIO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    EQUIPAMENTO APOIO PLANTIO 01
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    EQUIPAMENTO APOIO PLANTIO 02
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    EQUIPAMENTO APOIO PLANTIO 03
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 01 ARRANQUIO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 01 RECOLHEDORA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 02 ARRANQUIO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 02 RECOLHEDORA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 1 CARREADOR
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 1 MUDA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 1 PLANTIO MECANIZADO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 2 CARREADOR
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 2 MUDA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 2 PLANTIO MECANIZADO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 3 CARREADOR
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 3 MUDA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE 3 PLANTIO MECANIZADO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE COMPOSTO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE CTT 01
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE CTT 02
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE CTT 03
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE CTT 04
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE CTT 05
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE CTT 06
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE LOCALIZADA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    FRENTE LOCALIZADA - CERRADÃO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GATEWAY
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GERAL/ENTRESSAFRA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO ACP
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO APROVALE
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO BRUNOZZI
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO CAM
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO ERM
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO GUIDASTRE
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO IB LOGISTICA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO JPA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO LUGATTO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO RCO TRANPOSTES
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO SANTOS
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO SANTOS SILVA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO STA LEOPOLDINA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO TRANSPH
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO VALDEVITE
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO VILMAR LOPES
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    GRUPO WPM TRANSPORTES
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    LINHA AMARELA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    M MACIEL NUNES
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    MARTINS TERRAPLANAGEM
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    MIRANDA TERRAPLANAGEM
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PATIO DE TORTA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PEDRA BRANCA SERVIÇOS AGRICOLAS
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PLANTIO  AMENDOIM
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PLANTIO COMPOSTO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PLANTIO LEGUMINOSA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PLANTIO MANUAL
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PLANTIO SOJA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    PREPARO SOLO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    QUEBRA LOMBO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    RODO ADUBO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    RODO MUDA/TRANSLADO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    SOUZA SERVIÇOS AGRICOLA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TL5,80
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TORTA LINHA - CANA PLANTA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TORTA LINHA - CANA SOCA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSBORDO MUDA E PLANTIO 01
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSBORDO MUDA E PLANTIO 02
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSBORDO MUDA E PLANTIO 03
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSLADO FRENTE 01 RECOLHEDORA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSLADO FRENTE 02 RECOLHEDORA
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSPORTE DE MUDA - PLANTIO 01
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSPORTE DE MUDA - PLANTIO 02
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRANSPORTE DE MUDA - PLANTIO 03
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRATOR CATAÇÃO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRATOR CORRETIVO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRATOR FERTIRRIGAÇÃO
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRATOR PULVERIZADOR
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    TRATOS CULTURAIS
+                </div><!---->
+                <!---->
+            </label>
+        </div><!----><div class="checkbox well-sm btn-success" style="margin-bottom:5px; border-width: 1px; border-style: solid;" ng-class="{'well': !obj.selected, 'btn-success': obj.selected}" ng-repeat="obj in $ctrl.source | filter:searchText">
+            <label style="overflow-wrap:break-word;">
+                <input type="checkbox" value="" ng-model="obj.selected" ng-change="$ctrl.onSelect()" class="ng-pristine ng-untouched ng-valid ng-not-empty">
+                <!----><div ng-if="$ctrl.isLabelArray == false">
+                    WLE RENTAL
+                </div><!---->
+                <!---->
+            </label>
+        </div><!---->
+    </div>
+
+    <div class="panel-footer">
+        <div class="input-group input-group-sm">
+            <span class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+            </span>
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-empty" name="searchedInput" ng-model="searchText" placeholder="Digite um termo de pesquisa">
+        </div>
+    </div>
+
+</div></multi-select>
+                </div>
