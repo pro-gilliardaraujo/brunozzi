@@ -13,11 +13,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, WebDriverException
 
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+logs_dir = os.path.join(base_dir, "logs")
+os.makedirs(logs_dir, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler("extrair_relatorio.log", encoding="utf-8", mode="w"),
+        logging.FileHandler(
+            os.path.join(logs_dir, "extrair_relatorio.log"),
+            encoding="utf-8",
+            mode="w",
+        ),
         logging.StreamHandler(sys.stdout),
     ],
 )
@@ -88,10 +96,10 @@ def preparar_perfil_selenium():
 
 def carregar_configuracoes():
     try:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         logging.info(f"Base de configuração: {base_dir}")
 
-        caminho_config = os.path.join(base_dir, "config_automacao.json")
+        caminho_config = os.path.join(base_dir, "utils", "config_automacao.json")
         if not os.path.exists(caminho_config):
             logging.error(f"Arquivo não encontrado: {caminho_config}")
             return None
