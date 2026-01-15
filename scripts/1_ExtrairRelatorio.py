@@ -41,6 +41,24 @@ XPATHS = {
         "menu_relatorios": "//*[@id='left-panel']/div/nav/ul/li[5]/a",
         "menu_gerador_relatorios": "//*[@id='left-panel']/div/nav/ul/li[5]/ul/li[3]/a",
     },
+    "assistente_geracao": {
+        "tipo_relatorio": "//*[@id='filter-dropdown-button-1']",
+        "opcao_tipo_relatorio": "//*[@id='reportTypeField']/div/div/div[1]/ul/li[10]",
+        "relatorio": "//*[@id='filter-dropdown-button-2']",
+        "opcao_relatorio": "//*[@id='reportInfoField']/div/div/div[1]/ul/li[2]",
+        "botao_proximo": "//*[@id='tabsReport']/div/div[1]/div/div[2]/button",
+    },
+    "selecao_equipamentos": {
+        "unidade": "",  # Adicione o XPath aqui
+        "frente": "",   # Adicione o XPath aqui
+        "tipo_equipamento": "", # Adicione o XPath aqui
+        "frota": "",    # Adicione o XPath aqui
+    },
+    "parametros": {
+        "data_inicio": "", # Adicione o XPath aqui
+        "data_fim": "",    # Adicione o XPath aqui
+        "tipo_arquivo": "", # Adicione o XPath aqui
+    }
 }
 
 
@@ -262,6 +280,63 @@ def ir_para_tela_de_relatorios(driver):
         logging.error(traceback.format_exc())
 
 
+def preencher_assistente_geracao(driver):
+    dados_assistente = XPATHS["assistente_geracao"]
+    espera = WebDriverWait(driver, 10)
+
+    logging.info("--- Iniciando preenchimento do Assistente de Geração ---")
+
+    try:
+        # 1. Selecionar Tipo de Relatório
+        logging.info("Abrindo dropdown 'Tipo de Relatório'...")
+        dropdown_tipo = espera.until(
+            EC.element_to_be_clickable((By.XPATH, dados_assistente["tipo_relatorio"]))
+        )
+        dropdown_tipo.click()
+        time.sleep(1)
+
+        logging.info("Selecionando opção de Tipo de Relatório...")
+        opcao_tipo = espera.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, dados_assistente["opcao_tipo_relatorio"])
+            )
+        )
+        opcao_tipo.click()
+        logging.info("Tipo de Relatório selecionado.")
+        time.sleep(2)
+
+        # 2. Selecionar Relatório
+        logging.info("Abrindo dropdown 'Relatório'...")
+        dropdown_relatorio = espera.until(
+            EC.element_to_be_clickable((By.XPATH, dados_assistente["relatorio"]))
+        )
+        dropdown_relatorio.click()
+        time.sleep(1)
+
+        logging.info("Selecionando opção de Relatório...")
+        opcao_relatorio = espera.until(
+            EC.element_to_be_clickable((By.XPATH, dados_assistente["opcao_relatorio"]))
+        )
+        opcao_relatorio.click()
+        logging.info("Relatório selecionado.")
+        time.sleep(2)
+
+        # 3. Clicar em Próximo
+        logging.info("Clicando em 'Próximo'...")
+        botao_prox = espera.until(
+            EC.element_to_be_clickable((By.XPATH, dados_assistente["botao_proximo"]))
+        )
+        botao_prox.click()
+        logging.info("Botão 'Próximo' clicado.")
+        time.sleep(3)
+
+        logging.info("Assistente de geração preenchido com sucesso.")
+
+    except Exception as e:
+        logging.error(f"Erro ao preencher assistente de geração: {e}")
+        logging.error(traceback.format_exc())
+
+
 def main():
     logging.info(">>> Iniciando automação <<<")
 
@@ -276,6 +351,7 @@ def main():
 
         fazer_login(driver, config)
         ir_para_tela_de_relatorios(driver)
+        preencher_assistente_geracao(driver)
 
         logging.info(">>> Automação concluída <<<")
 
