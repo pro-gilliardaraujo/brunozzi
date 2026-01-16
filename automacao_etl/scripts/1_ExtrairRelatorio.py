@@ -904,6 +904,13 @@ def gerar_relatorio(driver, config):
 
                 try:
                     with zipfile.ZipFile(arquivo_final, "r") as zf:
+                        erro_zip = zf.testzip()
+                        if erro_zip:
+                            logging.error(
+                                f"Arquivo ZIP baixado está corrompido, entrada com erro: {erro_zip}"
+                            )
+                            return
+
                         membros = [
                             n
                             for n in zf.namelist()
@@ -933,6 +940,20 @@ def gerar_relatorio(driver, config):
                                 shutil.copyfileobj(src, dst)
 
                             logging.info(f"Arquivo extraído: {destino_xls}")
+
+                            if ext_interno.lower() == ".xlsx":
+                                try:
+                                    with zipfile.ZipFile(destino_xls, "r") as zf_xlsx:
+                                        erro_xlsx = zf_xlsx.testzip()
+                                    if erro_xlsx:
+                                        logging.error(
+                                            f"Arquivo Excel extraído está corrompido, entrada com erro: {erro_xlsx}"
+                                        )
+                                        return
+                                except Exception as e:
+                                    logging.error(
+                                        f"Falha ao validar integridade do Excel extraído: {e}"
+                                    )
 
                     try:
                         os.remove(arquivo_final)
