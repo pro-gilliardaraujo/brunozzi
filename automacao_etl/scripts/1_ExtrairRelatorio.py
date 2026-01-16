@@ -877,6 +877,7 @@ def gerar_relatorio(driver, config):
 
             nome_base = f"{prefixo}-{data_ini_nome}_{data_fim_nome}{ext}"
             destino = os.path.join(download_path, nome_base)
+            arquivo_final = arquivo_baixado
 
             if os.path.abspath(destino) != os.path.abspath(arquivo_baixado):
                 if os.path.exists(destino):
@@ -893,8 +894,53 @@ def gerar_relatorio(driver, config):
                 try:
                     os.replace(arquivo_baixado, destino)
                     logging.info(f"Arquivo renomeado para: {destino}")
+                    arquivo_final = destino
                 except Exception as e:
                     logging.warning(f"Falha ao renomear arquivo baixado: {e}")
+                    arquivo_final = arquivo_baixado
+
+            if str(arquivo_final).lower().endswith(".zip"):
+                import zipfile
+
+                try:
+                    with zipfile.ZipFile(arquivo_final, "r") as zf:
+                        membros = [
+                            n
+                            for n in zf.namelist()
+                            if n.lower().endswith(".xls") or n.lower().endswith(".xlsx")
+                        ]
+
+                        if not membros:
+                            logging.warning("ZIP baixado não contém arquivo .xls/.xlsx.")
+                        else:
+                            membro = membros[0]
+                            ext_interno = os.path.splitext(membro)[1] or ".xls"
+                            base_zip = os.path.splitext(os.path.basename(arquivo_final))[0]
+                            destino_xls = os.path.join(download_path, f"{base_zip}{ext_interno}")
+
+                            if os.path.exists(destino_xls):
+                                i = 1
+                                while True:
+                                    candidato = os.path.join(
+                                        download_path, f"{base_zip}-{i}{ext_interno}"
+                                    )
+                                    if not os.path.exists(candidato):
+                                        destino_xls = candidato
+                                        break
+                                    i += 1
+
+                            with zf.open(membro, "r") as src, open(destino_xls, "wb") as dst:
+                                shutil.copyfileobj(src, dst)
+
+                            logging.info(f"Arquivo extraído: {destino_xls}")
+
+                    try:
+                        os.remove(arquivo_final)
+                        logging.info(f"ZIP deletado: {arquivo_final}")
+                    except Exception as e:
+                        logging.warning(f"Falha ao deletar ZIP: {e}")
+                except Exception as e:
+                    logging.warning(f"Falha ao extrair ZIP baixado: {e}")
         else:
             logging.warning("Timeout aguardando download após clicar em Gerar.")
         return
