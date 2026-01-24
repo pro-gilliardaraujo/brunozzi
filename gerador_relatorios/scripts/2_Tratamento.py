@@ -203,6 +203,9 @@ def tratar_arquivo(caminho_arquivo):
             desc_series = df_tratado["Descrição do Equipamento"].astype(str)
             mask_colhedora_cana = desc_series.str.strip().str.upper() == "COLHEDORA DE CANA"
             df_tratado.loc[mask_colhedora_cana, "Descrição do Equipamento"] = "COLHEDORA"
+            
+            mask_trator_transbordo = desc_series.str.strip().str.upper() == "TRATOR TRANSBORDO"
+            df_tratado.loc[mask_trator_transbordo, "Descrição do Equipamento"] = "TRANSBORDO"
 
         df_calc = df_tratado.copy()
 
@@ -883,7 +886,7 @@ def tratar_arquivo(caminho_arquivo):
                 df_top5_ofensores["Total_Horas_Dia_h"] = df_top5_ofensores["Total_Horas_Dia_min"] / 60
                 
                 # 7. Selecionar e Renomear Colunas
-                cols_top5 = [col_equip_desc, col_data, grupo_col, op_col, "Duracao_Improd_h", "Total_Horas_Dia_h", "Porcentagem_Improdutiva"]
+                cols_top5 = [col_equip_desc, col_data, op_col, "Duracao_Improd_h", "Total_Horas_Dia_h", "Porcentagem_Improdutiva"]
                 df_top5_ofensores = df_top5_ofensores[cols_top5]
 
         df_frota_intervalos = pd.DataFrame()
@@ -938,6 +941,11 @@ def tratar_arquivo(caminho_arquivo):
                         # Remover colunas que estão totalmente vazias ou zeradas para este tipo
                         cols_validas = [c for c in df_tipo.columns if not (pd.api.types.is_numeric_dtype(df_tipo[c]) and (df_tipo[c].sum() == 0))]
                         df_tipo = df_tipo[cols_validas]
+
+                        # Remover Vel_Colheita_media para TRANSBORDO (antigo TRATOR TRANSBORDO)
+                        if "TRANSBORDO" in str(tipo).upper():
+                             if "Vel_Colheita_media" in df_tipo.columns:
+                                 df_tipo = df_tipo.drop(columns=["Vel_Colheita_media"])
 
                         safe_tipo = str(tipo).replace("/", "-").replace("\\", "-")
                         sufixo = "_Dia"
