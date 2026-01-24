@@ -1,0 +1,26 @@
+[
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "INDETERMINADO",
+    "Duracao_Improd_h": 23.9997222222,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 50.0
+  },
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "SEM APONTAMENTO",
+    "Duracao_Improd_h": 9.035,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 18.823134527
+  },
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "AGUARDANDO COLHEDORA",
+    "Duracao_Improd_h": 0.2647222222,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 0.5515110129
+  }
+]

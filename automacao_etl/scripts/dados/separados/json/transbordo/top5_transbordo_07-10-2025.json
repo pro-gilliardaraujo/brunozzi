@@ -1,0 +1,42 @@
+[
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-07T00:00:00.000",
+    "Descrição da Operação": "SEM APONTAMENTO",
+    "Duracao_Improd_h": 83.1922222222,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 28.8865226064
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-07T00:00:00.000",
+    "Descrição da Operação": "AGUARDANDO COLHEDORA",
+    "Duracao_Improd_h": 43.2286111111,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 15.0101081417
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-07T00:00:00.000",
+    "Descrição da Operação": "FALTA DE CONJUNTO VAZIO",
+    "Duracao_Improd_h": 6.9602777778,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 2.4167910894
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-07T00:00:00.000",
+    "Descrição da Operação": "PARADA PROGRAMADA",
+    "Duracao_Improd_h": 2.8633333333,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 0.9942244702
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-07T00:00:00.000",
+    "Descrição da Operação": "CATANDO CANA MALHADOR",
+    "Duracao_Improd_h": 2.3194444444,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 0.8053719758
+  }
+]

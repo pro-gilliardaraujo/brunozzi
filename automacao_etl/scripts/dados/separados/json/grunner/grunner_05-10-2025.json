@@ -1,0 +1,30 @@
+[
+  {
+    "Frota": 531,
+    "Horas_Registradas": 17.9997222222,
+    "Horas_Produtivas": 13.6761111111,
+    "Horas_Improdutivas": 4.0338888889,
+    "Horas_Auxiliar": 0.2897222222,
+    "Horas_Climático": 0.0,
+    "Disponibilidade_Mecanica": 1,
+    "Horas_Motor_Ligado": 11.9486111111,
+    "Porcentagem_Motor_Ligado": 66.3821972561,
+    "Horas_Motor_Ocioso": 1.7133333333,
+    "Porcentagem_Motor_Ocioso": 9.5186654115,
+    "Porcentagem_Sem_Apontamento": 9.8828685628
+  },
+  {
+    "Frota": 532,
+    "Horas_Registradas": 17.9997222222,
+    "Horas_Produtivas": 0.0,
+    "Horas_Improdutivas": 17.9997222222,
+    "Horas_Auxiliar": 0.0,
+    "Horas_Climático": 0.0,
+    "Disponibilidade_Mecanica": 1,
+    "Horas_Motor_Ligado": 0.0,
+    "Porcentagem_Motor_Ligado": 0.0,
+    "Horas_Motor_Ocioso": 0.0,
+    "Porcentagem_Motor_Ocioso": 0.0,
+    "Porcentagem_Sem_Apontamento": 0.0
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "SEM APONTAMENTO",
+    "Duracao_Improd_h": 83.6963888889,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 29.0615825029
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "AGUARDANDO COLHEDORA",
+    "Duracao_Improd_h": 52.2463888889,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 18.141317222
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "FALTA DE CONJUNTO VAZIO",
+    "Duracao_Improd_h": 7.2283333333,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 2.5098670123
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "PARADA PROGRAMADA",
+    "Duracao_Improd_h": 6.4761111111,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 2.2486757177
+  },
+  {
+    "Descrição do Equipamento": "TRANSBORDO",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "AGUARD COMBOIO",
+    "Duracao_Improd_h": 1.0838888889,
+    "Total_Horas_Dia_h": 287.9966666667,
+    "Porcentagem_Improdutiva": 0.3763546646
+  }
+]

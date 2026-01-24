@@ -1,0 +1,42 @@
+[
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-06T00:00:00.000",
+    "Descrição da Operação": "INDETERMINADO",
+    "Duracao_Improd_h": 23.9997222222,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 50.0
+  },
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-06T00:00:00.000",
+    "Descrição da Operação": "SEM APONTAMENTO",
+    "Duracao_Improd_h": 5.3502777778,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 11.1465410479
+  },
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-06T00:00:00.000",
+    "Descrição da Operação": "AGUARDANDO COLHEDORA",
+    "Duracao_Improd_h": 0.4122222222,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 0.8588062362
+  },
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-06T00:00:00.000",
+    "Descrição da Operação": "PARADA PROGRAMADA",
+    "Duracao_Improd_h": 0.2022222222,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 0.4213011725
+  },
+  {
+    "Descrição do Equipamento": "GRUNNER",
+    "Data": "2025-10-06T00:00:00.000",
+    "Descrição da Operação": "AGUARD COMBOIO",
+    "Duracao_Improd_h": 0.0769444444,
+    "Total_Horas_Dia_h": 47.9994444444,
+    "Porcentagem_Improdutiva": 0.1603027813
+  }
+]

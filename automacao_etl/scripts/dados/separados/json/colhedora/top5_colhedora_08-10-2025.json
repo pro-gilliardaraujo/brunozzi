@@ -1,0 +1,42 @@
+[
+  {
+    "Descrição do Equipamento": "COLHEDORA",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "SEM APONTAMENTO",
+    "Duracao_Improd_h": 70.6191666667,
+    "Total_Horas_Dia_h": 239.9972222222,
+    "Porcentagem_Improdutiva": 29.4249933448
+  },
+  {
+    "Descrição do Equipamento": "COLHEDORA",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "FALTA DE TRANSBORDO",
+    "Duracao_Improd_h": 10.3897222222,
+    "Total_Horas_Dia_h": 239.9972222222,
+    "Porcentagem_Improdutiva": 4.3291010313
+  },
+  {
+    "Descrição do Equipamento": "COLHEDORA",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "FALTA DE OPERADOR",
+    "Duracao_Improd_h": 6.1991666667,
+    "Total_Horas_Dia_h": 239.9972222222,
+    "Porcentagem_Improdutiva": 2.5830160071
+  },
+  {
+    "Descrição do Equipamento": "COLHEDORA",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "AG MANOBRA TRANSBORDO",
+    "Duracao_Improd_h": 3.8572222222,
+    "Total_Horas_Dia_h": 239.9972222222,
+    "Porcentagem_Improdutiva": 1.6071945277
+  },
+  {
+    "Descrição do Equipamento": "COLHEDORA",
+    "Data": "2025-10-08T00:00:00.000",
+    "Descrição da Operação": "AGUARD COMBOIO",
+    "Duracao_Improd_h": 1.5902777778,
+    "Total_Horas_Dia_h": 239.9972222222,
+    "Porcentagem_Improdutiva": 0.66262341
+  }
+]

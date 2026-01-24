@@ -4,6 +4,7 @@ import pandas as pd
 import glob
 import warnings
 import re
+import json
 from datetime import datetime
 from openpyxl.utils import get_column_letter
 
@@ -15,6 +16,8 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 BASE_CWD = os.getcwd()
 DIRETORIO_DADOS = os.path.join(BASE_CWD, "automacao_etl", "scripts", "dados")
 DIRETORIO_SAIDA = os.path.join(DIRETORIO_DADOS, "separados")
+DIRETORIO_XLSX = os.path.join(DIRETORIO_SAIDA, "xlsx")
+DIRETORIO_JSON = os.path.join(DIRETORIO_SAIDA, "json")
 
 def extrair_periodo_nome_arquivo(nome_arquivo):
     """
@@ -185,12 +188,17 @@ def main():
             
         print(f"Encontrados {len(datas_unicas)} dias únicos: {[pd.to_datetime(d).strftime('%d/%m') for d in datas_unicas]}")
 
-        # 4. Criar diretório de saída
+        # 4. Criar diretórios de saída
         if not os.path.exists(DIRETORIO_SAIDA):
             os.makedirs(DIRETORIO_SAIDA)
-            print(f"Diretório criado: {DIRETORIO_SAIDA}")
-        else:
-            print(f"Usando diretório existente: {DIRETORIO_SAIDA}")
+        
+        if not os.path.exists(DIRETORIO_XLSX):
+            os.makedirs(DIRETORIO_XLSX)
+            
+        if not os.path.exists(DIRETORIO_JSON):
+            os.makedirs(DIRETORIO_JSON)
+
+        print(f"Diretórios de saída configurados em: {DIRETORIO_SAIDA}")
             
         # 5. Separar e Salvar
         arquivos_gerados = []
@@ -199,12 +207,13 @@ def main():
             ts = pd.to_datetime(data_val)
             data_str = ts.strftime("%d-%m-%Y")
             nome_arquivo = f"{data_str}.xlsx"
-            caminho_saida = os.path.join(DIRETORIO_SAIDA, nome_arquivo)
+            caminho_saida = os.path.join(DIRETORIO_XLSX, nome_arquivo)
             
-            print(f"\nGerando arquivo para: {data_str} -> {nome_arquivo}")
+            print(f"\nGerando arquivos para: {data_str}")
             
             with pd.ExcelWriter(caminho_saida, engine='openpyxl') as writer:
                 sheets_salvas = 0
+                dados_dia_json = {}
                 
                 for sheet_name, df in dfs.items():
                     # Ignorar abas de Periodo (são agregadas do período total, não faz sentido em arquivo diário ou seria redundante/incorreto)
@@ -275,18 +284,135 @@ def main():
                         df_to_save.to_excel(writer, sheet_name=sheet_name, index=False)
                         sheets_salvas += 1
                         
+                        # Adicionar ao JSON (convertendo para dict serializável)
+                        # Usar to_json e depois loads para garantir conversão correta de datas e NaNs (NaN vira null)
+                        try:
+                            json_str = df_to_save.to_json(orient='records', date_format='iso', default_handler=str)
+                            dados_dia_json[sheet_name] = json.loads(json_str)
+                        except Exception as e_json:
+                            print(f"    AVISO: Falha ao serializar aba {sheet_name} para JSON: {e_json}")
+
                         # Formatação
                         worksheet = writer.sheets[sheet_name]
                         ajustar_largura_colunas(worksheet)
                         formatar_coluna_data(worksheet, df_to_save)
                 
                 if sheets_salvas > 0:
-                    print(f"  -> Arquivo salvo com {sheets_salvas} abas.")
+                    print(f"  -> Arquivo Excel salvo com {sheets_salvas} abas.")
                     arquivos_gerados.append(nome_arquivo)
+                    
+                    # Salvar arquivo JSON Completo
+                    caminho_json = os.path.join(DIRETORIO_JSON, f"{data_str}.json")
+                    try:
+                        with open(caminho_json, 'w', encoding='utf-8') as f:
+                            json.dump(dados_dia_json, f, ensure_ascii=False, indent=2)
+                        print(f"  -> Arquivo JSON salvo em: json/{os.path.basename(caminho_json)}")
+                    except Exception as e_save_json:
+                        print(f"  -> ERRO ao salvar JSON: {e_save_json}")
+
+                    # --- GERAR JSONs ESPECÍFICOS POR TIPO DE FROTA E ORGANIZAR EM PASTAS ---
+                    
+                    # Função auxiliar para garantir o nome do diretório normalizado
+                    def obter_nome_diretorio(nome):
+                        return normalizar_texto_simples(nome)
+
+                    # Função para normalizar texto para nomes de pasta/arquivo
+                    def normalizar_texto_simples(txt):
+                        if not txt: return "outros"
+                        # Remove acentos e caracteres especiais
+                        txt = str(txt).lower().strip()
+                        # Mapeamento simples para garantir consistência com o Tratamento
+                        if txt == "colhedora de cana": return "colhedora"
+                        if txt == "trator transbordo": return "transbordo"
+                        return txt.replace(" ", "_").replace("/", "-")
+
+                    # Iterar sobre os dados para gerar arquivos organizados
+                    for key_aba, dados_lista in dados_dia_json.items():
+                        
+                        # 1. Abas de Resumo Diário (_Dia) -> Ex: COLHEDORA_Dia
+                        if key_aba.endswith("_Dia"):
+                            tipo_frota = key_aba.replace("_Dia", "").lower() # Ex: colhedora, transbordo
+                            nome_pasta = obter_nome_diretorio(tipo_frota)
+                            
+                            # Criar pasta específica: json/colhedora/
+                            dir_frota = os.path.join(DIRETORIO_JSON, nome_pasta)
+                            if not os.path.exists(dir_frota):
+                                os.makedirs(dir_frota)
+
+                            # Definir colunas de interesse (Whitelist)
+                            dados_filtrados = []
+                            if isinstance(dados_lista, list):
+                                for item in dados_lista:
+                                    novo_item = {}
+                                    # Chaves obrigatórias/principais
+                                    if "Frota" in item: novo_item["Frota"] = item["Frota"]
+                                    elif "Código Equipamento" in item: novo_item["Frota"] = item["Código Equipamento"]
+                                    
+                                    for k, v in item.items():
+                                        k_lower = k.lower()
+                                        # Inclui Horas_, Porcentagem_, Disponibilidade_, e Motor
+                                        if (k.startswith("Horas_") or 
+                                            k.startswith("Porcentagem_") or 
+                                            k.startswith("Disponibilidade_") or
+                                            k_lower == "motor ligado" or
+                                            k_lower == "motor ocioso"):
+                                            novo_item[k] = v
+                                    
+                                    if novo_item:
+                                        dados_filtrados.append(novo_item)
+                            
+                            if dados_filtrados:
+                                nome_arquivo = f"{nome_pasta}_{data_str}.json"
+                                caminho_arquivo = os.path.join(dir_frota, nome_arquivo)
+                                try:
+                                    with open(caminho_arquivo, 'w', encoding='utf-8') as f:
+                                        json.dump(dados_filtrados, f, ensure_ascii=False, indent=2)
+                                    print(f"  -> JSON salvo: json/{nome_pasta}/{nome_arquivo}")
+                                except Exception as e_esp:
+                                    print(f"  -> ERRO ao salvar {nome_arquivo}: {e_esp}")
+
+                        # 2. Top5Ofensores e Intervalos (Separar por equipamento)
+                        elif key_aba.startswith("Top5Ofensores") or key_aba.startswith("Intervalos"):
+                            # Agrupar itens por 'Descrição do Equipamento'
+                            itens_por_tipo = {}
+                            if isinstance(dados_lista, list):
+                                for item in dados_lista:
+                                    # Obter tipo do equipamento
+                                    tipo_raw = item.get("Descrição do Equipamento", "Outros")
+                                    tipo_norm = obter_nome_diretorio(tipo_raw)
+                                    
+                                    if tipo_norm not in itens_por_tipo:
+                                        itens_por_tipo[tipo_norm] = []
+                                    itens_por_tipo[tipo_norm].append(item)
+                            
+                            # Salvar arquivos separados
+                            # Define o prefixo baseado no nome da aba (Top5Ofensores ou Intervalos)
+                            if "Top5Ofensores" in key_aba:
+                                prefixo = "top5"
+                            else:
+                                prefixo = "intervalos"
+                            
+                            for tipo, itens in itens_por_tipo.items():
+                                # Criar pasta se não existir (ex: json/colhedora/)
+                                dir_frota = os.path.join(DIRETORIO_JSON, tipo)
+                                if not os.path.exists(dir_frota):
+                                    os.makedirs(dir_frota)
+                                
+                                nome_arquivo = f"{prefixo}_{tipo}_{data_str}.json"
+                                caminho_arquivo = os.path.join(dir_frota, nome_arquivo)
+                                
+                                try:
+                                    with open(caminho_arquivo, 'w', encoding='utf-8') as f:
+                                        json.dump(itens, f, ensure_ascii=False, indent=2)
+                                    print(f"  -> JSON salvo: json/{tipo}/{nome_arquivo}")
+                                except Exception as e_esp:
+                                    print(f"  -> ERRO ao salvar {nome_arquivo}: {e_esp}")
+                    # --------------------------------------------------------------------------
+
                 else:
                     print(f"  -> AVISO: Nenhuma aba gerada para {data_str}. Arquivo não salvo.")
             
-        print(f"\nSucesso! {len(arquivos_gerados)} arquivos gerados na pasta 'separados'.")
+        print(f"\nSucesso! Arquivos Excel e JSON gerados nas pastas 'separados/xlsx' e 'separados/json'.")
             
     except Exception as e:
         print(f"\nERRO FATAL: {e}")
