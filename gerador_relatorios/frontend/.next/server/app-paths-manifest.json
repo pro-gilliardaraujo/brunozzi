@@ -1,6 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/logo.png/route": "app/logo.png/route.js",
-  "/page": "app/page.js",
-  "/relatorio/[filename]/page": "app/relatorio/[filename]/page.js"
-}
