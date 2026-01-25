@@ -216,9 +216,9 @@ def main():
                 dados_dia_json = {}
                 
                 for sheet_name, df in dfs.items():
-                    # Ignorar abas de Periodo (são agregadas do período total, não faz sentido em arquivo diário ou seria redundante/incorreto)
-                    if "Periodo" in sheet_name:
-                        # print(f"    (Ignorando aba {sheet_name} - agregação de período)")
+                    # Ignorar abas de Periodo e as abas brutas (Original/Tratado) no JSON/XLSX diário
+                    if "Periodo" in sheet_name or sheet_name in ["Original", "Tratado"]:
+                        # print(f"    (Ignorando aba {sheet_name} - agregação de período ou dados brutos)")
                         continue
                         
                     # Tentar filtrar por data
@@ -280,14 +280,37 @@ def main():
                         continue
                     
                     if df_to_save is not None:
-                        # Salvar aba
+                        # Salvar aba no Excel (mantendo objetos datetime para formatação nativa do Excel)
                         df_to_save.to_excel(writer, sheet_name=sheet_name, index=False)
                         sheets_salvas += 1
                         
+                        # Preparar DataFrame para JSON
+                        df_json = df_to_save.copy()
+                        
+                        # 1. Formatar colunas de tempo (Início, Fim) para DD/MM/YYYY HH:MM:SS
+                        for col in ["Início", "Fim"]:
+                            if col in df_json.columns and pd.api.types.is_datetime64_any_dtype(df_json[col]):
+                                df_json[col] = df_json[col].dt.strftime('%d/%m/%Y %H:%M:%S')
+
+                        # 2. Remover colunas redundantes (Descrição do Equipamento, Data)
+                        # O usuário solicitou remover pois já constam no nome do arquivo/aba
+                        cols_to_remove = ["Descrição do Equipamento"]
+                        if col_data_sheet:
+                            cols_to_remove.append(col_data_sheet)
+                        
+                        cols_existing = [c for c in cols_to_remove if c in df_json.columns]
+                        if cols_existing:
+                            df_json = df_json.drop(columns=cols_existing)
+
+                        # Formatar a coluna de data principal (caso ela NÃO tenha sido removida por algum motivo)
+                        if col_data_sheet and col_data_sheet in df_json.columns:
+                             if pd.api.types.is_datetime64_any_dtype(df_json[col_data_sheet]):
+                                 df_json[col_data_sheet] = df_json[col_data_sheet].dt.strftime('%d/%m/%Y')
+
                         # Adicionar ao JSON (convertendo para dict serializável)
                         # Usar to_json e depois loads para garantir conversão correta de datas e NaNs (NaN vira null)
                         try:
-                            json_str = df_to_save.to_json(orient='records', date_format='iso', default_handler=str)
+                            json_str = df_json.to_json(orient='records', date_format='iso', default_handler=str)
                             dados_dia_json[sheet_name] = json.loads(json_str)
                         except Exception as e_json:
                             print(f"    AVISO: Falha ao serializar aba {sheet_name} para JSON: {e_json}")
@@ -301,15 +324,6 @@ def main():
                     print(f"  -> Arquivo Excel salvo com {sheets_salvas} abas.")
                     arquivos_gerados.append(nome_arquivo)
                     
-                    # Salvar arquivo JSON Completo
-                    caminho_json = os.path.join(DIRETORIO_JSON, f"{data_str}.json")
-                    try:
-                        with open(caminho_json, 'w', encoding='utf-8') as f:
-                            json.dump(dados_dia_json, f, ensure_ascii=False, indent=2)
-                        print(f"  -> Arquivo JSON salvo em: json/{os.path.basename(caminho_json)}")
-                    except Exception as e_save_json:
-                        print(f"  -> ERRO ao salvar JSON: {e_save_json}")
-
                     # --- GERAR JSONs ESPECÍFICOS POR TIPO DE FROTA E ORGANIZAR EM PASTAS ---
                     
                     # Função auxiliar para garantir o nome do diretório normalizado
@@ -326,31 +340,35 @@ def main():
                         if txt == "trator transbordo": return "transbordo"
                         return txt.replace(" ", "_").replace("/", "-")
 
-                    # Iterar sobre os dados para gerar arquivos organizados
+                    # Dicionário para agrupar dados por tipo de frota
+                    # Estrutura: { "colhedora": { "Resumo_Dia": [...], "Operadores": [...], ... }, ... }
+                    dados_por_tipo = {}
+
+                    # Função auxiliar para adicionar dados ao agrupamento
+                    def adicionar_ao_grupo(tipo, chave, dados):
+                        nome_tipo = obter_nome_diretorio(tipo)
+                        if nome_tipo not in dados_por_tipo:
+                            dados_por_tipo[nome_tipo] = {}
+                        dados_por_tipo[nome_tipo][chave] = dados
+
+                    # Iterar sobre as abas carregadas para distribuir nos grupos
                     for key_aba, dados_lista in dados_dia_json.items():
                         
                         # 1. Abas de Resumo Diário (_Dia) -> Ex: COLHEDORA_Dia
                         if key_aba.endswith("_Dia"):
-                            tipo_frota = key_aba.replace("_Dia", "").lower() # Ex: colhedora, transbordo
-                            nome_pasta = obter_nome_diretorio(tipo_frota)
+                            tipo_frota = key_aba.replace("_Dia", "")
                             
-                            # Criar pasta específica: json/colhedora/
-                            dir_frota = os.path.join(DIRETORIO_JSON, nome_pasta)
-                            if not os.path.exists(dir_frota):
-                                os.makedirs(dir_frota)
-
-                            # Definir colunas de interesse (Whitelist)
+                            # Filtrar colunas principais para o Resumo
                             dados_filtrados = []
                             if isinstance(dados_lista, list):
                                 for item in dados_lista:
                                     novo_item = {}
-                                    # Chaves obrigatórias/principais
+                                    # Chaves identificadoras
                                     if "Frota" in item: novo_item["Frota"] = item["Frota"]
                                     elif "Código Equipamento" in item: novo_item["Frota"] = item["Código Equipamento"]
                                     
                                     for k, v in item.items():
                                         k_lower = k.lower()
-                                        # Inclui Horas_, Porcentagem_, Disponibilidade_, e Motor
                                         if (k.startswith("Horas_") or 
                                             k.startswith("Porcentagem_") or 
                                             k.startswith("Disponibilidade_") or
@@ -361,52 +379,167 @@ def main():
                                     if novo_item:
                                         dados_filtrados.append(novo_item)
                             
-                            if dados_filtrados:
-                                nome_arquivo = f"{nome_pasta}_{data_str}.json"
-                                caminho_arquivo = os.path.join(dir_frota, nome_arquivo)
-                                try:
-                                    with open(caminho_arquivo, 'w', encoding='utf-8') as f:
-                                        json.dump(dados_filtrados, f, ensure_ascii=False, indent=2)
-                                    print(f"  -> JSON salvo: json/{nome_pasta}/{nome_arquivo}")
-                                except Exception as e_esp:
-                                    print(f"  -> ERRO ao salvar {nome_arquivo}: {e_esp}")
+                            adicionar_ao_grupo(tipo_frota, "Resumo_Dia", dados_filtrados)
 
-                        # 2. Top5Ofensores e Intervalos (Separar por equipamento)
-                        elif key_aba.startswith("Top5Ofensores") or key_aba.startswith("Intervalos"):
-                            # Agrupar itens por 'Descrição do Equipamento'
-                            itens_por_tipo = {}
-                            if isinstance(dados_lista, list):
-                                for item in dados_lista:
-                                    # Obter tipo do equipamento
-                                    tipo_raw = item.get("Descrição do Equipamento", "Outros")
-                                    tipo_norm = obter_nome_diretorio(tipo_raw)
+                        # 2. Operadores (Separado por aba) -> Ex: Operadores_COLHEDORA
+                        elif key_aba.startswith("Operadores_"):
+                            tipo_frota = key_aba.replace("Operadores_", "")
+                            adicionar_ao_grupo(tipo_frota, "Operadores", dados_lista)
+
+                        # 3. Top5Ofensores (Separado por aba) -> Ex: Top5Ofensores_COLHEDORA
+                        elif key_aba.startswith("Top5Ofensores_"):
+                            tipo_frota = key_aba.replace("Top5Ofensores_", "")
+                            adicionar_ao_grupo(tipo_frota, "Top5Ofensores", dados_lista)
+
+                        # 4. Intervalos (Separado por aba) -> Ex: Intervalos_COLHEDORA
+                        elif key_aba.startswith("Intervalos_"):
+                            tipo_frota = key_aba.replace("Intervalos_", "")
+                            adicionar_ao_grupo(tipo_frota, "Intervalos", dados_lista)
+                        
+                        # Casos genéricos (se o tratamento não separou por abas)
+                        elif key_aba == "Equipamentos_Dia":
+                            # Tentar separar manualmente se houver campo de descrição
+                            # Se não, joga em "outros" ou "geral"
+                            pass # Implementar se necessário, mas o foco é na estrutura nova
+                        
+                        elif key_aba == "Operadores":
+                             pass
+
+                    # Salvar os arquivos JSON agrupados e separados por tipo (Frota vs Operadores)
+                    for tipo_frota, conteudo_json in dados_por_tipo.items():
+                        # Criar pasta específica: json/colhedora/
+                        dir_frota = os.path.join(DIRETORIO_JSON, tipo_frota)
+                        if not os.path.exists(dir_frota):
+                            os.makedirs(dir_frota)
+
+                        # Separar dados de Operadores
+                        dados_operadores = None
+                        if "Operadores" in conteudo_json:
+                            dados_operadores = conteudo_json.pop("Operadores")
+                        
+                        dados_frota = conteudo_json # O que sobrou é frota
+
+                        # 1. Salvar arquivo de Frota (se houver dados)
+                        if dados_frota:
+                            # Reestruturar dados_frota para agrupar por Frota (chave principal)
+                            dados_frota_agrupados = {}
+                            
+                            # Categorias esperadas: Resumo_Dia, Top5Ofensores, Intervalos
+                            for categoria, lista_itens in dados_frota.items():
+                                if not isinstance(lista_itens, list):
+                                    # Se não for lista, não sabemos lidar, mantém na raiz de "Geral" ou similar?
+                                    # Por segurança, vamos pular ou tratar diferente. Mas aqui espera-se listas.
+                                    continue
+                                
+                                for item in lista_itens:
+                                    # Identificar ID da Frota
+                                    id_frota = None
+                                    chave_frota_encontrada = None
                                     
-                                    if tipo_norm not in itens_por_tipo:
-                                        itens_por_tipo[tipo_norm] = []
-                                    itens_por_tipo[tipo_norm].append(item)
+                                    # Tentativas de encontrar a chave de frota
+                                    for k in ["Frota", "Código Equipamento", "Equipamento"]:
+                                        if k in item:
+                                            id_frota = item[k]
+                                            chave_frota_encontrada = k
+                                            break
+                                    
+                                    if id_frota is not None:
+                                        id_frota_str = str(id_frota)
+                                        
+                                        # Cria entrada da frota se não existir
+                                        if id_frota_str not in dados_frota_agrupados:
+                                            dados_frota_agrupados[id_frota_str] = {}
+                                        
+                                        # Cria categoria dentro da frota se não existir
+                                        if categoria not in dados_frota_agrupados[id_frota_str]:
+                                            dados_frota_agrupados[id_frota_str][categoria] = []
+                                        
+                                        # Cria cópia do item para remover a chave da frota (evitar redundância)
+                                        item_limpo = item.copy()
+                                        if chave_frota_encontrada:
+                                            del item_limpo[chave_frota_encontrada]
+                                        
+                                        dados_frota_agrupados[id_frota_str][categoria].append(item_limpo)
+                                    else:
+                                        # Se não achou frota, joga num grupo "Geral"
+                                        if "Geral" not in dados_frota_agrupados:
+                                            dados_frota_agrupados["Geral"] = {}
+                                        if categoria not in dados_frota_agrupados["Geral"]:
+                                            dados_frota_agrupados["Geral"][categoria] = []
+                                        dados_frota_agrupados["Geral"][categoria].append(item)
+
+                            nome_arquivo_frota = f"{tipo_frota}_frota_{data_str}.json"
+                            caminho_frota = os.path.join(dir_frota, nome_arquivo_frota)
+                            try:
+                                with open(caminho_frota, 'w', encoding='utf-8') as f:
+                                    json.dump(dados_frota_agrupados, f, ensure_ascii=False, indent=2)
+                                print(f"  -> JSON Frota salvo: json/{tipo_frota}/{nome_arquivo_frota}")
+                            except Exception as e_esp:
+                                print(f"  -> ERRO ao salvar {nome_arquivo_frota}: {e_esp}")
+
+                        # 2. Salvar arquivo de Operadores (se houver dados)
+                        if dados_operadores:
+                            # Reestruturar dados_operadores para indexar por "Código - Nome"
+                            dados_operadores_agrupados = {}
                             
-                            # Salvar arquivos separados
-                            # Define o prefixo baseado no nome da aba (Top5Ofensores ou Intervalos)
-                            if "Top5Ofensores" in key_aba:
-                                prefixo = "top5"
-                            else:
-                                prefixo = "intervalos"
+                            # dados_operadores é uma lista de dicionários
+                            if isinstance(dados_operadores, list):
+                                for item in dados_operadores:
+                                    # Identificar ID do Operador
+                                    id_op = None
+                                    chave_op_encontrada = None
+                                    
+                                    # Busca chave do código do operador
+                                    # Baseado no arquivo lido: "Código de Operador"
+                                    for k in ["Código de Operador", "Codigo Operador", "Cod Operador"]:
+                                        if k in item:
+                                            id_op = item[k]
+                                            chave_op_encontrada = k
+                                            break
+                                    
+                                    # Identificar Nome do Operador
+                                    nome_op = "Desconhecido"
+                                    chave_nome_encontrada = None
+                                    for k in ["Nome", "Nome Operador", "Nome do Operador", "Operador"]:
+                                        if k in item:
+                                            nome_op = item[k]
+                                            chave_nome_encontrada = k
+                                            break
+
+                                    if id_op is not None:
+                                        # Formatar chave: "Cód - Nome"
+                                        chave_final = f"{id_op} - {nome_op}"
+                                        
+                                        # Cria cópia para remover redundância
+                                        item_limpo = item.copy()
+                                        
+                                        # Remover chaves usadas na composição do ID principal (se desejado remover redundância)
+                                        if chave_op_encontrada:
+                                            del item_limpo[chave_op_encontrada]
+                                        
+                                        # Opcional: Remover o nome também se já está na chave?
+                                        # O usuário pediu para "não repetir em todas as entradas" no caso da frota.
+                                        # Vamos manter a consistência e remover se encontrou a chave exata.
+                                        if chave_nome_encontrada:
+                                            del item_limpo[chave_nome_encontrada]
+                                            
+                                        # Como é um resumo por dia/tipo, assume-se 1 entrada por operador.
+                                        dados_operadores_agrupados[chave_final] = item_limpo
+                                    else:
+                                        # Sem código (improvável se vier do tratamento correto)
+                                        if "SemCodigo" not in dados_operadores_agrupados:
+                                            dados_operadores_agrupados["SemCodigo"] = []
+                                        dados_operadores_agrupados["SemCodigo"].append(item)
                             
-                            for tipo, itens in itens_por_tipo.items():
-                                # Criar pasta se não existir (ex: json/colhedora/)
-                                dir_frota = os.path.join(DIRETORIO_JSON, tipo)
-                                if not os.path.exists(dir_frota):
-                                    os.makedirs(dir_frota)
-                                
-                                nome_arquivo = f"{prefixo}_{tipo}_{data_str}.json"
-                                caminho_arquivo = os.path.join(dir_frota, nome_arquivo)
-                                
-                                try:
-                                    with open(caminho_arquivo, 'w', encoding='utf-8') as f:
-                                        json.dump(itens, f, ensure_ascii=False, indent=2)
-                                    print(f"  -> JSON salvo: json/{tipo}/{nome_arquivo}")
-                                except Exception as e_esp:
-                                    print(f"  -> ERRO ao salvar {nome_arquivo}: {e_esp}")
+                            nome_arquivo_ops = f"{tipo_frota}_operadores_{data_str}.json"
+                            caminho_ops = os.path.join(dir_frota, nome_arquivo_ops)
+                            try:
+                                with open(caminho_ops, 'w', encoding='utf-8') as f:
+                                    json.dump(dados_operadores_agrupados, f, ensure_ascii=False, indent=2)
+                                print(f"  -> JSON Operadores salvo: json/{tipo_frota}/{nome_arquivo_ops}")
+                            except Exception as e_esp:
+                                print(f"  -> ERRO ao salvar {nome_arquivo_ops}: {e_esp}")
+
                     # --------------------------------------------------------------------------
 
                 else:

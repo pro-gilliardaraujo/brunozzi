@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST='{"componentes_migrados\\\\relatorios\\\\cd-diario-frotas\\\\page.tsx -> ./componentes/MapaColheita":{"id":134,"files":["static/chunks/134.89af27ca79f7c5b1.js"]}}';

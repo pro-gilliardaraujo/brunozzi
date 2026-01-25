@@ -532,6 +532,9 @@ def tratar_arquivo(caminho_arquivo):
         df_dia_operador = pd.DataFrame()
         if all(c in df_calc.columns for c in [col_data, col_op_cod, col_op_nome]):
             group_cols_op = [col_data, col_op_cod, col_op_nome]
+            if col_equip_desc in df_calc.columns:
+                group_cols_op.append(col_equip_desc)
+            
             agg_operador = {
                 "dur_total_min": ("dur_total", "sum"),
                 "dur_prod_min": ("dur_prod", "sum"),
@@ -771,6 +774,9 @@ def tratar_arquivo(caminho_arquivo):
         df_periodo_operador = pd.DataFrame()
         if not df_dia_operador.empty and col_data in df_dia_operador.columns:
             group_cols = [col_op_cod, col_op_nome]
+            if col_equip_desc in df_dia_operador.columns:
+                group_cols.append(col_equip_desc)
+
             cols_totais = [
                 "Horas_Registradas",
                 "Horas_Produtivas",
@@ -946,6 +952,10 @@ def tratar_arquivo(caminho_arquivo):
                         if "TRANSBORDO" in str(tipo).upper():
                              if "Vel_Colheita_media" in df_tipo.columns:
                                  df_tipo = df_tipo.drop(columns=["Vel_Colheita_media"])
+                        
+                        # Remove a coluna de descrição do equipamento pois já está separada por aba
+                        if tipo_col in df_tipo.columns:
+                            df_tipo = df_tipo.drop(columns=[tipo_col])
 
                         safe_tipo = str(tipo).replace("/", "-").replace("\\", "-")
                         sufixo = "_Dia"
@@ -962,9 +972,32 @@ def tratar_arquivo(caminho_arquivo):
                     formatar_coluna_data(writer.sheets["Equipamentos_Dia"])
 
             if not df_dia_operador.empty:
-                df_dia_operador.to_excel(writer, sheet_name="Operadores", index=False)
-                ajustar_largura_colunas(writer.sheets["Operadores"])
-                formatar_coluna_data(writer.sheets["Operadores"])
+                tipo_col = col_equip_desc
+                if tipo_col in df_dia_operador.columns:
+                    tipos = [t for t in df_dia_operador[tipo_col].dropna().unique()]
+                    for tipo in tipos:
+                        df_tipo = df_dia_operador[df_dia_operador[tipo_col] == tipo].copy()
+                        
+                        cols_validas = [c for c in df_tipo.columns if not (pd.api.types.is_numeric_dtype(df_tipo[c]) and (df_tipo[c].sum() == 0))]
+                        df_tipo = df_tipo[cols_validas]
+
+                        if "TRANSBORDO" in str(tipo).upper():
+                             if "Vel_Colheita_media" in df_tipo.columns:
+                                 df_tipo = df_tipo.drop(columns=["Vel_Colheita_media"])
+
+                        safe_tipo = str(tipo).replace("/", "-").replace("\\", "-")
+                        prefixo = "Operadores_"
+                        max_len = 31 - len(prefixo)
+                        safe_tipo = safe_tipo[:max_len]
+                        nome_aba = f"{prefixo}{safe_tipo}"
+                        
+                        df_tipo.to_excel(writer, sheet_name=nome_aba, index=False)
+                        ajustar_largura_colunas(writer.sheets[nome_aba])
+                        formatar_coluna_data(writer.sheets[nome_aba])
+                else:
+                    df_dia_operador.to_excel(writer, sheet_name="Operadores", index=False)
+                    ajustar_largura_colunas(writer.sheets["Operadores"])
+                    formatar_coluna_data(writer.sheets["Operadores"])
 
             if not df_periodo_frota.empty:
                 df_periodo_frota.to_excel(writer, sheet_name="Periodo_Equipamentos", index=False)
