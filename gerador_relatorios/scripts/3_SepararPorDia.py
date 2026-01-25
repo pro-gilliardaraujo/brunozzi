@@ -89,6 +89,13 @@ def encontrar_ultimo_tratado():
     arquivos.sort(key=os.path.getmtime, reverse=True)
     return arquivos[0]
 
+def normalizar_nome_pasta(txt):
+    if not txt: return "outros"
+    txt = str(txt).lower().strip()
+    if txt == "colhedora de cana": return "colhedora"
+    if txt == "trator transbordo": return "transbordo"
+    return txt.replace(" ", "_").replace("/", "-")
+
 def main():
     print("=== INICIANDO SEPARAÇÃO COMPLETA POR DIA ===")
     
@@ -407,11 +414,7 @@ def main():
 
                     # Salvar os arquivos JSON agrupados e separados por tipo (Frota vs Operadores)
                     for tipo_frota, conteudo_json in dados_por_tipo.items():
-                        # Criar pasta específica: json/colhedora/
-                        dir_frota = os.path.join(DIRETORIO_JSON, tipo_frota)
-                        if not os.path.exists(dir_frota):
-                            os.makedirs(dir_frota)
-
+                        
                         # Separar dados de Operadores
                         dados_operadores = None
                         if "Operadores" in conteudo_json:
@@ -421,6 +424,11 @@ def main():
 
                         # 1. Salvar arquivo de Frota (se houver dados)
                         if dados_frota:
+                            # Criar pasta específica: json/colhedora/frotas/diario
+                            dir_frota = os.path.join(DIRETORIO_JSON, tipo_frota, "frotas", "diario")
+                            if not os.path.exists(dir_frota):
+                                os.makedirs(dir_frota)
+
                             # Reestruturar dados_frota para agrupar por Frota (chave principal)
                             dados_frota_agrupados = {}
                             
@@ -473,12 +481,17 @@ def main():
                             try:
                                 with open(caminho_frota, 'w', encoding='utf-8') as f:
                                     json.dump(dados_frota_agrupados, f, ensure_ascii=False, indent=2)
-                                print(f"  -> JSON Frota salvo: json/{tipo_frota}/{nome_arquivo_frota}")
+                                print(f"  -> JSON Frota salvo: {caminho_frota}")
                             except Exception as e_esp:
                                 print(f"  -> ERRO ao salvar {nome_arquivo_frota}: {e_esp}")
 
                         # 2. Salvar arquivo de Operadores (se houver dados)
                         if dados_operadores:
+                            # Criar pasta específica: json/colhedora/operadores/diario
+                            dir_ops = os.path.join(DIRETORIO_JSON, tipo_frota, "operadores", "diario")
+                            if not os.path.exists(dir_ops):
+                                os.makedirs(dir_ops)
+
                             # Reestruturar dados_operadores para indexar por "Código - Nome"
                             dados_operadores_agrupados = {}
                             
@@ -505,7 +518,7 @@ def main():
                                             nome_op = item[k]
                                             chave_nome_encontrada = k
                                             break
-
+                                    
                                     if id_op is not None:
                                         # Formatar chave: "Cód - Nome"
                                         chave_final = f"{id_op} - {nome_op}"
@@ -532,11 +545,11 @@ def main():
                                         dados_operadores_agrupados["SemCodigo"].append(item)
                             
                             nome_arquivo_ops = f"{tipo_frota}_operadores_{data_str}.json"
-                            caminho_ops = os.path.join(dir_frota, nome_arquivo_ops)
+                            caminho_ops = os.path.join(dir_ops, nome_arquivo_ops)
                             try:
                                 with open(caminho_ops, 'w', encoding='utf-8') as f:
                                     json.dump(dados_operadores_agrupados, f, ensure_ascii=False, indent=2)
-                                print(f"  -> JSON Operadores salvo: json/{tipo_frota}/{nome_arquivo_ops}")
+                                print(f"  -> JSON Operadores salvo: {caminho_ops}")
                             except Exception as e_esp:
                                 print(f"  -> ERRO ao salvar {nome_arquivo_ops}: {e_esp}")
 
@@ -545,6 +558,167 @@ def main():
                 else:
                     print(f"  -> AVISO: Nenhuma aba gerada para {data_str}. Arquivo não salvo.")
             
+        # --- 6. Gerar JSONs de Período (Semanal/Mensal) ---
+        print("\n=== GERANDO ARQUIVOS DE PERÍODO ===")
+        
+        # Definir string do período
+        periodo_str = "periodo_desconhecido"
+        if dt_inicio_filtro and dt_fim_filtro:
+            periodo_str = f"{dt_inicio_filtro.strftime('%d-%m-%Y')}_{dt_fim_filtro.strftime('%d-%m-%Y')}"
+        
+        # Processar Frota (Periodo)
+        if "Periodo_Equipamentos" in dfs:
+            print(f"  Processando Periodo_Equipamentos...")
+            df_p_frota = dfs["Periodo_Equipamentos"]
+            
+            # Tentar identificar coluna de tipo de frota
+            col_tipo = None
+            for c in ["Descrição do Equipamento", "Grupo", "Tipo"]:
+                if c in df_p_frota.columns:
+                    col_tipo = c
+                    break
+            
+            if col_tipo:
+                grupos = df_p_frota[col_tipo].dropna().unique()
+                for tipo in grupos:
+                    df_tipo = df_p_frota[df_p_frota[col_tipo] == tipo].copy()
+                    
+                    # Remover a coluna de tipo para economizar espaço
+                    df_tipo = df_tipo.drop(columns=[col_tipo])
+                    
+                    nome_tipo_norm = normalizar_nome_pasta(tipo)
+                    
+                    # Preparar estrutura JSON (agrupada por ID da frota ou Geral)
+                    # Usar to_json/loads para garantir serialização correta de datas e NaNs
+                    json_str = df_tipo.to_json(orient='records', date_format='iso', default_handler=str)
+                    records = json.loads(json_str)
+                    
+                    dados_frota_agrupados = {}
+                    
+                    for item in records:
+                        # Identificar ID
+                        id_frota = None
+                        chave_frota_encontrada = None
+                         # Tentativas de encontrar a chave de frota
+                        for k in ["Frota", "Código Equipamento", "Equipamento"]:
+                            if k in item:
+                                id_frota = item[k]
+                                chave_frota_encontrada = k
+                                break
+                        
+                        if id_frota is not None:
+                            id_frota_str = str(id_frota)
+                            if id_frota_str not in dados_frota_agrupados:
+                                dados_frota_agrupados[id_frota_str] = {}
+                            
+                            # No período, geralmente é um resumo único por frota
+                            if "Resumo_Periodo" not in dados_frota_agrupados[id_frota_str]:
+                                dados_frota_agrupados[id_frota_str]["Resumo_Periodo"] = []
+                            
+                            item_limpo = item.copy()
+                            if chave_frota_encontrada:
+                                del item_limpo[chave_frota_encontrada]
+                            
+                            dados_frota_agrupados[id_frota_str]["Resumo_Periodo"].append(item_limpo)
+                        else:
+                             if "Geral" not in dados_frota_agrupados:
+                                 dados_frota_agrupados["Geral"] = {}
+                             if "Resumo_Periodo" not in dados_frota_agrupados["Geral"]:
+                                 dados_frota_agrupados["Geral"]["Resumo_Periodo"] = []
+                             dados_frota_agrupados["Geral"]["Resumo_Periodo"].append(item)
+
+                    # Salvar
+                    dir_frota = os.path.join(DIRETORIO_JSON, nome_tipo_norm, "frotas", "semanal")
+                    if not os.path.exists(dir_frota):
+                        os.makedirs(dir_frota)
+                        
+                    nome_arquivo = f"{nome_tipo_norm}_frota_periodo_{periodo_str}.json"
+                    caminho_arquivo = os.path.join(dir_frota, nome_arquivo)
+                    
+                    try:
+                        with open(caminho_arquivo, 'w', encoding='utf-8') as f:
+                            json.dump(dados_frota_agrupados, f, ensure_ascii=False, indent=2)
+                        print(f"    -> Salvo: {caminho_arquivo}")
+                    except Exception as e:
+                        print(f"    -> Erro ao salvar {nome_arquivo}: {e}")
+
+        # Processar Operadores (Periodo)
+        if "Periodo_Operadores" in dfs:
+            print(f"  Processando Periodo_Operadores...")
+            df_p_op = dfs["Periodo_Operadores"]
+            
+            col_tipo = None
+            for c in ["Descrição do Equipamento", "Grupo", "Tipo"]:
+                if c in df_p_op.columns:
+                    col_tipo = c
+                    break
+            
+            lista_tipos = []
+            if col_tipo:
+                lista_tipos = df_p_op[col_tipo].dropna().unique()
+            else:
+                lista_tipos = ["Geral"]
+
+            for tipo in lista_tipos:
+                if col_tipo:
+                    df_tipo = df_p_op[df_p_op[col_tipo] == tipo].copy()
+                    df_tipo = df_tipo.drop(columns=[col_tipo])
+                    nome_tipo_norm = normalizar_nome_pasta(tipo)
+                else:
+                    df_tipo = df_p_op.copy()
+                    nome_tipo_norm = "geral"
+
+                json_str = df_tipo.to_json(orient='records', date_format='iso', default_handler=str)
+                records = json.loads(json_str)
+                dados_operadores_agrupados = {}
+                
+                for item in records:
+                    # Identificar ID e Nome
+                    id_op = None
+                    chave_op_encontrada = None
+                    for k in ["Código de Operador", "Codigo Operador", "Cod Operador"]:
+                        if k in item:
+                            id_op = item[k]
+                            chave_op_encontrada = k
+                            break
+                    
+                    nome_op = "Desconhecido"
+                    chave_nome_encontrada = None
+                    for k in ["Nome", "Nome Operador", "Nome do Operador", "Operador"]:
+                        if k in item:
+                            nome_op = item[k]
+                            chave_nome_encontrada = k
+                            break
+                    
+                    if id_op is not None:
+                        chave_final = f"{id_op} - {nome_op}"
+                        item_limpo = item.copy()
+                        if chave_op_encontrada:
+                            del item_limpo[chave_op_encontrada]
+                        if chave_nome_encontrada:
+                            del item_limpo[chave_nome_encontrada]
+                            
+                        dados_operadores_agrupados[chave_final] = item_limpo
+                    else:
+                        if "SemCodigo" not in dados_operadores_agrupados:
+                            dados_operadores_agrupados["SemCodigo"] = []
+                        dados_operadores_agrupados["SemCodigo"].append(item)
+                
+                # Salvar
+                dir_frota = os.path.join(DIRETORIO_JSON, nome_tipo_norm, "operadores", "semanal")
+                if not os.path.exists(dir_frota):
+                    os.makedirs(dir_frota)
+                    
+                nome_arquivo = f"{nome_tipo_norm}_operadores_periodo_{periodo_str}.json"
+                caminho_arquivo = os.path.join(dir_frota, nome_arquivo)
+                
+                try:
+                    with open(caminho_arquivo, 'w', encoding='utf-8') as f:
+                        json.dump(dados_operadores_agrupados, f, ensure_ascii=False, indent=2)
+                    print(f"    -> Salvo: {caminho_arquivo}")
+                except Exception as e:
+                    print(f"    -> Erro ao salvar {nome_arquivo}: {e}")
+
         print(f"\nSucesso! Arquivos Excel e JSON gerados nas pastas 'separados/xlsx' e 'separados/json'.")
             
     except Exception as e:
