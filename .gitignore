@@ -109,7 +109,3 @@ node_modules/
 npm-debug.log
 yarn-error.log
 .next/
-
-# Dados gerados e temporários
-automacao_etl/scripts/dados/separados/
-automacao_etl/scripts/dados/*.xlsx
