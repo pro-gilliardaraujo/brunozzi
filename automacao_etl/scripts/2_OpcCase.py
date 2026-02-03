@@ -1,13 +1,14 @@
 import json
 import os
 import re
+import time
 from datetime import datetime
 from playwright.sync_api import sync_playwright
 
-ESTADO_FILE = r"c:\Users\arauj\OneDrive\Área de Trabalho\testes\brunozzi\automacao_etl\utils\processos_opc_case.json"
+ESTADO_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "utils", "processos_opc_case.json")
 
 def load_config():
-    config_path = r"c:\Users\arauj\OneDrive\Área de Trabalho\testes\brunozzi\automacao_etl\utils\config_automacao.json"
+    config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "utils", "config_automacao.json")
     with open(config_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
@@ -187,7 +188,7 @@ def monitorar_e_baixar_arquivos(page, arquivos_esperados):
 
 def obter_lista_equipamentos(page):
     """
-    Navega para aba Equipamento e extrai lista de equipamentos disponíveis.
+    Navega para aba Equipamento e extrai lista de equipamentos disponíveis (MUI DataGrid).
     """
     try:
         print("\n🚜 Navegando para aba 'Equipamento'...")
@@ -195,31 +196,53 @@ def obter_lista_equipamentos(page):
         tab_equipamento = page.get_by_role("tab", name="Equipamento")
         tab_equipamento.wait_for(state="visible", timeout=10000)
         tab_equipamento.click()
-        page.wait_for_timeout(3000)
+        page.wait_for_timeout(5000)
         
         print("📋 Extraindo lista de equipamentos...")
-        # Localiza tabela de equipamentos
-        linhas_equipamentos = page.locator("table tbody tr")
         
-        num_linhas = linhas_equipamentos.count()
-        print(f"   Encontradas {num_linhas} linhas na tabela")
+        # Baseado no snippet do usuário: .MuiDataGrid-root
+        grid = page.locator(".MuiDataGrid-root")
+        try:
+            grid.wait_for(state="visible", timeout=15000)
+        except:
+             print("Aviso: DataGrid não apareceu. Tentando continuar...")
+
+        # No MUI DataGrid, as linhas têm role="row"
+        # Ignora o cabeçalho (que geralmente é a primeira row)
+        linhas = page.get_by_role("row")
+        num_linhas = linhas.count()
+        print(f"   Total de rows encontradas: {num_linhas}")
         
         equipamentos = []
+        # Começa de 1 para pular cabeçalho (se houver)
+        # Atenção: Precisa verificar se a linha é de dados
+        
         for i in range(num_linhas):
-            linha = linhas_equipamentos.nth(i)
+            linha = linhas.nth(i)
             try:
-                # Tenta pegar o texto da primeira célula
-                primeira_celula = linha.locator("td").first
-                nome_texto = primeira_celula.inner_text().strip()
-                
-                if nome_texto and nome_texto != "Totais/Médias":
-                    equipamentos.append({
-                        'nome': nome_texto,
-                        'linha': linha
-                    })
-                    print(f"   ✓ Equipamento {i+1}: {nome_texto}")
+                # Pega todas as células da linha
+                celulas = linha.get_by_role("gridcell")
+                if celulas.count() > 0:
+                    # Geralmente a primeira célula tem o nome ou a segunda (checkbox na primeira?)
+                    # O snippet do usuário clicou em get_by_role("gridcell", name="MB 560...")
+                    # Vamos pegar o texto da primeira célula de texto visível
+                    
+                    texto_celula = celulas.first.inner_text().strip()
+                    
+                    # Se for vazio, tenta a segunda (as vezes tem checkbox)
+                    if not texto_celula and celulas.count() > 1:
+                         texto_celula = celulas.nth(1).inner_text().strip()
+                    
+                    if texto_celula and texto_celula != "Totais/Médias":
+                         # Verifica se é um nome de equipamento válido (não cabeçalho)
+                         equipamentos.append({
+                            'nome': texto_celula,
+                            'linha': linha, # Guarda a referencia da linha inteira
+                            'celula': celulas.first # Guarda referencia da celula para clique
+                         })
+                         print(f"   ✓ Equipamento encontrado: {texto_celula}")
             except Exception as e:
-                print(f"   ⚠️  Erro ao ler linha {i}: {e}")
+                # Row pode não ser de dados
                 continue
         
         print(f"\n✅ Total de equipamentos identificados: {len(equipamentos)}")
@@ -230,21 +253,42 @@ def obter_lista_equipamentos(page):
         return []
 
 def clicar_voltar_lista(page):
-    """Clica no breadcrumb para voltar à lista."""
+    """Clica para fechar painel ou voltar à lista."""
     try:
         print("\n🔙 Voltando para lista de equipamentos...")
+        
+        # Tenta fechar o painel lateral (X ou botão de fechar)
+        # Snippet do usuário: page.get_by_role("img").first.click() -> provavelmente ícone de fechar
+        # Vamos tentar um seletor mais específico para fechar painel
+        
+        try:
+            # Tenta botão de fechar comum em painéis laterais
+            fechar_btn = page.locator("button[aria-label='Fechar'], button[title='Fechar']")
+            if fechar_btn.is_visible():
+                fechar_btn.click()
+                print("✅ Painel fechado via botão 'Fechar'")
+                page.wait_for_timeout(2000)
+                return True
+        except:
+             pass
+
+        # Tenta breadcrumb como fallback
         breadcrumb = page.locator('[data-testid="drill-in-breadcrumb"]')
-        if breadcrumb.count() > 0:
+        if breadcrumb.count() > 0 and breadcrumb.first.is_visible():
             breadcrumb.first.click()
             page.wait_for_timeout(2000)
             return True
-        else:
-            print("⚠️  Breadcrumb não encontrado, tentando ESC...")
-            page.keyboard.press("Escape")
-            page.wait_for_timeout(1000)
-            return False
+            
+        # Fallback do usuário: page.get_by_role("img").first.click() (Arriscado, mas vamos tentar se nada funcionar)
+        print("⚠️  Tentando fechar via ícone genérico (fallback do usuário)...")
+        page.get_by_role("img").first.click()
+        page.wait_for_timeout(2000)
+        return True
+            
     except Exception as e:
         print(f"❌ Erro ao voltar: {e}")
+        # Tenta ESC como último recurso
+        page.keyboard.press("Escape")
         return False
 
 def realizar_export(page, nome_arquivo):
@@ -404,9 +448,20 @@ def configurar_filtros_e_exportar(page, tipo_operacao, dt_inicial, dt_final, ope
         print(f"{'='*80}")
         
         try:
-            # Clica na linha do equipamento
-            print(f"🖱️  Clicando no equipamento...")
-            equipamento['linha'].click()
+            # Clica no equipamento (célula específica)
+            print(f"🖱️  Clicando no equipamento: {equipamento['nome']}")
+            
+            # Se tivermos a referência direta da célula, usamos ela
+            if 'celula' in equipamento:
+                 try:
+                     equipamento['celula'].click()
+                 except:
+                     # Fallback: tentar pelo texto na página se a referência ficou stale
+                     page.get_by_role("gridcell", name=equipamento['nome']).first.click()
+            else:
+                 # Fallback antigo
+                 equipamento['linha'].click()
+                 
             page.wait_for_timeout(3000)
             
             # Extrai nome da frota com Regex (MB + números)
