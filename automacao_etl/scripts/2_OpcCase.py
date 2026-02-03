@@ -504,7 +504,7 @@ def configurar_filtros_e_exportar(page, tipo_operacao, dt_inicial, dt_final, ope
                 pass
             continue
 
-    return arquivos_exportados[0] if arquivos_exportados else None
+    return arquivos_exportados
 
 def run():
     # Limpa estado de execuções anteriores para evitar contaminação
@@ -562,22 +562,21 @@ def run():
             
             for operacao in ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"]:
                 if operacao in tipos_operacao:
-                    # Verifica se já foi gerado neste processo (evita duplicar se restartar)
-                    # Simplificação: Se já tem arquivo com sufixo da operação no estado, pula?
-                    # Por enquanto, roda tudo para garantir.
                     
-                    nome = configurar_filtros_e_exportar(page, operacao, dt_inicial, dt_final, operacao_anterior)
+                    lista_arquivos = configurar_filtros_e_exportar(page, operacao, dt_inicial, dt_final, operacao_anterior)
                     operacao_anterior = operacao
-                    if nome: 
-                        arquivos_capturados.append(nome)
+                    
+                    if lista_arquivos: 
+                        print(f"✅ Arquivos gerados nesta etapa: {lista_arquivos}")
+                        arquivos_capturados.extend(lista_arquivos)
                         # Salva estado parcial
-                        estado["arquivos_esperados"] = list(set(arquivos_capturados)) # Unico
+                        estado["arquivos_esperados"] = list(set(arquivos_capturados))
                         salvar_estado_processo(estado)
                         
                     print("Aguardando 5s antes da próxima operação...")
                     time.sleep(5)
 
-            print(f"Arquivos gerados/esperados: {arquivos_capturados}")
+            print(f"Arquivos gerados/esperados TOTAL: {arquivos_capturados}")
             
             # Chama monitoramento
             monitorar_e_baixar_arquivos(page, arquivos_capturados)
