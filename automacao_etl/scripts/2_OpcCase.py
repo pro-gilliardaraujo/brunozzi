@@ -1,6 +1,6 @@
 import json
 import os
-import time
+import re
 from datetime import datetime
 from playwright.sync_api import sync_playwright
 
@@ -185,6 +185,128 @@ def monitorar_e_baixar_arquivos(page, arquivos_esperados):
         print("Processo finalizado com sucesso. Limpando estado.")
         limpar_estado_processo()
 
+def obter_lista_equipamentos(page):
+    """
+    Navega para aba Equipamento e extrai lista de equipamentos disponíveis.
+    """
+    try:
+        print("\n🚜 Navegando para aba 'Equipamento'...")
+        # Clica na aba Equipamento
+        tab_equipamento = page.get_by_role("tab", name="Equipamento")
+        tab_equipamento.wait_for(state="visible", timeout=10000)
+        tab_equipamento.click()
+        page.wait_for_timeout(3000)
+        
+        print("📋 Extraindo lista de equipamentos...")
+        # Localiza tabela de equipamentos
+        linhas_equipamentos = page.locator("table tbody tr")
+        
+        num_linhas = linhas_equipamentos.count()
+        print(f"   Encontradas {num_linhas} linhas na tabela")
+        
+        equipamentos = []
+        for i in range(num_linhas):
+            linha = linhas_equipamentos.nth(i)
+            try:
+                # Tenta pegar o texto da primeira célula
+                primeira_celula = linha.locator("td").first
+                nome_texto = primeira_celula.inner_text().strip()
+                
+                if nome_texto and nome_texto != "Totais/Médias":
+                    equipamentos.append({
+                        'nome': nome_texto,
+                        'linha': linha
+                    })
+                    print(f"   ✓ Equipamento {i+1}: {nome_texto}")
+            except Exception as e:
+                print(f"   ⚠️  Erro ao ler linha {i}: {e}")
+                continue
+        
+        print(f"\n✅ Total de equipamentos identificados: {len(equipamentos)}")
+        return equipamentos
+        
+    except Exception as e:
+        print(f"❌ Erro ao obter lista de equipamentos: {e}")
+        return []
+
+def clicar_voltar_lista(page):
+    """Clica no breadcrumb para voltar à lista."""
+    try:
+        print("\n🔙 Voltando para lista de equipamentos...")
+        breadcrumb = page.locator('[data-testid="drill-in-breadcrumb"]')
+        if breadcrumb.count() > 0:
+            breadcrumb.first.click()
+            page.wait_for_timeout(2000)
+            return True
+        else:
+            print("⚠️  Breadcrumb não encontrado, tentando ESC...")
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(1000)
+            return False
+    except Exception as e:
+        print(f"❌ Erro ao voltar: {e}")
+        return False
+
+def realizar_export(page, nome_arquivo):
+    """Realiza o processo de exportação (clicar botões e preencher nome)."""
+    try:
+        print(f"\n📤 Iniciando exportação: {nome_arquivo}")
+        
+        btn_compartilhar = page.get_by_role("button", name="Compartilhar/Exportar")
+        page.wait_for_timeout(2000)
+        
+        if not btn_compartilhar.is_enabled():
+            print(f"⚠️  Botão de exportar DESABILITADO.")
+            return False
+
+        btn_compartilhar.click()
+        page.get_by_role("menuitem", name="Dados de Trabalho").click()
+        
+        frame = page.get_by_role("dialog", name="Compartilhar/Exportar close").locator("iframe").content_frame
+        frame.get_by_role("tab", name="Exportar Dados do Trabalho").click()
+        
+        textbox_nome = frame.get_by_role("textbox", name="Nome do Arquivo")
+        textbox_nome.click()
+        page.wait_for_timeout(1000)
+        
+        print(f"   Nome do arquivo: {nome_arquivo}")
+        textbox_nome.fill(nome_arquivo)
+        
+        # Tenta clicar no botão de exportar (várias tentativas como no original)
+        try:
+            page.locator("div").filter(has_text="Exportar Dados do Trabalho").nth(3).click()
+        except:
+            pass
+            
+        page.wait_for_timeout(2000)
+        
+        try:
+            frame.get_by_role("button", name="Exportar Dados do Trabalho").click(timeout=5000)
+        except:
+             # Fallback
+             pass
+        
+        print("   Aguardando processamento...")
+        page.wait_for_timeout(5000)
+        
+        # Concluído
+        try:
+            if frame.get_by_role("button", name="Concluído").is_visible():
+                frame.get_by_role("button", name="Concluído").click()
+                print("✅ Export concluído!")
+                page.wait_for_timeout(2000)
+                return True
+        except:
+             pass
+             
+        # Tenta fechar modal com ESC se não conseguiu clicar
+        page.keyboard.press("Escape")
+        return True # Assume que iniciou
+            
+    except Exception as e:
+        print(f"❌ Erro no export: {e}")
+        return False
+
 def configurar_filtros_e_exportar(page, tipo_operacao, dt_inicial, dt_final, operacao_anterior=None):
     print(f"\n>>> INICIANDO OPERAÇÃO: {tipo_operacao} (Anterior: {operacao_anterior}) <<<")
     nome_final = None
@@ -261,67 +383,73 @@ def configurar_filtros_e_exportar(page, tipo_operacao, dt_inicial, dt_final, ope
     except Exception as e:
         print(f"Erro nos filtros de data: {e}")
 
-    # --- 3. EXPORTAÇÃO ---
-    print("Iniciando exportação...")
-    try:
-        btn_compartilhar = page.get_by_role("button", name="Compartilhar/Exportar")
-        page.wait_for_timeout(2000)
+    # --- 3. ITERAÇÃO POR EQUIPAMENTOS E EXPORTAÇÃO ---
+    print("\n" + "="*80)
+    print("🚜 INICIANDO ITERAÇÃO POR EQUIPAMENTOS")
+    print("="*80)
+    
+    # Obtém lista de equipamentos
+    equipamentos = obter_lista_equipamentos(page)
+    
+    if not equipamentos:
+        print("❌ Nenhum equipamento encontrado! Abortando...")
+        return None
+    
+    arquivos_exportados = []
+    
+    # Itera por cada equipamento
+    for indice_equipamento, equipamento in enumerate(equipamentos):
+        print(f"\n{'='*80}")
+        print(f"📍 EQUIPAMENTO [{indice_equipamento+1}/{len(equipamentos)}]: {equipamento['nome']}")
+        print(f"{'='*80}")
         
-        if not btn_compartilhar.is_enabled():
-            print(f"AVISO: Botão de exportar DESABILITADO para {tipo_operacao}. Provavelmente não há dados neste período.")
-            return None
+        try:
+            # Clica na linha do equipamento
+            print(f"🖱️  Clicando no equipamento...")
+            equipamento['linha'].click()
+            page.wait_for_timeout(3000)
+            
+            # Extrai nome da frota com Regex (MB + números)
+            # Padrão: MB\s*(\d+) -> ex: MB 547 -> MB547
+            nome_completo = equipamento['nome']
+            match = re.search(r'MB\s*(\d+)', nome_completo, re.IGNORECASE)
+            
+            if match:
+                numero = match.group(1)
+                nome_frota_limpo = f"MB{numero}"
+            else:
+                # Fallback: primeira palavra limpa
+                nome_frota_limpo = re.sub(r'[^a-zA-Z0-9]', '', nome_completo.split()[0])
+            
+            # Substitui Colheita por Colhedora apenas no arquivo
+            tipo_operacao_arquivo = tipo_operacao.replace("Colheita", "Colhedora")
+            
+            # Nome final: Colhedora_MB547
+            nome_arquivo = f"{tipo_operacao_arquivo}_{nome_frota_limpo}"
+            
+            # Realiza export
+            sucesso = realizar_export(page, nome_arquivo)
+            
+            if sucesso:
+                arquivos_exportados.append(nome_arquivo + ".zip") # Assume zip
+                print(f"✅ Export solicitado para {equipamento['nome']}")
+            
+            # Volta para lista
+            if indice_equipamento < len(equipamentos) - 1:
+                if not clicar_voltar_lista(page):
+                     # Se falhar voltar, tenta re-navegar para aba
+                     page.get_by_role("tab", name="Equipamento").click()
+                     page.wait_for_timeout(2000)
 
-        btn_compartilhar.click()
-        page.get_by_role("menuitem", name="Dados de Trabalho").click()
-        
-        frame = page.get_by_role("dialog", name="Compartilhar/Exportar close").locator("iframe").content_frame
-        frame.get_by_role("tab", name="Exportar Dados do Trabalho").click()
-        
-        textbox_nome = frame.get_by_role("textbox", name="Nome do Arquivo")
-        textbox_nome.click()
-        page.wait_for_timeout(1000)
-        
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        nome_final = f"Export_{timestamp}_{tipo_operacao}"
-        
-        print(f"Definindo nome do arquivo: {nome_final}")
-        textbox_nome.fill(nome_final)
-        
-        # --- CÓDIGO GRAVADO PELO USUÁRIO ---
-        try:
-            page.locator("div").filter(has_text="Exportar Dados do Trabalho").nth(3).click()
-        except:
-            pass
-            
-        print("Aguardando botão habilitar...")
-        page.wait_for_timeout(3000)
-        
-        print("Clicando em Exportar Dados do Trabalho...")
-        try:
-            page.get_by_role("button", name="Exportar Dados do Trabalho").click(timeout=5000)
-        except:
-            print("Tentativa via role falhou, tentando seletor CSS no botão...")
-            page.locator("button[title='Exportar Dados do Trabalho']").click(timeout=5000)
-        
-        print("Aguardando processamento (5s)...")
-        page.wait_for_timeout(5000)
-        
-        try:
-            page.locator("div").filter(has_text="ConcluídoIr para Arquivos").nth(3).click()
-        except:
-            pass
-        
-        if page.get_by_role("button", name="Concluído").is_visible():
-             print("Clicando em Concluído...")
-             page.get_by_role("button", name="Concluído").click()
-             
-        print("Pausa visual de 5s após conclusão da exportação...")
-        page.wait_for_timeout(5000)
-            
-    except Exception as e:
-        print(f"Erro na exportação: {e}")
-        
-    return nome_final
+        except Exception as e:
+            print(f"❌ Erro no equipamento {equipamento['nome']}: {e}")
+            try:
+                clicar_voltar_lista(page)
+            except:
+                pass
+            continue
+
+    return arquivos_exportados[0] if arquivos_exportados else None
 
 def run():
     # Limpa estado de execuções anteriores para evitar contaminação
