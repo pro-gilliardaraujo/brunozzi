@@ -28,7 +28,10 @@ export function GraficoMediaVelocidade({ dados, meta, compact = true, listrado =
   // Parece ordenado por valor crescente.
   const dadosOrdenados = [...dados].sort((a, b) => a.velocidade - b.velocidade)
 
-  const formatarValor = (val: number) => val.toFixed(2).replace('.', ',')
+  const formatarValor = (val: number) => {
+    if (val === undefined || val === null || isNaN(val)) return '0,00'
+    return val.toFixed(2).replace('.', ',')
+  }
 
   // Definir escala máxima
   const maiorValor = Math.max(...dados.map(d => d.velocidade), 0)

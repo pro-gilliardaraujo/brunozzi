@@ -38,13 +38,18 @@ export function GraficoMotorOcioso({ dados, meta, compact = true, listrado = tru
   const isBom = mediaTotal <= meta
   const corMedia = isBom ? '#48BB78' : '#E53E3E'
 
+  const formatarPercentual = (val: number) => {
+    if (val === undefined || val === null || isNaN(val)) return '0.00'
+    return val.toFixed(2)
+  }
+
   return (
     <div className="flex flex-col w-full">
        {/* Cabeçalho */}
        <div className={`bg-slate-50 border border-slate-200 rounded-lg text-center ${compact ? "p-2 mb-2" : "p-3 mb-4"}`}>
         <div className="text-sm font-bold text-slate-700">
-          Meta: <span className="text-[#48BB78]">{meta.toFixed(2)}%</span> | 
-          Média: <span style={{ color: corMedia }}>{mediaTotal.toFixed(2)}%</span>
+          Meta: <span className="text-[#48BB78]">{formatarPercentual(meta)}%</span> | 
+          Média: <span style={{ color: corMedia }}>{formatarPercentual(mediaTotal)}%</span>
         </div>
         <div className="text-xs text-slate-500 italic mt-1">
           * Média calculada excluindo valores 0 h motor

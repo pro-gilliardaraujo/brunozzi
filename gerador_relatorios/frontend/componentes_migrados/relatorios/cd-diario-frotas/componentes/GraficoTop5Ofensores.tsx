@@ -43,9 +43,15 @@ export function GraficoTop5Ofensores({ dados }: GraficoTop5OfensoresProps) {
   const GAP_ENTRE_TEXTOS = 2        
 
   const formatarHoras = (decimal: number) => {
+    if (decimal === undefined || decimal === null || isNaN(decimal)) return '0h00m';
     const horas = Math.floor(decimal)
     const minutos = Math.round((decimal - horas) * 60)
     return `${horas}h${minutos.toString().padStart(2, '0')}m`
+  }
+
+  const formatDecimal = (val: number) => {
+    if (val === undefined || val === null || isNaN(val)) return '0.00';
+    return val.toFixed(2);
   }
 
   return (
@@ -75,7 +81,7 @@ export function GraficoTop5Ofensores({ dados }: GraficoTop5OfensoresProps) {
                     lineHeight: '1'
                   }}
                 >
-                  {item.percentual.toFixed(2)}%
+                  {formatDecimal(item.percentual)}%
                 </div>
                 
                 {/* Duração (Preto/Cinza, Pequeno) */}

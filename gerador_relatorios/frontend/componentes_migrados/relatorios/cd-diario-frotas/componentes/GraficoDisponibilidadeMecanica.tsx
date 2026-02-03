@@ -36,6 +36,11 @@ export function GraficoDisponibilidadeMecanica({ dados, meta, compact = false }:
   // Vou filtrar itens com horasMotor > 0.
   const dadosValidos = dados.filter(d => d.horasMotor > 0)
 
+  const formatarPercentual = (val: number) => {
+    if (val === undefined || val === null || isNaN(val)) return '0.00'
+    return val.toFixed(2)
+  }
+
   // Média total (agora filtrada)
   const mediaTotal = dadosValidos.length > 0 
     ? dadosValidos.reduce((acc, curr) => acc + curr.disponibilidade, 0) / dadosValidos.length 
@@ -47,11 +52,11 @@ export function GraficoDisponibilidadeMecanica({ dados, meta, compact = false }:
       <div className="bg-slate-50 border border-slate-200 rounded-md p-2 mb-4 text-center">
         <div className="text-sm font-semibold text-slate-700">
           <span className="text-black">Meta: </span>
-          <span className="text-[#48BB78] font-bold">{meta.toFixed(2)}%</span>
+          <span className="text-[#48BB78] font-bold">{formatarPercentual(meta)}%</span>
           <span className="mx-2 text-slate-400">|</span>
           <span className="text-black">Média: </span>
           <span className="font-bold" style={{ color: mediaTotal >= meta ? '#48BB78' : mediaTotal >= meta * 0.9 ? '#ECC94B' : '#E53E3E' }}>
-            {mediaTotal.toFixed(2)}%
+            {formatarPercentual(mediaTotal)}%
           </span>
         </div>
         <div className="text-[10px] text-slate-500 italic mt-0.5">
@@ -123,7 +128,7 @@ export function GraficoDisponibilidadeMecanica({ dados, meta, compact = false }:
                         color: corItem 
                       }}
                     >
-                      {item.disponibilidade.toFixed(2).replace('.', ',')}%
+                      {formatarPercentual(item.disponibilidade).replace('.', ',')}%
                     </div>
                   </div>
 

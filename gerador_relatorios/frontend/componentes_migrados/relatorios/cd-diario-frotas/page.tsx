@@ -4,10 +4,9 @@ import dynamic from 'next/dynamic'
 import { Card, CardContent } from "@/components/ui/card"
 import { DADOS_MOCK } from "./dados"
 import { CabecalhoMeta } from "./componentes/CabecalhoMeta"
-import { CabecalhoProducao } from "./componentes/CabecalhoProducao"
 import { GraficoEficiencia } from "./componentes/GraficoEficiencia"
+import { GraficoEficienciaOperacional } from "./componentes/GraficoEficienciaOperacional"
 import { GraficoHorasElevador } from "./componentes/GraficoHorasElevador"
-import { GraficoToneladasPorFrota } from "./componentes/GraficoToneladasPorFrota"
 import { GraficoUsoGPS } from "./componentes/GraficoUsoGPS"
 import { GraficoMediaVelocidade } from "./componentes/GraficoMediaVelocidade"
 import { GraficoManobras } from "./componentes/GraficoManobras"
@@ -33,17 +32,17 @@ const MapaColheita = dynamic(() => import('./componentes/MapaColheita'), {
   loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100">Carregando Mapa...</div>
 });
 
-const LOGO_URL = "https://kjlwqezxzqjfhacmjhbh.supabase.co/storage/v1/object/public/sourcefiles/Logo%20IB%20Full.png"
+const LOGO_URL = "/logo.png"
 
 function Header({ tituloCompleto, date }: { tituloCompleto: string; date: string }) {
   return (
     <div className="flex items-center justify-between px-4 pt-4 mb-2">
-      <img src={LOGO_URL} alt="Logo IB" className="h-12 object-contain" />
+      <img src={LOGO_URL} alt="Logo" className="h-12 object-contain" />
       <div className="text-center">
         <div className="text-lg font-bold text-black">{tituloCompleto}</div>
         <div className="text-sm font-medium text-gray-700 mt-1">{date}</div>
       </div>
-      <img src={LOGO_URL} alt="Logo IB" className="h-12 object-contain" />
+      <img src={LOGO_URL} alt="Logo" className="h-12 object-contain" />
     </div>
   )
 }
@@ -54,7 +53,7 @@ function SectionTitle({ title }: { title: string }) {
   )
 }
 
-function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
+function RelatorioFrotasCd({ period, data }: { period: "diario" | "semanal"; data?: any }) {
   const [dadosMapa, setDadosMapa] = React.useState<any[]>([]);
   const [frenteNomeStorage, setFrenteNomeStorage] = React.useState<string | null>(null)
   const [zoomPercent, setZoomPercent] = React.useState(100)
@@ -146,6 +145,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
     ofensores, 
     disponibilidade_mecanica, 
     eficiencia_energetica, 
+    eficiencia_operacional,
     motor_ocioso, 
     uso_gps, 
     media_velocidade, 
@@ -157,7 +157,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
     lavagem,
     roletes,
     intervalos_operacao
-  } = DADOS_MOCK
+  } = data || DADOS_MOCK
   
   // Agrupar intervalos por equipamento
   const intervalosAgrupados = React.useMemo(() => {
@@ -204,7 +204,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
   const MAP_FRENTES: Record<string, string> = { 'frente5': 'Frente BP Ituiutaba' }
   const frenteNome = frenteNomeStorage || MAP_FRENTES[frenteCodigo] || (frenteCodigo?.startsWith('Frente') ? frenteCodigo : (frenteCodigo ? `Frente ${frenteCodigo}` : 'Frente Desconhecida'))
   const periodoLabel = period === "semanal" ? "Semanal" : "Diário"
-  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Colhedoras ${frenteNome}`
+  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Colhedoras`
   const nomeDataArquivo =
     period === "semanal"
       ? `${startStr.replace(/\//g, "_")}-${endStr.replace(/\//g, "_")}`
@@ -228,11 +228,17 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
       if (typeof window === "undefined") return
       const params = new URLSearchParams(window.location.search)
       const hasId = params.has("id")
-      setShowMockControls(!hasId)
+      // Se temos dados reais passados via prop, não precisamos dos controles de mock
+      // Se não temos dados e não temos ID, aí sim ativamos o mock
+      if (!data && !hasId) {
+        setShowMockControls(true)
+      } else {
+        setShowMockControls(false)
+      }
     } catch {
       setShowMockControls(false)
     }
-  }, [])
+  }, [data])
 
   const clampInt = React.useCallback((value: unknown, min: number, max: number) => {
     const n = typeof value === "number" ? value : Number(value)
@@ -240,7 +246,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
     return Math.min(max, Math.max(min, Math.round(n)))
   }, [])
 
-  const MAX_MOCK_QTD_FROTAS = 10
+  const MAX_MOCK_QTD_FROTAS = 50
   const MAX_MOCK_TABLE_ROWS = 100
 
   const totalFrotasBase = (Array.isArray(eficiencia_energetica) ? eficiencia_energetica.filter((d: any) => d?.nome) : []).length
@@ -248,7 +254,10 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
   const totalRoletesBase = Array.isArray(roletes) ? roletes.length : 0
 
   const buildRows = React.useCallback(<T,>(baseRows: T[], count: number, makeFallback: (idx: number) => T): T[] => {
-    const safeCount = clampInt(count, 0, MAX_MOCK_TABLE_ROWS)
+    // Se não estiver em modo mock e tiver dados, usa o tamanho real do array base
+    const effectiveCount = (baseRows && baseRows.length > 0 && !showMockControls) ? baseRows.length : count
+    
+    const safeCount = clampInt(effectiveCount, 0, MAX_MOCK_TABLE_ROWS)
     if (safeCount === 0) return []
     const src = Array.isArray(baseRows) ? baseRows : []
     if (src.length === 0) return Array.from({ length: safeCount }, (_, idx) => makeFallback(idx))
@@ -256,7 +265,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
       const row = src[idx % src.length] as any
       return { ...row } as T
     })
-  }, [clampInt])
+  }, [clampInt, showMockControls])
 
   const zoom = isPdfMode ? 1 : Math.min(1.5, Math.max(0.5, zoomPercent / 100))
   const ZOOM_STEPS = [50, 60, 70, 80, 90, 100, 110, 125, 150]
@@ -575,7 +584,15 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
       dadosValidosBase,
       qtdFrotasEfetivo,
       "nome",
-      (name, idx) => ({ id: `ef-${idx + 1}`, nome: name, eficiencia: 0, horasMotor: 0, horasElevador: 0 })
+      (name, idx) => ({ 
+        id: `ef-${idx + 1}`, 
+        nome: name, 
+        eficiencia: 0, 
+        horasMotor: 0, 
+        horasElevador: 0,
+        consumo: 0,
+        producao: 0
+      })
     )
   }, [buildNamedSeries, dadosValidosBase, qtdFrotasEfetivo])
 
@@ -625,13 +642,32 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
   }, [buildNamedSeries, uso_gps, qtdFrotasEfetivo])
 
   // Cálculos para Eficiência Energética
-  const metaEficiencia = metas.eficienciaEnergetica
+  const metaEficiencia = metas.eficienciaEnergetica || 1.0
   const dadosEficienciaNaoZero = dadosValidos.filter(d => d.eficiencia > 0)
   const mediaEficiencia = dadosEficienciaNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaNaoZero.length || 1)
 
+  // Cálculos para Eficiência Operacional (Duplicado de Eficiência Energética)
+  const metaEficienciaOperacional = metas.eficiencia
+  const dadosEficienciaOperacionalBase = React.useMemo(() => {
+    const lista = Array.isArray(eficiencia_operacional) ? eficiencia_operacional : []
+    return lista.filter((d: any) => d?.nome)
+  }, [eficiencia_operacional])
+
+  const dadosEficienciaOperacionalValidos = React.useMemo(() => {
+    return buildNamedSeries(
+      dadosEficienciaOperacionalBase,
+      qtdFrotasEfetivo,
+      "nome",
+      (name, idx) => ({ id: `ef-op-${idx + 1}`, nome: name, eficiencia: 0, horasMotor: 0, horasElevador: 0 })
+    )
+  }, [buildNamedSeries, dadosEficienciaOperacionalBase, qtdFrotasEfetivo])
+  
+  const dadosEficienciaOperacionalNaoZero = dadosEficienciaOperacionalValidos.filter(d => d.eficiencia > 0)
+  const mediaEficienciaOperacional = dadosEficienciaOperacionalNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaOperacionalNaoZero.length || 1)
+
   // Cálculos para Horas Elevador
   // Usando os mesmos dados de eficiência energética para consistência
-  const metaHorasElevador = metas.horaElevador // ex: 5
+  const metaHorasElevador = metas.horaElevador
   const dadosHorasElevadorNaoZero = dadosValidos.filter(d => d.horasElevador > 0)
   const mediaHorasElevador = dadosHorasElevadorNaoZero.reduce((acc, curr) => acc + curr.horasElevador, 0) / (dadosHorasElevadorNaoZero.length || 1)
 
@@ -646,23 +682,23 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
   const alturaHorasPerc = 100 - alturaEficPerc
   const headerReservedPx = isManyFrotas ? 36 : 50
 
-  // Página 2 - Toneladas por Frota
+  // Página 2 - Toneladas por Frota (Removido)
   const producaoTotalValor = typeof producao_total?.[0]?.valor === 'number' ? producao_total[0].valor : (typeof producao === 'number' ? producao : 0)
-  const somaHorasElevador = dadosValidos.reduce((acc, curr) => acc + (typeof curr.horasElevador === 'number' ? curr.horasElevador : 0), 0)
-  const dadosToneladas = somaHorasElevador > 0
-    ? dadosValidos.map(d => ({
-        id: d.id,
-        nome: d.nome,
-        producao: producaoTotalValor * ((d.horasElevador || 0) / somaHorasElevador)
-      }))
-    : dadosValidos.map(d => ({
-        id: d.id,
-        nome: d.nome,
-        producao: 0
-      }))
-  const itensComProducao = dadosToneladas.filter(d => d.producao > 0)
-  const mediaProducaoEquip = itensComProducao.reduce((acc, curr) => acc + curr.producao, 0) / (itensComProducao.length || 1)
-  const tphDia = producaoTotalValor / 24
+  // const somaHorasElevador = dadosValidos.reduce((acc, curr) => acc + (typeof curr.horasElevador === 'number' ? curr.horasElevador : 0), 0)
+  // const dadosToneladas = somaHorasElevador > 0
+  //   ? dadosValidos.map(d => ({
+  //       id: d.id,
+  //       nome: d.nome,
+  //       producao: producaoTotalValor * ((d.horasElevador || 0) / somaHorasElevador)
+  //     }))
+  //   : dadosValidos.map(d => ({
+  //       id: d.id,
+  //       nome: d.nome,
+  //       producao: 0
+  //     }))
+  // const itensComProducao = dadosToneladas.filter(d => d.producao > 0)
+  // const mediaProducaoEquip = itensComProducao.reduce((acc, curr) => acc + curr.producao, 0) / (itensComProducao.length || 1)
+  // const tphDia = producaoTotalValor / 24
 
   // Página 2 - Uso GPS
   const metaUsoGPS = metas.usoGPS
@@ -862,76 +898,95 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
                 className="inline-flex flex-col items-start gap-4 report-zoom"
                 style={{ ...(isPdfMode ? {} : ({ zoom } as any)) }}
               >
+      {/* PÁGINA 1 - Eficiência Energética */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
           <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col" style={{ height: `${alturaEficPerc}%` }}>
-              <SectionTitle title="Eficiência Energética" />
-              <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
-                <CabecalhoMeta 
+            <SectionTitle title="Eficiência Energética" />
+            <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
+              <CabecalhoMeta 
+                meta={metaEficiencia} 
+                media={mediaEficiencia} 
+                tipo="porcentagem"
+                compact={false}
+              />
+              <div className="flex-1 overflow-hidden mt-1">
+                <GraficoEficienciaOperacional 
+                  dados={dadosValidos} 
                   meta={metaEficiencia} 
-                  media={mediaEficiencia} 
-                  tipo="porcentagem"
-                  compact={isManyFrotas}
+                  compact={false}
+                  labelDenominator="Horas Motor"
                 />
-                <div className="flex-1 overflow-hidden mt-1">
-                  <GraficoEficiencia 
-                    dados={dadosValidos} 
-                    meta={metaEficiencia} 
-                    compact={isManyFrotas}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col" style={{ height: `${alturaHorasPerc}%` }}>
-              <SectionTitle title="Horas Elevador" />
-              <div className="border border-black rounded-lg p-3 flex-1">
-                <CabecalhoMeta 
-                  meta={metaHorasElevador} 
-                  media={mediaHorasElevador} 
-                  tipo="horas"
-                  sufixoMedia="Média calculada excluindo valores 0 h"
-                  compact={isManyFrotas}
-                />
-                <div className="overflow-hidden mt-1" style={{ height: `calc(100% - ${headerReservedPx}px)` }}>
-                  <GraficoHorasElevador dados={dadosGraficoHoras} meta={metaHorasElevador} />
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* PÁGINA 2 - Eficiência Operacional */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
           <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col" style={{ height: "50%" }}>
-              <SectionTitle title="Toneladas / Frota" />
-              <div className="border border-black rounded-lg p-3 flex-1">
-                <CabecalhoProducao 
-                  producaoTotal={producaoTotalValor} 
-                  mediaPorEquipamento={mediaProducaoEquip} 
-                  tphDia={tphDia}
+            <SectionTitle title="Eficiência Operacional" />
+            <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
+              <CabecalhoMeta 
+                meta={metaEficienciaOperacional} 
+                media={mediaEficienciaOperacional} 
+                tipo="porcentagem"
+                compact={false}
+              />
+              <div className="flex-1 overflow-hidden mt-1">
+                <GraficoEficienciaOperacional 
+                  dados={dadosEficienciaOperacionalValidos} 
+                  meta={metaEficienciaOperacional} 
+                  compact={false}
+                  labelDenominator="Horas Registradas"
                 />
-                <div className="h-[calc(100%-50px)] overflow-hidden mt-1">
-                  <GraficoToneladasPorFrota dados={dadosToneladas} />
-                </div>
               </div>
             </div>
-            <div className="flex flex-col" style={{ height: "50%" }}>
-              <SectionTitle title="Uso GPS" />
-              <div className="border border-black rounded-lg p-3 flex-1">
-                <CabecalhoMeta 
-                  meta={metaUsoGPS} 
-                  media={mediaUsoGPS} 
-                  tipo="porcentagem" 
-                  sufixoMedia="Média calculada excluindo valores 0%"
-                />
-                <div className="h-[calc(100%-50px)] overflow-hidden mt-1">
-                  <GraficoUsoGPS dados={dadosUsoGPS} meta={metaUsoGPS} />
-                </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 3 - Horas Elevador */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <SectionTitle title="Horas Elevador" />
+            <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
+              <CabecalhoMeta 
+                meta={metaHorasElevador} 
+                media={mediaHorasElevador} 
+                tipo="horas"
+                sufixoMedia="Média calculada excluindo valores 0 h"
+                compact={isManyFrotas}
+              />
+              <div className="flex-1 overflow-hidden mt-1">
+                <GraficoHorasElevador dados={dadosGraficoHoras} meta={metaHorasElevador} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 4 - Uso GPS */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <SectionTitle title="Uso GPS" />
+            <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
+              <CabecalhoMeta 
+                meta={metaUsoGPS} 
+                media={mediaUsoGPS} 
+                tipo="porcentagem" 
+                sufixoMedia="Média calculada excluindo valores 0%"
+              />
+              <div className="flex-1 overflow-hidden mt-1">
+                <GraficoUsoGPS dados={dadosUsoGPS} meta={metaUsoGPS} />
               </div>
             </div>
           </div>
@@ -940,7 +995,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
 
       {period === "diario" && (
         <>
-          {/* PÁGINA 3 - Mapa GPS */}
+          {/* PÁGINA 5 - Mapa GPS */}
           <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
             <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -953,7 +1008,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
             </div>
           </div>
 
-          {/* PÁGINA 4 - Área Trabalhada */}
+          {/* PÁGINA 6 - Área Trabalhada */}
           <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
             <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -968,177 +1023,104 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
         </>
       )}
 
-      {/* PÁGINA 5 - Velocidade e Manobras */}
+      {/* PÁGINA 7 - Velocidade */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
           <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col" style={{ height: "50%" }}>
-              <SectionTitle title="Média de Velocidade" />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                 <GraficoMediaVelocidade dados={mediaVelocidadeFiltrada} meta={metas.mediaVelocidade} />
-              </div>
-            </div>
-            <div className="flex flex-col" style={{ height: "50%" }}>
-              <SectionTitle title="Manobras" />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
-                 <GraficoManobras 
-                    dados={manobrasFiltradas} 
-                    meta={metas.manobras || 60} 
-                    compact={isManyFrotas}
-                 />
-              </div>
+            <SectionTitle title="Média de Velocidade" />
+            <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
+               <GraficoMediaVelocidade dados={mediaVelocidadeFiltrada} meta={metas.mediaVelocidade} />
             </div>
           </div>
         </div>
       </div>
 
-      {/* PÁGINA 6 - Lavagem, Roletes e Motor Ocioso */}
+      {/* PÁGINA 8 - Manobras */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-          <div className="flex-1 flex flex-col justify-between gap-2 overflow-hidden">
-             {/* Tabela de Lavagem - Sempre na Página 6 */}
-             <div className="flex flex-col">
-                <SectionTitle title="Lavagem" />
-                <TabelaLavagem dados={lavagemForTable} />
-             </div>
-
-             {/* Tabela de Roletes - Apenas se layoutMode permitir (SINGLE_PAGE ou SPLIT_MOTOR) */}
-             {(layoutMode === 'SINGLE_PAGE' || layoutMode === 'SPLIT_MOTOR') && (
-               <div className="flex flex-col">
-                  <SectionTitle title="Aferição de Roletes" />
-                  <TabelaRoletes dados={roletesForTable} />
-               </div>
-             )}
-
-             {/* Gráfico de Motor Ocioso - Apenas se layoutMode === 'SINGLE_PAGE' */}
-             {layoutMode === 'SINGLE_PAGE' && (
-               <div className="flex flex-col shrink-0">
-                 <SectionTitle title="Motor Ocioso" />
-                 <div className="border border-black rounded-lg p-3 flex flex-col justify-start">
-                    <GraficoMotorOcioso 
-                      dados={motorOciosoFiltrado || []} 
-                      meta={metas.motorOcioso} 
-                      compact={isManyFrotas}
-                    />
-                 </div>
-               </div>
-             )}
+          <div className="flex-1 flex flex-col gap-2">
+            <SectionTitle title="Manobras" />
+            <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
+               <GraficoManobras 
+                  dados={manobrasFiltradas} 
+                  meta={metas.manobras} 
+                  compact={isManyFrotas}
+               />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* PÁGINA 7 (Condicional) - Roletes e/ou Motor Ocioso */}
-      {layoutMode !== 'SINGLE_PAGE' && (
-        <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-          <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-            <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-              
-              {/* Roletes: Aparece aqui se layout for SPLIT_TABLES_*, SPLIT_PAGINATED_* */}
-              {(layoutMode.startsWith('SPLIT_TABLES') || layoutMode.startsWith('SPLIT_PAGINATED')) && (
-                <div className="flex flex-col">
-                   <SectionTitle title="Aferição de Roletes" />
-                   {/* Se for paginado, mostra page1. Se não, mostra tudo (que é igual a page1 neste caso pois não tem resto) */}
-                   <TabelaRoletes dados={roletesPaginated.page1} />
-                </div>
-              )}
-
-              {/* Motor Ocioso: Aparece aqui se layout for SPLIT_MOTOR, SPLIT_TABLES_COMBINED */}
-              {(layoutMode === 'SPLIT_MOTOR' || layoutMode === 'SPLIT_TABLES_COMBINED') && (
-                <div className="flex flex-col overflow-hidden shrink-0">
-                  <SectionTitle title="Motor Ocioso" />
-                  <div className="border border-black rounded-lg p-3 overflow-hidden flex flex-col justify-start">
-                    <GraficoMotorOcioso 
-                       dados={motorOciosoFiltrado || []} 
-                       meta={metas.motorOcioso} 
-                       compact={isManyFrotas}
-                    />
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PÁGINA 8 (Condicional) - Motor Ocioso Isolado E/OU Resto de Roletes */}
-      {(layoutMode === 'SPLIT_TABLES_SEPARATED' || layoutMode.startsWith('SPLIT_PAGINATED')) && (
-        <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-          <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-            <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-              
-              {/* Roletes Parte 2: Aparece aqui se SPLIT_PAGINATED_* */}
-              {layoutMode.startsWith('SPLIT_PAGINATED') && roletesPaginated.page2.length > 0 && (
-                <div className="flex flex-col">
-                   <SectionTitle title="Aferição de Roletes (Continuação)" />
-                   <TabelaRoletes dados={roletesPaginated.page2} />
-                </div>
-              )}
-
-              {/* Motor Ocioso: Aparece aqui se SPLIT_TABLES_SEPARATED ou SPLIT_PAGINATED_COMBINED */}
-              {(layoutMode === 'SPLIT_TABLES_SEPARATED' || layoutMode === 'SPLIT_PAGINATED_COMBINED') && (
-                <div className="flex flex-col overflow-hidden shrink-0">
-                  <SectionTitle title="Motor Ocioso" />
-                  <div className="border border-black rounded-lg p-3 overflow-hidden flex flex-col justify-start">
-                    <GraficoMotorOcioso 
-                       dados={motorOciosoFiltrado || []} 
-                       meta={metas.motorOcioso} 
-                       compact={isManyFrotas}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PÁGINA 9 (Condicional) - Motor Ocioso Isolado (Overflow total) */}
-      {layoutMode === 'SPLIT_PAGINATED_SEPARATED' && (
-        <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-          <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-            <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <SectionTitle title="Motor Ocioso" />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
-                <GraficoMotorOcioso 
-                   dados={motorOciosoFiltrado || []} 
-                   meta={metas.motorOcioso} 
-                   compact={isManyFrotas}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PÁGINA 7 - Top 5 Ofensores e Disponibilidade Mecânica */}
+      {/* PÁGINA 9 - Lavagem */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
           <div className="flex-1 flex flex-col gap-2 overflow-hidden">
-            {/* Top 5 Ofensores - Altura levemente reduzida */}
-            <div className="flex flex-col shrink-0" style={{ height: "45%" }}>
-              <SectionTitle title="Top 5 Ofensores" />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                <GraficoTop5Ofensores dados={dadosOfensores} />
-              </div>
+            <SectionTitle title="Lavagem" />
+            <div className="flex-1 overflow-hidden">
+               <TabelaLavagem dados={lavagemForTable} />
             </div>
-            
-            {/* Disponibilidade Mecânica - Ocupa o restante */}
-            <div className="flex flex-col flex-1 overflow-hidden">
-              <SectionTitle title="Disponibilidade Mecânica" />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
-                 <GraficoDisponibilidadeMecanica 
-                    dados={disponibilidadeFiltrada || []} 
-                    meta={metas.disponibilidadeMecanica || 90} 
-                    compact={isManyFrotas}
-                 />
-              </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 10 - Roletes */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+            <SectionTitle title="Aferição de Roletes" />
+            <div className="flex-1 overflow-hidden">
+               <TabelaRoletes dados={roletesForTable} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 11 - Motor Ocioso */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+            <SectionTitle title="Motor Ocioso" />
+            <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
+              <GraficoMotorOcioso 
+                dados={motorOciosoFiltrado || []} 
+                meta={metas.motorOcioso} 
+                compact={isManyFrotas}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 12 - Top 5 Ofensores */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+            <SectionTitle title="Top 5 Ofensores" />
+            <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
+              <GraficoTop5Ofensores dados={dadosOfensores} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 13 - Disponibilidade Mecânica */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+            <SectionTitle title="Disponibilidade Mecânica" />
+            <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
+                <GraficoDisponibilidadeMecanica 
+                  dados={disponibilidadeFiltrada || []} 
+                  meta={metas.disponibilidadeMecanica || 90} 
+                  compact={isManyFrotas}
+                />
             </div>
           </div>
         </div>
@@ -1199,7 +1181,7 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
             <div className="grid grid-cols-2 gap-4">
               <CardIndicador 
                 titulo="Eficiência Energética"
-                meta={metas.eficienciaEnergetica}
+                meta={metas.eficienciaEnergetica || 85}
                 unidade="%"
                 dados={dadosResumo.map(d => ({ valor: d.eficiencia }))}
                 tipo="asc"
@@ -1398,9 +1380,13 @@ function RelatorioFrotasCd({ period }: { period: "diario" | "semanal" }) {
 
 export default function RelatorioDiarioFrotas({
   searchParams,
+  period: propPeriod,
+  data
 }: {
-  searchParams?: { period?: string }
+  searchParams?: { period?: string },
+  period?: "diario" | "semanal",
+  data?: any
 }) {
-  const period = searchParams?.period === "semanal" ? "semanal" : "diario"
-  return <RelatorioFrotasCd period={period} />
+  const period = propPeriod || (searchParams?.period === "semanal" ? "semanal" : "diario")
+  return <RelatorioFrotasCd period={period} data={data} />
 }

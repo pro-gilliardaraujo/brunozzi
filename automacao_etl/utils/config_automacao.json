@@ -37,6 +37,7 @@
     "parametros": {
       "data_inicial": "05/10/2025",
       "data_final": "11/10/2025",
+      "tipos_operacao": ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"],
       "tipo_arquivo":"XLS",
       "download_dir": "dados"
     }

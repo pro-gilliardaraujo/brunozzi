@@ -24,7 +24,7 @@ export function CardIndicador({
   ).length;
 
   const total = dados.length;
-  const porcentagemAtingimento = (atingiramMeta / total) * 100;
+  const porcentagemAtingimento = total > 0 ? (atingiramMeta / total) * 100 : 0;
 
   // Determina se a média geral é "boa"
   const mediaAtingiu = tipo === 'asc' ? media >= meta : media <= meta;
@@ -36,7 +36,10 @@ export function CardIndicador({
   // Vamos seguir a cor da média para consistência por enquanto.
   const corTextoDescritivo = mediaAtingiu ? 'text-green-500' : 'text-red-500';
 
-  const format = (v: number) => formatarValor ? formatarValor(v) : v.toFixed(2);
+  const format = (v: number) => {
+    if (v === undefined || v === null || isNaN(v)) return '0.00';
+    return formatarValor ? formatarValor(v) : v.toFixed(2);
+  }
 
   return (
     <div className="border border-black rounded-lg p-3 flex flex-col justify-between h-28 bg-white">

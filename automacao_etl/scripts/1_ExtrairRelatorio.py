@@ -246,8 +246,8 @@ def fazer_login(driver, config):
     dados_nav = XPATHS["navegacao"]
 
     url_login = dados_gerais["urls"]["url_login"]
-    usuario = dados_gerais["credenciais"]["username"]
-    senha = dados_gerais["credenciais"]["senha"]
+    usuario = dados_gerais["credenciais"]["solinftec"]["username"]
+    senha = dados_gerais["credenciais"]["solinftec"]["senha"]
 
     logging.info("--- Iniciando processo de login ---")
 

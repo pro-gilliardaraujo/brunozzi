@@ -29,10 +29,16 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
   
   // Função auxiliar para formatar horas decimais em HH:MM
   const formatHour = (decimalHours: number) => {
+    if (decimalHours === undefined || decimalHours === null || isNaN(decimalHours)) return '00:00';
     const hours = Math.floor(decimalHours);
     const minutes = Math.round((decimalHours - hours) * 60);
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
+
+  const formatDecimal = (val: number) => {
+    if (val === undefined || val === null || isNaN(val)) return '0.00';
+    return val.toFixed(2);
+  }
 
   // Função para determinar cor baseada na meta
   const getColor = (valor: number, meta: number, tipo: 'asc' | 'desc', warningThreshold = 0.2) => {
@@ -70,7 +76,7 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
               
               {/* Eficiência (Maior melhor) */}
               <td className={`border border-slate-300 p-2 font-bold ${getColor(d.eficiencia, metas.eficienciaEnergetica, 'asc')}`}>
-                {d.eficiencia.toFixed(2)}%
+                {formatDecimal(d.eficiencia)}%
               </td>
 
               {/* Elevador (Maior melhor? Meta 15h) */}
@@ -83,7 +89,7 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
 
               {/* Produção (Preto padrão) */}
               <td className="border border-slate-300 p-2 font-bold">
-                {d.producao.toFixed(2)}
+                {formatDecimal(d.producao)}
               </td>
 
               {/* Velocidade (Maior melhor - Meta 7) */}
@@ -91,12 +97,12 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
                   Isso sugere que ou a meta é um Limite (Menor é melhor) ou há uma tolerância.
                   Como no Card usamos 'desc' para ficar Verde, vamos usar 'desc' aqui também para consistência. */}
               <td className={`border border-slate-300 p-2 font-bold ${getColor(d.velocidade, metas.mediaVelocidade, 'desc')}`}>
-                {d.velocidade.toFixed(2)}
+                {formatDecimal(d.velocidade)}
               </td>
 
               {/* GPS (Maior melhor - Meta 90) */}
               <td className={`border border-slate-300 p-2 font-bold ${getColor(d.gps, metas.usoGPS, 'asc')}`}>
-                {d.gps.toFixed(2)}%
+                {formatDecimal(d.gps)}%
               </td>
 
               {/* Manobra (Menor melhor - Meta 60 min) */}
@@ -107,12 +113,12 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
 
               {/* Ocioso (Menor melhor - Meta 4%) */}
               <td className={`border border-slate-300 p-2 font-bold ${getColor(d.ocioso, metas.motorOcioso, 'desc')}`}>
-                {d.ocioso.toFixed(2)}%
+                {formatDecimal(d.ocioso)}%
               </td>
 
               {/* Disponibilidade (Maior melhor - Meta 90%) */}
               <td className={`border border-slate-300 p-2 font-bold ${getColor(d.disponibilidade, metas.disponibilidadeMecanica, 'asc')}`}>
-                {d.disponibilidade.toFixed(2)}%
+                {formatDecimal(d.disponibilidade)}%
               </td>
             </tr>
           ))}

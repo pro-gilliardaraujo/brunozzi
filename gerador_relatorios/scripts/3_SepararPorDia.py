@@ -379,8 +379,25 @@ def main():
                                         if (k.startswith("Horas_") or 
                                             k.startswith("Porcentagem_") or 
                                             k.startswith("Disponibilidade_") or
+                                            k.startswith("Eficiencia_") or
+                                            k.startswith("Manobras_") or
+                                            k.startswith("Basculamento_") or
+                                            k.startswith("Velocidade_") or
+                                            k.startswith("Media_") or
+                                            k.startswith("Producao_") or
+                                            k.startswith("Toneladas_") or
+                                            k.startswith("Consumo_") or
+                                            k.startswith("Uso_") or
                                             k_lower == "motor ligado" or
-                                            k_lower == "motor ocioso"):
+                                            k_lower == "motor ocioso" or
+                                            "velocidade" in k_lower or
+                                            "producao" in k_lower or
+                                            "produção" in k_lower or
+                                            "eficiencia" in k_lower or
+                                            "eficiência" in k_lower or
+                                            "manobras" in k_lower or
+                                            "basculamento" in k_lower or
+                                            "gps" in k_lower):
                                             novo_item[k] = v
                                     
                                     if novo_item:

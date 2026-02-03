@@ -27,6 +27,11 @@ export function GraficoEficiencia({ dados, meta, compact = true, listrado = true
     return `${horas}h${minutos.toString().padStart(2, '0')}m`
   }
 
+  const formatarPercentual = (val: number) => {
+    if (val === undefined || val === null || isNaN(val)) return '0.00'
+    return val.toFixed(2)
+  }
+
   const getCor = (valor: number, metaRef: number) => corPorMeta(valor, metaRef, false)
 
   return (
@@ -105,7 +110,7 @@ export function GraficoEficiencia({ dados, meta, compact = true, listrado = true
                 className="font-bold text-sm w-16 text-right"
                 style={{ color: corItem }}
               >
-                {item.eficiencia.toFixed(2)}%
+                {formatarPercentual(item.eficiencia)}%
               </div>
             </div>
           </div>

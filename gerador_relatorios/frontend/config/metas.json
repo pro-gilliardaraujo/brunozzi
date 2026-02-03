@@ -1,0 +1,10 @@
+{
+  "eficienciaEnergetica": 85,
+  "eficienciaOperacional": 60,
+  "horaElevador": 5,
+  "mediaVelocidade": 5,
+  "manobras": 60,
+  "producao": 1000,
+  "disponibilidade": 90,
+  "motorOcioso": 15
+}
