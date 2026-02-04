@@ -105,9 +105,7 @@ def monitorar_e_baixar_arquivos(page, arquivos_esperados):
                         # 2. Clica em "Baixar Arquivo" (Botão que abre a modal de escolha)
                         print("Tentando clicar no botão de iniciar download...")
                         
-                        # Tenta encontrar o botão de download (pode ser "Baixar Arquivo", "Download", ou ícone)
-                        # Baseado no relato do usuário, existe um passo intermediário antes da modal de tipo
-                        
+                        # Tenta encontrar o botão de download
                         btn_download_inicial = None
                         if page.get_by_role("button", name="Baixar Arquivo").is_visible():
                             btn_download_inicial = page.get_by_role("button", name="Baixar Arquivo")
@@ -120,13 +118,10 @@ def monitorar_e_baixar_arquivos(page, arquivos_esperados):
                             btn_download_inicial.click()
                         else:
                             print("AVISO: Botão 'Baixar Arquivo' não encontrado explicitamente. Tentando fluxo direto ou buscando ícone...")
-                            # Pode ser que o clique na linha já abra, ou precise de outro seletor.
-                            # Se não achar, tenta prosseguir caso a modal já tenha aberto.
                         
                         page.wait_for_timeout(2000)
 
                         # 3. Modal "Que tipo de arquivo gostaria de baixar?"
-                        # HTML: <h6 ...>Que tipo de arquivo gostaria de baixar?</h6>
                         if page.get_by_text("Que tipo de arquivo gostaria de baixar?").is_visible():
                             print("Modal de seleção de tipo detectada.")
                             
@@ -257,12 +252,20 @@ def clicar_voltar_lista(page):
     try:
         print("\n🔙 Voltando para lista de equipamentos...")
         
-        # Tenta fechar o painel lateral (X ou botão de fechar)
-        # Snippet do usuário: page.get_by_role("img").first.click() -> provavelmente ícone de fechar
-        # Vamos tentar um seletor mais específico para fechar painel
-        
+        # 1. Tentativa baseada na gravação do usuário (Seletor CSS específico)
         try:
-            # Tenta botão de fechar comum em painéis laterais
+            # page.locator(".MuiStack-root.css-48cx6a > div > div").first.click()
+            btn_voltar_user = page.locator(".MuiStack-root.css-48cx6a > div > div").first
+            if btn_voltar_user.is_visible():
+                btn_voltar_user.click()
+                print("✅ Voltou usando seletor gravado pelo usuário.")
+                page.wait_for_timeout(2000)
+                return True
+        except:
+             pass
+
+        # 2. Tenta fechar o painel lateral (X ou botão de fechar)
+        try:
             fechar_btn = page.locator("button[aria-label='Fechar'], button[title='Fechar']")
             if fechar_btn.is_visible():
                 fechar_btn.click()
@@ -272,22 +275,21 @@ def clicar_voltar_lista(page):
         except:
              pass
 
-        # Tenta breadcrumb como fallback
+        # 3. Tenta breadcrumb como fallback
         breadcrumb = page.locator('[data-testid="drill-in-breadcrumb"]')
         if breadcrumb.count() > 0 and breadcrumb.first.is_visible():
             breadcrumb.first.click()
             page.wait_for_timeout(2000)
             return True
             
-        # Fallback do usuário: page.get_by_role("img").first.click() (Arriscado, mas vamos tentar se nada funcionar)
-        print("⚠️  Tentando fechar via ícone genérico (fallback do usuário)...")
+        # Fallback antigo
+        print("⚠️  Tentando fechar via ícone genérico (fallback)...")
         page.get_by_role("img").first.click()
         page.wait_for_timeout(2000)
         return True
             
     except Exception as e:
         print(f"❌ Erro ao voltar: {e}")
-        # Tenta ESC como último recurso
         page.keyboard.press("Escape")
         return False
 
@@ -296,14 +298,8 @@ def realizar_export(page, nome_arquivo):
     try:
         print(f"\n📤 Iniciando exportação: {nome_arquivo}")
         
-        btn_compartilhar = page.get_by_role("button", name="Compartilhar/Exportar")
-        page.wait_for_timeout(2000)
-        
-        if not btn_compartilhar.is_enabled():
-            print(f"⚠️  Botão de exportar DESABILITADO.")
-            return False
-
-        btn_compartilhar.click()
+        # Fluxo corrigido com base na gravação do usuário
+        page.get_by_role("button", name="Compartilhar/Exportar").click()
         page.get_by_role("menuitem", name="Dados de Trabalho").click()
         
         frame = page.get_by_role("dialog", name="Compartilhar/Exportar close").locator("iframe").content_frame
@@ -311,41 +307,61 @@ def realizar_export(page, nome_arquivo):
         
         textbox_nome = frame.get_by_role("textbox", name="Nome do Arquivo")
         textbox_nome.click()
-        page.wait_for_timeout(1000)
-        
         print(f"   Nome do arquivo: {nome_arquivo}")
         textbox_nome.fill(nome_arquivo)
+        # Importante: Sair do campo para validar
+        textbox_nome.press("Tab")
+        page.wait_for_timeout(1000)
         
-        # Tenta clicar no botão de exportar (várias tentativas como no original)
-        try:
-            page.locator("div").filter(has_text="Exportar Dados do Trabalho").nth(3).click()
-        except:
-            pass
+        print("   Tentando clicar em 'Exportar Dados do Trabalho'...")
+        
+        # Estratégia de clique robusta
+        # O botão pode estar na pagina principal (rodapé do dialog) ou no frame
+        botao_exportar = None
+        
+        # 1. Tenta na página (baseado no snippet)
+        if page.get_by_role("button", name="Exportar Dados do Trabalho").is_visible():
+            botao_exportar = page.get_by_role("button", name="Exportar Dados do Trabalho")
+            print("   -> Botão encontrado na página principal.")
             
-        page.wait_for_timeout(2000)
-        
-        try:
-            frame.get_by_role("button", name="Exportar Dados do Trabalho").click(timeout=5000)
-        except:
-             # Fallback
-             pass
+        # 2. Tenta no iframe
+        elif frame.get_by_role("button", name="Exportar Dados do Trabalho").is_visible():
+             botao_exportar = frame.get_by_role("button", name="Exportar Dados do Trabalho")
+             print("   -> Botão encontrado no iframe.")
+             
+        if botao_exportar:
+            if not botao_exportar.is_enabled():
+                print("   ⚠️ AVISO: Botão encontrado mas está DESABILITADO. Tentando forçar interação...")
+                textbox_nome.click()
+                textbox_nome.press("Enter")
+                page.wait_for_timeout(1000)
+            
+            botao_exportar.click(force=True)
+            print("   -> Clique realizado.")
+        else:
+            print("   ❌ ERRO: Botão 'Exportar Dados do Trabalho' NÃO ENCONTRADO em lugar nenhum.")
+            # Tentativa desesperada por texto
+            page.locator("text=Exportar Dados do Trabalho").last.click()
         
         print("   Aguardando processamento...")
         page.wait_for_timeout(5000)
         
         # Concluído
         try:
-            if frame.get_by_role("button", name="Concluído").is_visible():
-                frame.get_by_role("button", name="Concluído").click()
-                print("✅ Export concluído!")
-                page.wait_for_timeout(2000)
-                return True
-        except:
-             pass
+             # Pode demorar para aparecer o Concluído
+             btn_concluido = page.get_by_role("button", name="Concluído")
+             if not btn_concluido.is_visible():
+                  btn_concluido = frame.get_by_role("button", name="Concluído")
+                  
+             btn_concluido.wait_for(state="visible", timeout=30000)
+             btn_concluido.click()
+             print("✅ Export concluído!")
+             page.wait_for_timeout(2000)
+             return True
+        except Exception as e:
+             print(f"⚠️ Erro ao clicar em Concluído: {e}")
              
-        # Tenta fechar modal com ESC se não conseguiu clicar
-        page.keyboard.press("Escape")
-        return True # Assume que iniciou
+        return True 
             
     except Exception as e:
         print(f"❌ Erro no export: {e}")

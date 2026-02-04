@@ -1,9 +1,5 @@
 {
-    "processo_id": "20260203_1622",
-    "arquivos_esperados": [
-        "Colhedora_MB560.zip",
-        "Colhedora_MB547.zip",
-        "Colhedora_MB469.zip"
-    ],
+    "processo_id": "",
+    "arquivos_esperados": [],
     "arquivos_baixados": []
 }
