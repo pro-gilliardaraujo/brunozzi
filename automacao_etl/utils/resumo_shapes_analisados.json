@@ -1,0 +1,1046 @@
+[
+  {
+    "nome_arquivo": "Colhedora_MB469.zip",
+    "tamanho_bytes": 21756433,
+    "arquivos_internos": [
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.shx",
+        "tamanho": 274108,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_63_Harvest_2025-10-03_00-Deere-Metadata.json",
+        "tamanho": 3148,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_63_Harvest_2025-10-03_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.shx",
+        "tamanho": 345004,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.shp",
+        "tamanho": 810224,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.shx",
+        "tamanho": 225972,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.shp",
+        "tamanho": 615400,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.dbf",
+        "tamanho": 25653969,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.dbf",
+        "tamanho": 11123667,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3334,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.dbf",
+        "tamanho": 7465227,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.shx",
+        "tamanho": 231564,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.dbf",
+        "tamanho": 5670063,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.shp",
+        "tamanho": 790652,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.shp",
+        "tamanho": 3024240,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_63_Harvest_2025-10-03_00.dbf",
+        "tamanho": 1597017,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_63_Harvest_2025-10-03_00.shx",
+        "tamanho": 49604,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.dbf",
+        "tamanho": 27865803,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.shp",
+        "tamanho": 691560,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.shx",
+        "tamanho": 197660,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00-Deere-Metadata.json",
+        "tamanho": 3148,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_63_Harvest_2025-10-03_00.shp",
+        "tamanho": 173364,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.shp",
+        "tamanho": 1663664,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.shp",
+        "tamanho": 2784196,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.dbf",
+        "tamanho": 6371823,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.dbf",
+        "tamanho": 15329067,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00-Deere-Metadata.json",
+        "tamanho": 3151,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.shx",
+        "tamanho": 795556,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.dbf",
+        "tamanho": 7284885,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.shx",
+        "tamanho": 475404,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.shx",
+        "tamanho": 864140,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_63_Harvest_2025-10-03_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.shx",
+        "tamanho": 175900,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.shp",
+        "tamanho": 1207264,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.dbf",
+        "tamanho": 8837271,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.shp",
+        "tamanho": 959128,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      }
+    ],
+    "geoespacial": {
+      "tipo": "Shapefile",
+      "total_registros": 28234,
+      "campos": [
+        "DISTANCE",
+        "SWATHWIDTH",
+        "VRYLDRCANE",
+        "SECTIONID",
+        "Crop",
+        "Trash",
+        "Time",
+        "Heading",
+        "VARIETY",
+        "Elevation",
+        "IsoTime",
+        "Machine",
+        "FUEL",
+        "VEHICLSPEED",
+        "PRODUCTHASH"
+      ],
+      "colunas_data": [
+        "Time",
+        "IsoTime"
+      ],
+      "primeiro_registro": {
+        "DISTANCE": "1.6079186",
+        "SWATHWIDTH": "1.5",
+        "VRYLDRCANE": "0",
+        "SECTIONID": "397",
+        "Crop": "133",
+        "Trash": "0",
+        "Time": "10/11/2025 2:34:45 PM",
+        "Heading": "60.59150957",
+        "VARIETY": "---",
+        "Elevation": "573.53709609",
+        "IsoTime": "2025-10-11T14:34:45.601Z",
+        "Machine": "1",
+        "FUEL": "0.01440358",
+        "VEHICLSPEED": "5.3949325",
+        "PRODUCTHASH": "3e2d9c87"
+      }
+    }
+  },
+  {
+    "nome_arquivo": "Colhedora_MB547.zip",
+    "tamanho_bytes": 10577802,
+    "arquivos_internos": [
+      {
+        "nome": "doc/MARCOS CESAR_63001_40_Harvest_2025-10-08_00.shp",
+        "tamanho": 927936,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_43_Harvest_2025-10-08_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_43_Harvest_2025-10-08_00-Deere-Metadata.json",
+        "tamanho": 2703,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_40_Harvest_2025-10-08_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_28_Harvest_2025-10-06_00.shx",
+        "tamanho": 78836,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_30_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_42_Harvest_2025-10-02_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_28_Harvest_2025-10-06_00.shp",
+        "tamanho": 275676,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_41_Harvest_2025-10-05_00.dbf",
+        "tamanho": 4123695,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_43_Harvest_2025-10-08_00.dbf",
+        "tamanho": 10659877,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_40_Harvest_2025-10-08_00-Deere-Metadata.json",
+        "tamanho": 2703,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_30_Harvest_2025-10-06_00.shp",
+        "tamanho": 1367396,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_28_Harvest_2025-10-06_00.dbf",
+        "tamanho": 2500381,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_43_Harvest_2025-10-08_00.shx",
+        "tamanho": 335828,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_41_Harvest_2025-10-05_00-Deere-Metadata.json",
+        "tamanho": 2703,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_29_Harvest_2025-10-07_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_43_Harvest_2025-10-08_00.shp",
+        "tamanho": 1175148,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_30_Harvest_2025-10-06_00.dbf",
+        "tamanho": 12452673,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_40_Harvest_2025-10-08_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_41_Harvest_2025-10-05_00.shp",
+        "tamanho": 454624,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_29_Harvest_2025-10-07_00.dbf",
+        "tamanho": 4382688,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_41_Harvest_2025-10-05_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_29_Harvest_2025-10-07_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_42_Harvest_2025-10-02_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_29_Harvest_2025-10-07_00.shx",
+        "tamanho": 137580,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_42_Harvest_2025-10-02_00.dbf",
+        "tamanho": 4217929,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_40_Harvest_2025-10-08_00.shx",
+        "tamanho": 265196,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_29_Harvest_2025-10-07_00-Deere-Metadata.json",
+        "tamanho": 2889,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_29_Harvest_2025-10-07_00.shp",
+        "tamanho": 481280,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_28_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_40_Harvest_2025-10-08_00.dbf",
+        "tamanho": 8417311,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_41_Harvest_2025-10-05_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_42_Harvest_2025-10-02_00.shp",
+        "tamanho": 465012,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_43_Harvest_2025-10-08_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_42_Harvest_2025-10-02_00-Deere-Metadata.json",
+        "tamanho": 2703,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_30_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_42_Harvest_2025-10-02_00.shx",
+        "tamanho": 132932,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_41_Harvest_2025-10-05_00.shx",
+        "tamanho": 129964,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_28_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_30_Harvest_2025-10-06_00.shx",
+        "tamanho": 390756,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_30_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 2889,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_63001_28_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 2703,
+        "extensao": ".json"
+      }
+    ],
+    "geoespacial": {
+      "tipo": "Shapefile",
+      "total_registros": 9842,
+      "campos": [
+        "DISTANCE",
+        "SWATHWIDTH",
+        "VRYLDRCANE",
+        "SECTIONID",
+        "Crop",
+        "Trash",
+        "Time",
+        "Heading",
+        "VARIETY",
+        "Elevation",
+        "IsoTime",
+        "Machine",
+        "FUEL",
+        "VEHICLSPEED",
+        "PRODUCTHASH"
+      ],
+      "colunas_data": [
+        "Time",
+        "IsoTime"
+      ],
+      "primeiro_registro": {
+        "DISTANCE": "0.71501461",
+        "SWATHWIDTH": "3",
+        "VRYLDRCANE": "0",
+        "SECTIONID": "5512",
+        "Crop": "133",
+        "Trash": "0",
+        "Time": "10/6/2025 10:52:17 AM",
+        "Heading": "356.32268748",
+        "VARIETY": "---",
+        "Elevation": "521.65976512",
+        "IsoTime": "2025-10-06T10:52:17.492Z",
+        "Machine": "1",
+        "FUEL": "0.02194028",
+        "VEHICLSPEED": "2.608785",
+        "PRODUCTHASH": "3e2d9c87"
+      }
+    }
+  },
+  {
+    "nome_arquivo": "Colhedora_MB560.zip",
+    "tamanho_bytes": 25418699,
+    "arquivos_internos": [
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.shx",
+        "tamanho": 274108,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_65_Harvest_2025-10-03_00.shx",
+        "tamanho": 118956,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_336_Harvest_2025-10-12_00.shp",
+        "tamanho": 369420,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.shx",
+        "tamanho": 345004,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.shp",
+        "tamanho": 810224,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_57_Harvest_2025-09-30_00.shp",
+        "tamanho": 112464,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_336_Harvest_2025-10-12_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_57_Harvest_2025-09-30_00-Deere-Metadata.json",
+        "tamanho": 3148,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.shx",
+        "tamanho": 225972,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.shp",
+        "tamanho": 615400,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.dbf",
+        "tamanho": 25653969,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_324_Harvest_2025-10-11_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_336_Harvest_2025-10-12_00.dbf",
+        "tamanho": 3363963,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_324_Harvest_2025-10-11_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.dbf",
+        "tamanho": 11123667,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_57_Harvest_2025-09-30_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_324_Harvest_2025-10-11_00.shp",
+        "tamanho": 1436024,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3334,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_57_Harvest_2025-09-30_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.dbf",
+        "tamanho": 7465227,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.shx",
+        "tamanho": 231564,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_324_Harvest_2025-10-11_00.shx",
+        "tamanho": 410364,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_336_Harvest_2025-10-12_00-Deere-Metadata.json",
+        "tamanho": 2907,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_336_Harvest_2025-10-12_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.dbf",
+        "tamanho": 5670063,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_65_Harvest_2025-10-03_00-Deere-Metadata.json",
+        "tamanho": 2906,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.shp",
+        "tamanho": 790652,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.shp",
+        "tamanho": 3024240,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_324_Harvest_2025-10-11_00.dbf",
+        "tamanho": 13231527,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.dbf",
+        "tamanho": 27865803,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.shp",
+        "tamanho": 691560,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_65_Harvest_2025-10-03_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.shx",
+        "tamanho": 197660,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00-Deere-Metadata.json",
+        "tamanho": 3148,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.shp",
+        "tamanho": 1663664,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_65_Harvest_2025-10-03_00.shp",
+        "tamanho": 416096,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_57_Harvest_2025-09-30_00.shx",
+        "tamanho": 32204,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.shp",
+        "tamanho": 2784196,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_336_Harvest_2025-10-12_00.shx",
+        "tamanho": 105620,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.dbf",
+        "tamanho": 6371823,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.dbf",
+        "tamanho": 15329067,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_57_Harvest_2025-09-30_00.dbf",
+        "tamanho": 1035867,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00-Deere-Metadata.json",
+        "tamanho": 3151,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.shx",
+        "tamanho": 795556,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.prj",
+        "tamanho": 160,
+        "extensao": ".prj"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_324_Harvest_2025-10-11_00-Deere-Metadata.json",
+        "tamanho": 3334,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_330_Harvest_2025-10-11_00.dbf",
+        "tamanho": 7284885,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_355_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_62_Harvest_2025-10-03_00.shx",
+        "tamanho": 475404,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_59_Harvest_2025-10-09_00.shx",
+        "tamanho": 864140,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_65_Harvest_2025-10-03_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_64_Harvest_2025-10-03_00.shx",
+        "tamanho": 175900,
+        "extensao": ".shx"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_66_Harvest_2025-10-06_00.shp",
+        "tamanho": 1207264,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_68_Harvest_2025-10-04_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.dbf",
+        "tamanho": 8837271,
+        "extensao": ".dbf"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00.cpg",
+        "tamanho": 5,
+        "extensao": ".cpg"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_67_Harvest_2025-10-06_00.shp",
+        "tamanho": 959128,
+        "extensao": ".shp"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_58_Harvest_2025-10-06_00-Deere-Metadata.json",
+        "tamanho": 3333,
+        "extensao": ".json"
+      },
+      {
+        "nome": "doc/MARCOS CESAR_FORNECEDORES_65_Harvest_2025-10-03_00.dbf",
+        "tamanho": 3789048,
+        "extensao": ".dbf"
+      }
+    ],
+    "geoespacial": {
+      "tipo": "Shapefile",
+      "total_registros": 51283,
+      "campos": [
+        "DISTANCE",
+        "SWATHWIDTH",
+        "VRYLDRCANE",
+        "SECTIONID",
+        "Crop",
+        "Trash",
+        "Time",
+        "Heading",
+        "VARIETY",
+        "Elevation",
+        "IsoTime",
+        "Machine",
+        "FUEL",
+        "VEHICLSPEED",
+        "PRODUCTHASH"
+      ],
+      "colunas_data": [
+        "Time",
+        "IsoTime"
+      ],
+      "primeiro_registro": {
+        "DISTANCE": "0.58691623",
+        "SWATHWIDTH": "1.5",
+        "VRYLDRCANE": "0",
+        "SECTIONID": "397",
+        "Crop": "133",
+        "Trash": "0",
+        "Time": "10/11/2025 2:35:17 PM",
+        "Heading": "63.27052304",
+        "VARIETY": "---",
+        "Elevation": "574.42170547",
+        "IsoTime": "2025-10-11T14:35:17.396Z",
+        "Machine": "2",
+        "FUEL": "0.00821781",
+        "VEHICLSPEED": "2.03352375",
+        "PRODUCTHASH": "3e2d9c87"
+      }
+    }
+  }
+]
