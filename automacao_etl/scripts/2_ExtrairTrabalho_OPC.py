@@ -2,7 +2,7 @@ import json
 import os
 import re
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 
 ESTADO_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "utils", "processos_opc_case.json")
@@ -532,8 +532,38 @@ def run():
     creds = automacao['credenciais']['john_deere']
     username = creds['username']
     senha = creds['senha']
-    dt_inicial = datetime.strptime(automacao['parametros']['data_inicial'], "%d/%m/%Y")
-    dt_final = datetime.strptime(automacao['parametros']['data_final'], "%d/%m/%Y")
+    # --- LÓGICA DE DATAS (PRIORIDADE: SEMANAL > ONTEM > MANUAL) ---
+    params = automacao['parametros']
+    extrair_semanal = params.get("extrair_semanal", False)
+    extrair_ontem = params.get("extrair_ontem", False)
+    
+    hoje = datetime.now()
+    ontem = hoje - timedelta(days=1)
+    
+    dt_inicial = None
+    dt_final = None
+    
+    if extrair_semanal:
+        print("📅 Modo SEMANAL ativado (Últimos 7 dias).")
+        dt_final = ontem
+        dt_inicial = ontem - timedelta(days=6)
+    elif extrair_ontem:
+        print("📅 Modo ONTEM ativado.")
+        dt_final = ontem
+        dt_inicial = ontem
+    else:
+        # Tenta manual
+        str_ini = params.get('data_inicial')
+        str_fim = params.get('data_final')
+        
+        if str_ini and str_fim:
+            print(f"📅 Modo MANUAL ativado: {str_ini} a {str_fim}")
+            dt_inicial = datetime.strptime(str_ini, "%d/%m/%Y")
+            dt_final = datetime.strptime(str_fim, "%d/%m/%Y")
+        else:
+            print("📅 Nenhuma data configurada. Usando fallback: ONTEM.")
+            dt_final = ontem
+            dt_inicial = ontem
     
     tipos_operacao = automacao['parametros'].get('tipos_operacao', ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"])
 

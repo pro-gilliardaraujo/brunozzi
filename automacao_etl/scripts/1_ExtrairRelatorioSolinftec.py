@@ -1,6 +1,7 @@
 import os
 import time
 import json
+from datetime import datetime, timedelta
 import logging
 import traceback
 import sys
@@ -738,11 +739,46 @@ def gerar_relatorio(driver, config):
     logging.info("--- Iniciando geração do relatório ---")
 
     try:
+        cfg_parametros = config.get("automacao", {}).get("parametros", {})
+        
+        # --- LÓGICA DE DATAS (PRIORIDADE: SEMANAL > ONTEM > MANUAL) ---
+        extrair_semanal = cfg_parametros.get("extrair_semanal", False)
+        extrair_ontem = cfg_parametros.get("extrair_ontem", False)
+        
+        hoje = datetime.now()
+        ontem = hoje - timedelta(days=1)
+        
+        val_data_ini = ""
+        val_data_fim = ""
+        
+        if extrair_semanal:
+            # Semanal: Últimos 7 dias (terminando ontem)
+            dt_inicio = ontem - timedelta(days=6)
+            val_data_ini = dt_inicio.strftime("%d/%m/%Y")
+            val_data_fim = ontem.strftime("%d/%m/%Y")
+            logging.info(f"Modo SEMANAL ativado. Periodo: {val_data_ini} a {val_data_fim}")
+            
+        elif extrair_ontem:
+            # Ontem: Apenas data de ontem
+            val_data_ini = ontem.strftime("%d/%m/%Y")
+            val_data_fim = ontem.strftime("%d/%m/%Y")
+            logging.info(f"Modo ONTEM ativado. Data: {val_data_ini}")
+            
+        else:
+            # Manual ou Fallback
+            val_data_ini = cfg_parametros.get("data_inicial") or cfg_parametros.get("data_inicio") or ""
+            val_data_fim = cfg_parametros.get("data_final") or cfg_parametros.get("data_fim") or ""
+            
+            if not val_data_ini or not val_data_fim:
+                # Fallback de segurança: Ontem
+                val_data_ini = ontem.strftime("%d/%m/%Y")
+                val_data_fim = ontem.strftime("%d/%m/%Y")
+                logging.info(f"Modo Manual vazio. Usando Fallback (Ontem): {val_data_ini}")
+            else:
+                logging.info(f"Modo MANUAL. Periodo: {val_data_ini} a {val_data_fim}")
+
         xpath_botao_ini = dados_parametros.get("data_inicial")
         xpath_botao_fim = dados_parametros.get("data_final")
-        cfg_parametros = config.get("automacao", {}).get("parametros", {})
-        val_data_ini = cfg_parametros.get("data_inicial") or cfg_parametros.get("data_inicio")
-        val_data_fim = cfg_parametros.get("data_final") or cfg_parametros.get("data_fim")
 
         logging.info(f"DEBUG: XPath Data Inicial: '{xpath_botao_ini}'")
         logging.info(f"DEBUG: Data Inicial (config): '{val_data_ini}'")

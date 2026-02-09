@@ -1,9 +1,9 @@
 {
-  "automacao": {    
+  "automacao": {
     "urls": {
       "url_login": "https://cerradao.saas-solinftec.com/#!/login/",
       "url_john_deere": "https://operationscenter.deere.com/",
-      "url_case": "https://my.caseih.com/brazil/pt-br/"
+      "url_case": "https://fieldops.caseih.com/secure/myfarm"
     },
     "credenciais": {
       "ativo": "solinftec",
@@ -35,6 +35,8 @@
       "frota": ["Selecionar Tudo"]
     },
     "parametros": {
+      "extrair_semanal": false,
+      "extrair_ontem": true,
       "data_inicial": "05/10/2025",
       "data_final": "11/10/2025",
       "tipos_operacao": ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"],
