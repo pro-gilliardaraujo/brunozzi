@@ -36,7 +36,7 @@
     },
     "parametros": {
       "extrair_semanal": false,
-      "extrair_ontem": true,
+      "extrair_ontem": false,
       "data_inicial": "05/10/2025",
       "data_final": "11/10/2025",
       "tipos_operacao": ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"],
