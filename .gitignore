@@ -100,3 +100,4 @@ automacao_etl/scripts/dados/
 automacao_etl/logs/
 elemento.html
 gravacao.py
+automacao_etl/mapas/

@@ -198,6 +198,87 @@ def ler_shapes_frotas(pasta_zips):
             print(f"    ❌ Erro ao processar ZIP: {e}")
     
     return shapes_frotas
+    
+def ler_dados_case(pasta_dados):
+    """
+    Lê o arquivo consolidado da Case IH (Excel) e converte para GeoDataFrame.
+    
+    Args:
+        pasta_dados: Path para pasta com o Excel consolidado
+        
+    Returns:
+        dict: {frota_id: GeoDataFrame}
+    """
+    print("\n🚜 Lendo dados Case IH (Excel)...")
+    dados_case = {}
+    
+    if not pasta_dados.exists():
+        print(f"❌ Pasta não encontrada: {pasta_dados}")
+        return dados_case
+        
+    # Procura o arquivo consolidado mais recente
+    arquivos_excel = list(pasta_dados.glob("Consolidado_Case_*.xlsx"))
+    if not arquivos_excel:
+        print("  ⚠️ Nenhum arquivo 'Consolidado_Case_*.xlsx' encontrado.")
+        return dados_case
+        
+    # Pega o mais recente
+    arquivo_recente = max(arquivos_excel, key=os.path.getmtime)
+    print(f"  📂 Arquivo encontrado: {arquivo_recente.name}")
+    
+    try:
+        # Lê a aba 'Dados' ou 'Original' (no script de processamento, os dados brutos ficam na aba 'Dados')
+        # Mas o script 4_ProcessarCase gera 'Resumo Geral', 'Resumo Diário', 'Dados Detalhados' (antigo Dados)
+        # Vamos tentar ler 'Dados Detalhados' ou a primeira aba que tiver Lat/Lon
+        
+        xls = pd.ExcelFile(arquivo_recente)
+        aba_dados = None
+        for aba in xls.sheet_names:
+            if 'dados' in aba.lower() or 'detalhado' in aba.lower():
+                aba_dados = aba
+                break
+        
+        if not aba_dados:
+            # Fallback: Tenta achar colunas na primeira aba grande
+            aba_dados = xls.sheet_names[0] # Assumindo que pode ser a primeira se não achar nome especifico
+            
+        print(f"  📄 Lendo aba: {aba_dados}")
+        df = pd.read_excel(xls, sheet_name=aba_dados)
+        
+        # Verifica colunas necessárias
+        cols_necessarias = ['Frota', 'Latitude', 'Longitude', 'Data/Hora']
+        if not all(col in df.columns for col in cols_necessarias):
+            print(f"  ❌ Colunas ausentes no arquivo Case. Necessárias: {cols_necessarias}")
+            # Tenta mapear se os nomes estiverem diferentes (ex: lat, lon)
+            # Mas o script 4 garante esses nomes.
+            return dados_case
+            
+        # Converter Data/Hora
+        df['timestamp'] = pd.to_datetime(df['Data/Hora'], dayfirst=True, errors='coerce')
+        df = df.dropna(subset=['timestamp', 'Latitude', 'Longitude'])
+        
+        # Converter para GeoDataFrame
+        gdf_total = gpd.GeoDataFrame(
+            df, 
+            geometry=gpd.points_from_xy(df['Longitude'], df['Latitude'])
+        )
+        
+        # Agrupar por Frota
+        frotas = df['Frota'].unique()
+        print(f"  ✅ Encontradas {len(frotas)} frotas Case IH.")
+        
+        for frota in frotas:
+            gdf_frota = gdf_total[gdf_total['Frota'] == frota].copy()
+            # Normalizar ID (string)
+            frota_id = str(frota).replace('.0', '')
+            dados_case[frota_id] = gdf_frota
+            # print(f"    - Frota {frota_id}: {len(gdf_frota)} pontos")
+            
+    except Exception as e:
+        print(f"  ❌ Erro ao ler dados Case: {e}")
+        
+    return dados_case
+
 
 
 # ============================================================================
@@ -274,7 +355,7 @@ def filtrar_coordenadas_por_data(gdf, data_alvo, intervalos=None):
 
 
 # ============================================================================
-# MÓDULO 3: GERAÇÃO DE MAPAS
+# MÓDULO 3: GERAÇÃO DE MAPAS (UNIFICADA)
 # ============================================================================
 
 def criar_mapa_base(centro_lat, centro_lon, dados_bounds=None):
@@ -322,14 +403,25 @@ def separar_por_clusters(mapeamento_dia_filtrado):
     
     for frota_id, gdf in mapeamento_dia_filtrado.items():
         if len(gdf) == 0: continue
+        
+        # Downsample para clustering se for muito grande
         coords = np.array(list(zip(gdf.geometry.y, gdf.geometry.x)))
-        if len(coords) > 0:
+        total_pts = len(coords)
+        
+        if total_pts > 10000:
+            # Pega max 10k pontos distribuidos uniformemente
+            indices = np.linspace(0, total_pts-1, 10000).astype(int)
+            coords_sample = coords[indices]
+            if len(coords_sample) > 0:
+                todos_pontos.append(coords_sample)
+        elif total_pts > 0:
             todos_pontos.append(coords)
             
     if not todos_pontos:
         return []
         
     todos_pontos_concat = np.vstack(todos_pontos)
+    print(f"      📍 Clustering em {len(todos_pontos_concat):,} pontos (amostra)...")
     
     if not USAR_CLUSTERING:
         # Retorna cluster único (todos os pontos)
@@ -381,203 +473,283 @@ def separar_por_clusters(mapeamento_dia_filtrado):
         
     return clusters_info
 
+def gerar_cor_aleatoria():
+    """Gera uma cor hex aleatória"""
+    import random
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
-def gerar_mapas_diarios(mapeamento_frotas, pasta_saida, filtro_datas=None):
+def obter_cor_frota(frota_id, cores_persistentes):
+    """Retorna cor persistente para a frota ou gera nova"""
+    if frota_id not in cores_persistentes:
+        cores_persistentes[frota_id] = gerar_cor_aleatoria()
+    return cores_persistentes[frota_id]
+
+def criar_mapa_padrao(dados_frotas, titulo_legenda, nome_arquivo, pasta_saida, cores_persistentes):
     """
-    Gera um mapa separado para cada dia com dados.
-    Se houver clusters distantes, gera arquivos separados por área.
-    Implementa visualização limpa para A4 e legenda personalizada.
+    Função genérica para criar um mapa com n frotas.
+    
     Args:
-        filtro_datas: set/list de objetos date para filtrar. Se None, processa tudo.
+        dados_frotas: list of dicts {'frota_id': str, 'gdf': GeoDataFrame, 'fonte': str}
+        titulo_legenda: str (Ex: "Dia 05/10/2025" ou "Período Completo")
+        nome_arquivo: str
+        pasta_saida: Path
+        cores_persistentes: dict
+        
+    Returns:
+        Path do arquivo salvo ou None
     """
-    print("\n🗺️  Gerando mapas diários...")
+    if not dados_frotas:
+        return None
+        
+    # Calcular centro e bounds globais
+    todos_pontos = []
+    for item in dados_frotas:
+        gdf = item['gdf']
+        if len(gdf) > 0:
+            todos_pontos.append(np.array(list(zip(gdf.geometry.y, gdf.geometry.x))))
+            
+    if not todos_pontos:
+        return None
+        
+    todos_pontos_concat = np.vstack(todos_pontos)
+    centro = [np.mean(todos_pontos_concat[:,0]), np.mean(todos_pontos_concat[:,1])]
+    bounds = [[np.min(todos_pontos_concat[:,0]), np.min(todos_pontos_concat[:,1])], 
+              [np.max(todos_pontos_concat[:,0]), np.max(todos_pontos_concat[:,1])]]
+              
+    # Mapa Base
+    mapa = criar_mapa_base(centro[0], centro[1])
+    mapa.fit_bounds(bounds, padding=(30, 30))
+    
+    frotas_na_legenda = []
+    
+    for item in dados_frotas:
+        frota_id = item['frota_id']
+        gdf = item['gdf']
+        fonte = item['fonte'] # 'Solinftec' ou 'Case'
+        
+        cor = obter_cor_frota(frota_id, cores_persistentes)
+        
+        coords = gdf.geometry.apply(lambda g: [g.y, g.x]).tolist()
+        
+        frotas_na_legenda.append({'id': frota_id, 'cor': cor, 'fonte': fonte})
+        
+        # Linha
+        folium.PolyLine(
+            locations=coords,
+            color=cor,
+            weight=4,
+            opacity=0.8,
+            tooltip=f"Frota {frota_id} ({fonte})"
+        ).add_to(mapa)
+        
+        # Marcadores Inicio/Fim
+        if coords:
+            folium.Marker(coords[0], icon=folium.Icon(color='green', icon='play', prefix='fa'), tooltip="Início").add_to(mapa)
+            folium.Marker(coords[-1], icon=folium.Icon(color='red', icon='stop', prefix='fa'), tooltip="Fim").add_to(mapa)
+
+    # Legenda HTML
+    html_legenda_itens = ""
+    for item in sorted(frotas_na_legenda, key=lambda x: x['id']):
+        html_legenda_itens += f"""
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <div style="width: 15px; height: 15px; background-color: {item['cor']}; margin-right: 8px; border-radius: 3px;"></div>
+            <span style="font-family: sans-serif; font-size: 14px; color: #333;">Frota {item['id']} <small style='color:#666'>({item['fonte']})</small></span>
+        </div>
+        """
+    
+    html_legenda = f"""
+    <div style="
+        position: fixed; bottom: 20px; right: 20px; z-index: 9999; 
+        background-color: rgba(255, 255, 255, 0.9); padding: 10px 15px; 
+        border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.3); border: 1px solid #ddd;
+    ">
+        <div style="font-weight:bold; margin-bottom:5px; border-bottom:1px solid #ccc;">{titulo_legenda}</div>
+        {html_legenda_itens}
+    </div>
+    """
+    mapa.get_root().html.add_child(folium.Element(html_legenda))
+    
+    # Salvar
+    path_arq = pasta_saida / nome_arquivo
+    mapa.save(str(path_arq))
+    print(f"      ✅ Salvo: {nome_arquivo}")
+    return path_arq
+
+def gerar_mapas_padronizados(mapeamento_solinftec, dados_case, pasta_saida, filtro_datas=None):
+    """
+    Gera mapas diários e de período completo para todas as fontes.
+    Gera também um index_mapas.json.
+    """
+    print("\n🗺️  Gerando mapas padronizados...")
     pasta_saida.mkdir(parents=True, exist_ok=True)
     
-    # 1. Identificar todos os dias disponíveis em todas as frotas
-    dias_disponiveis = set()
-    for dados in mapeamento_frotas.values():
-        dias_disponiveis.update(dados['json'].keys())
+    cores_persistentes = {} # {frota_id: hex}
+    mapas_gerados = [] # Lista para o JSON index
     
-    if not dias_disponiveis:
-        print("  ❌ Nenhuma data encontrada nos dados JSON")
-        return []
+    # 1. Coletar todas as datas e frotas disponíveis
+    todas_datas = set()
+    
+    # Datas Solinftec
+    for dados in mapeamento_solinftec.values():
+        todas_datas.update(dados['json'].keys())
         
-    # Aplica filtro de datas se fornecido
+    # Datas Case
+    for gdf in dados_case.values():
+        if 'timestamp' in gdf.columns:
+            todas_datas.update(gdf['timestamp'].dt.date.unique())
+            
     if filtro_datas:
-        dias_originais = len(dias_disponiveis)
-        dias_disponiveis = {d for d in dias_disponiveis if d in filtro_datas}
-        print(f"  🔍 Filtro de datas ativo: {len(dias_disponiveis)}/{dias_originais} dias selecionados para processamento.")
-        if not dias_disponiveis:
-             print("  ⚠️ Nenhuma data compatível com o filtro encontrado nos dados.")
-             return []
+        todas_datas = {d for d in todas_datas if d in filtro_datas}
+        
+    if not todas_datas:
+        print("  ❌ Nenhuma data disponível para gerar mapas.")
+        return []
+
+    # 2. Mapas Diários (Iterar Dias -> Areas)
+    # Obs: Clustering por área simplicado: Vamos agrupar tudo que for do dia por enquanto,
+    # ou usar a lógica de clustering se tiver muitos pontos distantes.
+    # Para simplificar e atender o "implemente logo", vamos gerar 1 MAPA POR DIA (Visão Geral)
+    # Se precisar de áreas especificas (clustering), mantemos a logica antiga, mas agora misturando fontes.
     
-    arquivos_gerados = []
-    
-    # 2. Iterar por dias
-    for dia_alvo in sorted(dias_disponiveis):
+    for dia_alvo in sorted(todas_datas):
         str_dia = dia_alvo.strftime('%d-%m-%Y')
         print(f"\n  📅 Processando dia: {str_dia}")
         
-        # Pré-filtra dados do dia para todas as frotas
-        dados_dia_filtrados = {}
-        tem_dados_dia = False
+        # Coletar dados do dia de AMBAS as fontes
+        dados_dia = [] # Lista de {'frota_id', 'gdf', 'fonte'}
         
-        for frota_id, dados in mapeamento_frotas.items():
-            # Verifica JSON
-            json_dia = dados['json'].get(dia_alvo)
-            if not json_dia: continue
-            intervalos = json_dia.get('Intervalos', [])
-            if not intervalos: continue
-
-            # Filtra Shape
-            gdf_dia = filtrar_coordenadas_por_data(dados['shape'], dia_alvo)
+        # Solinftec
+        for frota_id, dados in mapeamento_solinftec.items():
+            # Verifica JSON (se operou no dia)
+            if dia_alvo in dados['json']:
+                # Recorta Shape
+                gdf_dia = filtrar_coordenadas_por_data(dados['shape'], dia_alvo)
+                if len(gdf_dia) > 0:
+                    dados_dia.append({'frota_id': frota_id, 'gdf': gdf_dia, 'fonte': 'Solinftec'})
+        
+        # Case
+        for frota_id, gdf_total in dados_case.items():
+            # Filtra dia no gdf total
+            # (Assumindo timestamp datetime)
+            if 'timestamp' not in gdf_total.columns: continue
+            
+            gdf_dia = gdf_total[gdf_total['timestamp'].dt.date == dia_alvo].copy()
             if len(gdf_dia) > 0:
-                dados_dia_filtrados[frota_id] = gdf_dia
-                tem_dados_dia = True
-                print(f"    - Frota {frota_id}: {len(gdf_dia)} pontos")
-
-        if not tem_dados_dia:
+                dados_dia.append({'frota_id': frota_id, 'gdf': gdf_dia, 'fonte': 'Case IH'})
+                
+        if not dados_dia:
             continue
-
-        # 3. Identificar Áreas (Clusters)
-        areas = separar_por_clusters(dados_dia_filtrados)
+            
+        # Clustering do dia (para ver quantas áreas gera)
+        # Montar dict temporario para usar a funcao separar_por_clusters existente?
+        # A funcao espera {frota: gdf}. Vamos adaptar.
+        dict_para_cluster = {f"{item['frota_id']}_{i}": item['gdf'] for i, item in enumerate(dados_dia)}
+        areas = separar_por_clusters(dict_para_cluster)
         
-        if not areas:
-            print("      ⚠️ Nenhum cluster válido encontrado.")
-            continue
-
-        # 4. Gerar mapa para CADA ÁREA
         for area in areas:
-            nome_area = area['nome']
-            print(f"    🗺️  Gerando mapa para {nome_area}...")
-            
-            centro = area['centro']
+            # Filtrar dados que caem nesta área
+            dados_area = []
             bounds = area['bounds']
+            min_lat, min_lon = bounds[0]
+            max_lat, max_lon = bounds[1]
+            margem = 0.02
             
-            # Inicializa mapa
-            mapa = criar_mapa_base(centro[0], centro[1])
-            mapa.fit_bounds(bounds, padding=(30, 30)) # Padding para garantir margem no A4
-            
-            # Adiciona camadas das frotas PARA ESTA ÁREA
-            camadas_adicionadas = False
-            frotas_na_area = [] # Para gerar a legenda
-            
-            for idx, (frota_id, gdf_dia) in enumerate(sorted(dados_dia_filtrados.items())):
-                cor_frota = CORES_FROTAS[idx % len(CORES_FROTAS)]
-                
-                # Para filtrar espacialmente de forma eficiente:
-                # Usa bounding box do cluster + margem de ~1km
-                min_lat, min_lon = bounds[0]
-                max_lat, max_lon = bounds[1]
-                margem = 0.01 
-                
-                mask_area = (
-                    (gdf_dia.geometry.y >= min_lat - margem) & 
-                    (gdf_dia.geometry.y <= max_lat + margem) &
-                    (gdf_dia.geometry.x >= min_lon - margem) & 
-                    (gdf_dia.geometry.x <= max_lon + margem)
+            for item in dados_dia:
+                gdf = item['gdf']
+                # Clip rápido (bounding box)
+                mask = (
+                    (gdf.geometry.y >= min_lat - margem) & (gdf.geometry.y <= max_lat + margem) &
+                    (gdf.geometry.x >= min_lon - margem) & (gdf.geometry.x <= max_lon + margem)
                 )
-                gdf_area = gdf_dia[mask_area]
-                
-                if len(gdf_area) == 0:
-                    continue
-                
-                camadas_adicionadas = True
-                frotas_na_area.append({'id': frota_id, 'cor': cor_frota})
-                
-                coords_frota = gdf_area.geometry.apply(lambda g: [g.y, g.x]).tolist()
-                
-                # Linha do trajeto. weight inicial 4, controlado por JS depois.
-                folium.PolyLine(
-                    locations=coords_frota,
-                    color=cor_frota,
-                    weight=4,
-                    opacity=OPACIDADE_LINHA,
-                    popup=None, 
-                    tooltip=f"Frota {frota_id}"
-                ).add_to(mapa)
-                
-                # Marcador de INÍCIO
-                folium.Marker(
-                    location=coords_frota[0],
-                    icon=folium.Icon(color=COR_MARCADOR_INICIO, icon='play', prefix='fa'),
-                ).add_to(mapa)
-                
-                # Marcador de FIM
-                folium.Marker(
-                    location=coords_frota[-1],
-                    icon=folium.Icon(color=COR_MARCADOR_FIM, icon='stop', prefix='fa'),
-                ).add_to(mapa)
-
-            if not camadas_adicionadas:
-                continue
-
-            # --- CUSTOMIZAÇÕES FINAIS ---
-
-            # 1. LEGENDA PERSONALIZADA HTML
-            html_legenda_itens = ""
-            for item in frotas_na_area:
-                html_legenda_itens += f"""
-                <div style="display: flex; align-items: center; margin-bottom: 5px;">
-                    <div style="width: 15px; height: 15px; background-color: {item['cor']}; margin-right: 8px; border-radius: 3px;"></div>
-                    <span style="font-family: sans-serif; font-size: 14px; font-weight: bold; color: #333;">Frota {item['id']}</span>
-                </div>
-                """
+                gdf_cut = gdf[mask]
+                if len(gdf_cut) > 0:
+                    dados_area.append({'frota_id': item['frota_id'], 'gdf': gdf_cut, 'fonte': item['fonte']})
             
-            html_legenda = f"""
-            <div style="
-                position: fixed; 
-                bottom: 20px; right: 20px; 
-                z-index: 9999; 
-                background-color: rgba(255, 255, 255, 0.9); 
-                padding: 10px 15px; 
-                border-radius: 5px; 
-                box-shadow: 0 0 5px rgba(0,0,0,0.3);
-                border: 1px solid #ddd;
-            ">
-                {html_legenda_itens}
-                <div style="margin-top:5px; border-top:1px solid #eee; padding-top:5px; font-size:10px; color:#666; text-align:right;">
-                    {str_dia} | {nome_area}
-                </div>
-            </div>
-            """
-            mapa.get_root().html.add_child(folium.Element(html_legenda))
-
-            # 2. ESPESSURA DE LINHA DINÂMICA (Injeção JS)
-            js_espessura = """
-            <script>
-                function updateLineWeight() {
-                    var zoom = map.getZoom();
-                    // Zoom IN -> Menor espessura
-                    // z10 -> 6
-                    // z18 -> 1
-                    var newWeight = Math.max(1.5, 13 - 0.7 * zoom);
-                    
-                    var paths = document.querySelectorAll('path.leaflet-interactive');
-                    paths.forEach(function(path) {
-                        if (path.getAttribute('stroke-width')) {
-                            path.setAttribute('stroke-width', newWeight);
-                        }
-                    });
-                }
-                window.addEventListener('load', function() {
-                    map.on('zoomend', updateLineWeight);
-                    setTimeout(updateLineWeight, 500); // Executa logo apos carregar
-                });
-            </script>
-            """
-            mapa.get_root().html.add_child(folium.Element(js_espessura))
-
-            # Nome do arquivo da área
-            sufixo_area = f"_{nome_area.replace(' ', '')}" if len(areas) > 1 else ""
-            nome_arq = f"mapa_frotas_{str_dia}{sufixo_area}.html"
-            path_arq = pasta_saida / nome_arq
+            if not dados_area: continue
             
-            mapa.save(str(path_arq))
-            arquivos_gerados.append(path_arq)
-            print(f"      ✅ Salvo: {nome_arq}")
+            nome_arq = f"mapa_{str_dia}_{area['nome'].replace(' ', '')}.html"
+            path = criar_mapa_padrao(dados_area, f"{str_dia} - {area['nome']}", nome_arq, pasta_saida, cores_persistentes)
             
-    return arquivos_gerados
+            if path:
+                mapas_gerados.append({
+                    'arquivo': nome_arq,
+                    'data': str_dia,
+                    'tipo': 'DIARIO',
+                    'area': area['nome'],
+                    'frotas': [d['frota_id'] for d in dados_area]
+                })
+
+    # 3. Mapas de Período Completo (Por Frota? Por Área?)
+    # O usuário pediu "periodo completo". Geralmente é melhor por Frota individual ou Visão Geral da Safra.
+    # Vamos gerar um "Geralzao" de todo o período por Área.
+    print(f"\n  🌎 Gerando mapas de Período Completo...")
+    
+    # Coletar TODO o dado de uma vez
+    dados_periodo = []
+    
+    # Solinftec (Filtrar só dias do periodo se filtro ativo)
+    for frota_id, dados in mapeamento_solinftec.items():
+        # Pega shape total, filtra datas
+        gdf = dados['shape']
+        if filtro_datas:
+             gdf = gdf[gdf['timestamp'].dt.date.isin(filtro_datas)]
+        if len(gdf) > 0:
+            dados_periodo.append({'frota_id': frota_id, 'gdf': gdf, 'fonte': 'Solinftec'})
+            
+    # Case
+    for frota_id, gdf in dados_case.items():
+        if filtro_datas:
+             gdf = gdf[gdf['timestamp'].dt.date.isin(filtro_datas)]
+        if len(gdf) > 0:
+            dados_periodo.append({'frota_id': frota_id, 'gdf': gdf, 'fonte': 'Case IH'})
+
+    if dados_periodo:
+        # Clustering Global
+        dict_para_cluster_global = {f"{item['frota_id']}_{i}": item['gdf'] for i, item in enumerate(dados_periodo)}
+        areas_globais = separar_por_clusters(dict_para_cluster_global)
+        
+        for area in areas_globais:
+            # Filtrar dados
+            dados_area_global = []
+            bounds = area['bounds']
+            min_lat, min_lon = bounds[0]
+            max_lat, max_lon = bounds[1]
+            margem = 0.05
+            
+            for item in dados_periodo:
+                 gdf = item['gdf']
+                 mask = (
+                    (gdf.geometry.y >= min_lat - margem) & (gdf.geometry.y <= max_lat + margem) &
+                    (gdf.geometry.x >= min_lon - margem) & (gdf.geometry.x <= max_lon + margem)
+                 )
+                 gdf_cut = gdf[mask]
+                 if len(gdf_cut) > 0:
+                    dados_area_global.append({'frota_id': item['frota_id'], 'gdf': gdf_cut, 'fonte': item['fonte']})
+            
+            if not dados_area_global: continue
+            
+            nome_arq = f"mapa_PERIODO_COMPLETO_{area['nome'].replace(' ', '')}.html"
+            path = criar_mapa_padrao(dados_area_global, f"PERIODO COMPLETO - {area['nome']}", nome_arq, pasta_saida, cores_persistentes)
+             
+            if path:
+                mapas_gerados.append({
+                    'arquivo': nome_arq,
+                    'data': 'PERIODO',
+                    'tipo': 'PERIODO',
+                    'area': area['nome'],
+                    'frotas': [d['frota_id'] for d in dados_area_global]
+                })
+
+    # 4. Salvar Index JSON
+    json_index_path = pasta_saida / "index_mapas.json"
+    with open(json_index_path, 'w', encoding='utf-8') as f:
+        json.dump(mapas_gerados, f, indent=4)
+    print(f"\n  index_mapas.json gerado com {len(mapas_gerados)} mapas.")
+    
+    return [Path(m['arquivo']) for m in mapas_gerados]
+
+    # (Fim da substituição de gerar_mapas_diarios)
+
 
 
 # ============================================================================
@@ -650,24 +822,26 @@ def main():
     # 2. Carregar dados
     frotas_json = ler_jsons_frotas(PASTA_JSONS)
     frotas_shapes = ler_shapes_frotas(PASTA_ZIPS)
+    dados_case = ler_dados_case(PASTA_ZIPS) # Case fica na mesma pasta de dados brutos/zips
     
-    if not frotas_json:
-        print("\n❌ Nenhum dado JSON encontrado!")
+    if not frotas_json and not dados_case:
+        print("\n❌ Nenhum dado de evento (JSON) ou dado Case encontrado!")
         return
     
-    if not frotas_shapes:
-        print("\n❌ Nenhum shapefile encontrado!")
+    # 3. Criar mapeamento (Solinftec only)
+    # Case não precisa de match JSON+Shape
+    mapeamento_solinftec = {}
+    if frotas_json and frotas_shapes:
+        mapeamento_solinftec = criar_mapeamento_frotas(frotas_json, frotas_shapes)
+    else:
+        print("\n⚠️ Pulos mapeamento Solinftec (falta JSON ou Shape). focando em Case se houver.")
+        
+    if not mapeamento_solinftec and not dados_case:
+        print("\n❌ Nenhuma frota com dados completos para gerar mapa!")
         return
     
-    # 3. Criar mapeamento
-    mapeamento = criar_mapeamento_frotas(frotas_json, frotas_shapes)
-    
-    if not mapeamento:
-        print("\n❌ Nenhuma frota com dados completos!")
-        return
-    
-    # 4. Gerar mapas diários
-    arquivos = gerar_mapas_diarios(mapeamento, PASTA_SAIDA, filtro_datas=filtro_datas)
+    # 4. Gerar mapas padronizados
+    arquivos = gerar_mapas_padronizados(mapeamento_solinftec, dados_case, PASTA_SAIDA, filtro_datas=filtro_datas)
     
     if arquivos:
         print("\n" + "=" * 80)
@@ -676,7 +850,7 @@ def main():
             print(f"  📍 {arq.name}")
         print("=" * 80)
     else:
-        print("\n⚠️ Nenhum mapa gerado (possível falta de interseção de datas ou filtro vazio).")
+        print("\n⚠️ Nenhum mapa gerado.")
 
 if __name__ == "__main__":
     main()
