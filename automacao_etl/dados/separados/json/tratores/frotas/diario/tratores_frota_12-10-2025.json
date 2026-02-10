@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "date": "2025-10-12",
+    "type": "tt_diario_novo",
+    "frente": "frente5",
+    "generated_at": "2026-02-10T19:22:34.167148",
+    "fontes": []
+  },
+  "metas": {
+    "eficienciaEnergetica": 85,
+    "eficienciaOperacional": 60,
+    "horaElevador": 5,
+    "usoGPS": 90,
+    "mediaVelocidade": 5,
+    "manobras": 60,
+    "producao": 1000,
+    "disponibilidadeMecanica": 90,
+    "motorOcioso": 15
+  },
+  "eficiencia_energetica": [],
+  "eficiencia_operacional": [],
+  "horas_elevador": [],
+  "uso_gps": [],
+  "media_velocidade": [],
+  "manobras_frotas": [],
+  "motor_ocioso": [],
+  "disponibilidade_mecanica": [],
+  "horas_por_frota": [],
+  "intervalos_operacao": [],
+  "ofensores": [],
+  "lavagem": [],
+  "roletes": [],
+  "producao": 0.0,
+  "producao_total": [
+    {
+      "valor": 0.0
+    }
+  ],
+  "producao_por_frota": [],
+  "imagens": {
+    "mapaGPS": "",
+    "areaTrabalhada": ""
+  },
+  "dados_case": {}
+}

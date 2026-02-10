@@ -1,0 +1,384 @@
+{
+  "531": {
+    "Resumo_Dia": [
+      {
+        "Horas_Registradas": 6.0,
+        "Horas_Produtivas": 3.3930555556,
+        "Horas_Improdutivas": 0.1711111111,
+        "Horas_Auxiliar": 2.4358333333,
+        "Horas_Climático": 0.0,
+        "Disponibilidade_Mecanica": 1,
+        "Horas_Motor_Ligado": 2.6905555556,
+        "Porcentagem_Motor_Ligado": 44.8425925926,
+        "Horas_Motor_Ocioso": 0.0,
+        "Porcentagem_Motor_Ocioso": 0.0,
+        "Porcentagem_Sem_Apontamento": 0.0,
+        "Eficiencia_Energetica": 1.2610984927,
+        "Eficiencia_Operacional": 0.5655092593,
+        "Tempo_Total_Manobras_h": 0.2191666667,
+        "Quantidade_Manobras": 10,
+        "Tempo_Medio_Manobras_min": 1.315
+      }
+    ],
+    "Intervalos": [
+      {
+        "Início": "12/10/2025 00:00:00",
+        "Fim": "12/10/2025 00:01:13",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:01:13",
+        "Fim": "12/10/2025 00:06:11",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 00:06:11",
+        "Fim": "12/10/2025 00:08:07",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:08:07",
+        "Fim": "12/10/2025 00:09:34",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 00:09:34",
+        "Fim": "12/10/2025 00:14:02",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:14:02",
+        "Fim": "12/10/2025 00:15:13",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 00:15:13",
+        "Fim": "12/10/2025 00:20:05",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:20:05",
+        "Fim": "12/10/2025 00:21:21",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 00:21:21",
+        "Fim": "12/10/2025 00:26:20",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:26:20",
+        "Fim": "12/10/2025 00:27:35",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 00:27:35",
+        "Fim": "12/10/2025 00:30:07",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:30:07",
+        "Fim": "12/10/2025 00:35:40",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL CARREGADO"
+      },
+      {
+        "Início": "12/10/2025 00:35:40",
+        "Fim": "12/10/2025 00:39:30",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "FILA PARA TRANSBORDAR"
+      },
+      {
+        "Início": "12/10/2025 00:39:30",
+        "Fim": "12/10/2025 00:41:25",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL CARREGADO"
+      },
+      {
+        "Início": "12/10/2025 00:41:25",
+        "Fim": "12/10/2025 00:43:09",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:43:09",
+        "Fim": "12/10/2025 00:44:23",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 00:44:23",
+        "Fim": "12/10/2025 00:49:46",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "AGUARDANDO COLHEDORA"
+      },
+      {
+        "Início": "12/10/2025 00:49:46",
+        "Fim": "12/10/2025 00:51:39",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 00:51:39",
+        "Fim": "12/10/2025 00:52:15",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 00:52:15",
+        "Fim": "12/10/2025 00:53:43",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 00:53:43",
+        "Fim": "12/10/2025 01:03:25",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 01:03:25",
+        "Fim": "12/10/2025 01:04:51",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 01:04:51",
+        "Fim": "12/10/2025 01:09:21",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 01:09:21",
+        "Fim": "12/10/2025 01:10:43",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 01:10:43",
+        "Fim": "12/10/2025 01:13:11",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 01:13:11",
+        "Fim": "12/10/2025 01:29:10",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "FILA PARA TRANSBORDAR"
+      },
+      {
+        "Início": "12/10/2025 01:29:10",
+        "Fim": "12/10/2025 01:33:31",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL CARREGADO"
+      },
+      {
+        "Início": "12/10/2025 01:33:31",
+        "Fim": "12/10/2025 01:39:06",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 01:39:06",
+        "Fim": "12/10/2025 02:06:11",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 02:06:11",
+        "Fim": "12/10/2025 02:41:56",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "FILA PARA TRANSBORDAR"
+      },
+      {
+        "Início": "12/10/2025 02:41:56",
+        "Fim": "12/10/2025 02:44:22",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 02:44:22",
+        "Fim": "12/10/2025 02:45:49",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 02:45:49",
+        "Fim": "12/10/2025 03:06:44",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 03:06:44",
+        "Fim": "12/10/2025 04:15:36",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "FILA PARA TRANSBORDAR"
+      },
+      {
+        "Início": "12/10/2025 04:15:36",
+        "Fim": "12/10/2025 04:17:39",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 04:17:39",
+        "Fim": "12/10/2025 04:19:13",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 04:19:13",
+        "Fim": "12/10/2025 04:42:44",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 04:42:44",
+        "Fim": "12/10/2025 05:04:27",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "FILA PARA TRANSBORDAR"
+      },
+      {
+        "Início": "12/10/2025 05:04:27",
+        "Fim": "12/10/2025 05:06:43",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 05:06:43",
+        "Fim": "12/10/2025 05:08:08",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 05:08:08",
+        "Fim": "12/10/2025 05:31:28",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 05:31:28",
+        "Fim": "12/10/2025 05:35:26",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "TRANSBORDANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 05:35:26",
+        "Fim": "12/10/2025 05:36:26",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 05:36:26",
+        "Fim": "12/10/2025 05:41:19",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "AGUARDANDO COLHEDORA"
+      },
+      {
+        "Início": "12/10/2025 05:41:19",
+        "Fim": "12/10/2025 05:44:30",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "DESL VAZIO"
+      },
+      {
+        "Início": "12/10/2025 05:44:30",
+        "Fim": "12/10/2025 05:46:00",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 05:46:00",
+        "Fim": "12/10/2025 05:47:17",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 05:47:17",
+        "Fim": "12/10/2025 05:51:42",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 05:51:42",
+        "Fim": "12/10/2025 05:52:53",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 05:52:53",
+        "Fim": "12/10/2025 05:57:15",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      },
+      {
+        "Início": "12/10/2025 05:57:15",
+        "Fim": "12/10/2025 05:58:31",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "MANOBRA"
+      },
+      {
+        "Início": "12/10/2025 05:58:31",
+        "Fim": "12/10/2025 06:00:00",
+        "Grupo": "PRODUTIVA",
+        "Descrição da Operação": "CARREGANDO CANA"
+      }
+    ]
+  },
+  "532": {
+    "Resumo_Dia": [
+      {
+        "Horas_Registradas": 6.0,
+        "Horas_Produtivas": 0.0,
+        "Horas_Improdutivas": 6.0,
+        "Horas_Auxiliar": 0.0,
+        "Horas_Climático": 0.0,
+        "Disponibilidade_Mecanica": 1,
+        "Horas_Motor_Ligado": 0.0,
+        "Porcentagem_Motor_Ligado": 0.0,
+        "Horas_Motor_Ocioso": 0.0,
+        "Porcentagem_Motor_Ocioso": 0.0,
+        "Porcentagem_Sem_Apontamento": 0.0,
+        "Eficiencia_Energetica": 0.0,
+        "Eficiencia_Operacional": 0.0,
+        "Tempo_Total_Manobras_h": 0.0,
+        "Quantidade_Manobras": 0,
+        "Tempo_Medio_Manobras_min": 0.0
+      }
+    ],
+    "Intervalos": [
+      {
+        "Início": "12/10/2025 00:00:00",
+        "Fim": "12/10/2025 06:00:00",
+        "Grupo": "DISPONIVEL",
+        "Descrição da Operação": "INDETERMINADO"
+      }
+    ]
+  },
+  "Geral": {
+    "Top5Ofensores": [
+      {
+        "Descrição da Operação": "INDETERMINADO",
+        "Duracao_Improd_h": 6.0,
+        "Total_Horas_Dia_h": 12.0,
+        "Porcentagem_Improdutiva": 50.0
+      },
+      {
+        "Descrição da Operação": "AGUARDANDO COLHEDORA",
+        "Duracao_Improd_h": 0.1711111111,
+        "Total_Horas_Dia_h": 12.0,
+        "Porcentagem_Improdutiva": 1.4259259259
+      }
+    ]
+  }
+}

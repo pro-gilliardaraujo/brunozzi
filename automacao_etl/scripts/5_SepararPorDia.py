@@ -92,7 +92,7 @@ def normalizar_nome_pasta(txt):
     if not txt: return "outros"
     txt = str(txt).lower().strip()
     if txt == "colhedora de cana": return "colhedora"
-    if txt == "trator transbordo": return "transbordo"
+    if txt in ["trator transbordo", "transbordo", "tratores"]: return "tratores"
     return txt.replace(" ", "_").replace("/", "-")
 
 def main():
@@ -343,7 +343,7 @@ def main():
                         txt = str(txt).lower().strip()
                         # Mapeamento simples para garantir consistência com o Tratamento
                         if txt == "colhedora de cana": return "colhedora"
-                        if txt == "trator transbordo": return "transbordo"
+                        if txt in ["trator transbordo", "transbordo", "tratores"]: return "tratores"
                         return txt.replace(" ", "_").replace("/", "-")
 
                     # Dicionário para agrupar dados por tipo de frota

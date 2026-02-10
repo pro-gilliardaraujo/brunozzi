@@ -2,12 +2,28 @@ import json
 import os
 import re
 import time
+import shutil
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "dados")
 ESTADO_FILE = os.path.join(BASE_DIR, "utils", "processos_opc_case.json")
+
+COLHEDORAS_IDS = {"369", "375", "444", "469", "547", "517", "560"}
+
+def identificar_tipo_frota(nome_completo, nome_frota_limpo):
+    nome_lower = str(nome_completo).lower()
+    if "colhedora" in nome_lower:
+        return "Colhedora"
+    if "trator" in nome_lower:
+        return "Trator"
+    match = re.search(r'(\d+)', str(nome_frota_limpo))
+    if not match:
+        match = re.search(r'(\d+)', nome_lower)
+    if match and match.group(1) in COLHEDORAS_IDS:
+        return "Colhedora"
+    return "Trator"
 
 def load_config():
     config_path = os.path.join(BASE_DIR, "utils", "config_automacao.json")
@@ -30,6 +46,12 @@ def salvar_estado_processo(estado):
 def limpar_estado_processo():
     estado_vazio = {"processo_id": "", "arquivos_esperados": [], "arquivos_baixados": []}
     salvar_estado_processo(estado_vazio)
+
+def remover_pastas_indesejadas():
+    for nome in ["doc", "metrics"]:
+        caminho = os.path.join(DATA_DIR, nome)
+        if os.path.isdir(caminho):
+            shutil.rmtree(caminho, ignore_errors=True)
 
 def monitorar_e_baixar_arquivos(page, arquivos_esperados):
     """
@@ -493,12 +515,9 @@ def configurar_filtros_e_exportar(page, tipo_operacao, dt_inicial, dt_final, ope
             else:
                 # Fallback: primeira palavra limpa
                 nome_frota_limpo = re.sub(r'[^a-zA-Z0-9]', '', nome_completo.split()[0])
-            
-            # Substitui Colheita por Colhedora apenas no arquivo
-            tipo_operacao_arquivo = tipo_operacao.replace("Colheita", "Colhedora")
-            
-            # Nome final: Colhedora_MB547
-            nome_arquivo = f"{tipo_operacao_arquivo}_{nome_frota_limpo}"
+
+            tipo_frota = identificar_tipo_frota(nome_completo, nome_frota_limpo)
+            nome_arquivo = f"{tipo_frota}_{nome_frota_limpo}"
             
             # Realiza export
             sucesso = realizar_export(page, nome_arquivo)
@@ -628,6 +647,7 @@ def run():
             
             # Chama monitoramento
             monitorar_e_baixar_arquivos(page, arquivos_capturados)
+            remover_pastas_indesejadas()
             
         except Exception as e:
             print(f"Erro Geral: {e}")

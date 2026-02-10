@@ -39,11 +39,13 @@ ETL_ROOT = os.path.dirname(SCRIPTS_DIR)
 SOLINFTEC_JSON_DIR = os.path.join(
     ETL_ROOT, "dados", "separados", "json", "colhedora", "frotas", "diario"
 )
+TRATORES_JSON_DIR = os.path.join(
+    ETL_ROOT, "dados", "separados", "json", "tratores", "frotas", "diario"
+)
 OPC_XLSX_DIR = os.path.join(ETL_ROOT, "dados", "separados", "xlsx")
 CASE_DIR = os.path.join(ETL_ROOT, "dados")
 LINHA_TEMPO_DIR = os.path.join(ETL_ROOT, "dados")
 
-# Saída (mesmo diretório do Solinftec — sobrescreve com formato unificado)
 OUTPUT_DIR = SOLINFTEC_JSON_DIR
 
 # Metas default (mesmas do frontend config/metas.json)
@@ -259,6 +261,7 @@ def consolidar_dia(
     solinftec_raw: dict,
     case_data_by_date: dict,
     opc_data: dict | None,
+    include_case: bool,
 ) -> dict:
     """
     Consolida dados de um dia no formato do frontend.
@@ -273,18 +276,46 @@ def consolidar_dia(
 
     # Normalizar data para case lookup (DD/MM/YYYY)
     case_date_key = date_display
-    case_frotas = case_data_by_date.get(case_date_key, {})
+    case_frotas = case_data_by_date.get(case_date_key, {}) if include_case else {}
+
+    if solinftec_raw and isinstance(solinftec_raw, dict) and "metadata" in solinftec_raw and "eficiencia_energetica" in solinftec_raw:
+        resultado = dict(solinftec_raw)
+        if not include_case:
+            chaves_filtrar = [
+                "eficiencia_energetica",
+                "eficiencia_operacional",
+                "horas_elevador",
+                "uso_gps",
+                "media_velocidade",
+                "manobras_frotas",
+                "motor_ocioso",
+                "disponibilidade_mecanica",
+                "horas_por_frota",
+                "producao_por_frota",
+                "intervalos_operacao",
+            ]
+            for chave in chaves_filtrar:
+                if isinstance(resultado.get(chave), list):
+                    resultado[chave] = [item for item in resultado[chave] if item.get("fonte") != "case"]
+            if isinstance(resultado.get("metadata"), dict):
+                fontes = resultado["metadata"].get("fontes", [])
+                if isinstance(fontes, list):
+                    resultado["metadata"]["fontes"] = [f for f in fontes if f != "case"]
+            if "dados_case" in resultado:
+                del resultado["dados_case"]
+        return resultado
 
     # Coletar todas as frotas de todas as fontes
     all_frotas = set()
     if solinftec_raw:
         all_frotas.update(solinftec_raw.keys())
-    all_frotas.update(k for k in case_frotas.keys() if not k.startswith("_"))
+    if include_case:
+        all_frotas.update(k for k in case_frotas.keys() if not k.startswith("_"))
 
     fontes_usadas = []
     if solinftec_raw:
         fontes_usadas.append("solinftec")
-    if case_frotas:
+    if include_case and case_frotas:
         fontes_usadas.append("case")
     if opc_data:
         fontes_usadas.append("opc")
@@ -567,14 +598,6 @@ def consolidar_dia(
             item["Tempo Total do Dia"] = round(equip_totals[item["Equipamento"]], 6)
 
     # ── Dados Case Extra (para seção complementar) ──
-    dados_case = {}
-    for frota_id, case_info in case_frotas.items():
-        if frota_id.startswith("_"):
-            continue
-        dados_case[frota_id] = {
-            k: v for k, v in case_info.items() if not k.startswith("_")
-        }
-
     # ── JSON Unificado ──
     resultado = {
         "metadata": {
@@ -598,6 +621,208 @@ def consolidar_dia(
         "ofensores": ofensores_list,
         "lavagem": lavagem,
         "roletes": roletes,
+        "producao": round(total_producao, 2),
+        "producao_total": [{"valor": round(total_producao, 2)}],
+        "producao_por_frota": producao_por_frota,
+        "imagens": {
+            "mapaGPS": "",
+            "areaTrabalhada": "",
+        },
+    }
+
+    if include_case:
+        dados_case = {}
+        for frota_id, case_info in case_frotas.items():
+            if frota_id.startswith("_"):
+                continue
+            dados_case[frota_id] = {
+                k: v for k, v in case_info.items() if not k.startswith("_")
+            }
+        resultado["dados_case"] = dados_case
+
+    return resultado
+
+
+def consolidar_tratores_case(
+    date_str: str,
+    case_data_by_date: dict,
+) -> dict:
+    iso_date = date_ddmmyyyy_to_iso(date_str)
+    date_display = date_str.replace("-", "/")
+
+    case_frotas = case_data_by_date.get(date_display, {})
+    case_frotas_ids = [k for k in case_frotas.keys() if not k.startswith("_")]
+
+    fontes_usadas = ["case"] if case_frotas_ids else []
+
+    eficiencia_energetica = []
+    eficiencia_operacional = []
+    horas_elevador = []
+    uso_gps = []
+    media_velocidade = []
+    manobras_frotas = []
+    motor_ocioso = []
+    disponibilidade_mecanica = []
+    intervalos_operacao = []
+    horas_por_frota = []
+    producao_por_frota = []
+
+    operation_stats = defaultdict(float)
+    total_producao = 0.0
+    idx = 0
+
+    for frota_id in sorted(case_frotas_ids):
+        idx += 1
+        case_extra = case_frotas.get(frota_id, {})
+        horas_motor = safe_float(case_extra.get("horasMotor"))
+
+        eficiencia_energetica.append({
+            "id": idx,
+            "nome": frota_id,
+            "eficiencia": 0.0,
+            "horasMotor": round(horas_motor, 4),
+            "horasElevador": 0.0,
+            "fonte": "case",
+        })
+
+        eficiencia_operacional.append({
+            "id": idx,
+            "nome": frota_id,
+            "eficiencia": 0.0,
+            "horasMotor": 0.0,
+            "horasElevador": 0.0,
+            "fonte": "case",
+        })
+
+        horas_elevador.append({
+            "id": idx,
+            "nome": frota_id,
+            "valor": 0.0,
+            "fonte": "case",
+        })
+
+        uso_gps.append({
+            "id": idx,
+            "nome": frota_id,
+            "porcentagem": 0.0,
+            "fonte": "case",
+        })
+
+        vel = safe_float(case_extra.get("velocidadeMedia"))
+        media_velocidade.append({
+            "id": idx,
+            "nome": frota_id,
+            "velocidade": round(vel, 4),
+            "fonte": "case",
+        })
+
+        motor_ocioso.append({
+            "id": idx,
+            "nome": frota_id,
+            "percentual": 0.0,
+            "tempoLigado": round(horas_motor, 4),
+            "tempoOcioso": 0.0,
+            "fonte": "case",
+        })
+
+        disponibilidade_mecanica.append({
+            "id": idx,
+            "nome": frota_id,
+            "disponibilidade": 0.0,
+            "horasMotor": round(horas_motor, 4),
+            "tempoManutencao": 0.0,
+            "fonte": "case",
+        })
+
+        horas_por_frota.append({
+            "id": idx,
+            "nome": frota_id,
+            "frota": frota_id,
+            "horas": 0.0,
+            "fonte": "case",
+        })
+
+        producao_por_frota.append({
+            "id": idx,
+            "nome": frota_id,
+            "valor": 0.0,
+            "fonte": "case",
+        })
+
+        manobras_frotas.append({
+            "Frota": frota_id,
+            "Tempo Total": 0.0,
+            "Tempo Médio": 0.0,
+            "Intervalos Válidos": 0,
+            "Tempo Total (hh:mm)": "00:00:00",
+            "Tempo Médio (hh:mm)": "00:00:00",
+            "fonte": "case",
+        })
+
+        case_intervals = case_extra.get("_intervalos", [])
+        for ci in case_intervals:
+            dur = safe_float(ci.get("duracao", 0))
+            grupo = ci.get("grupo", "")
+            operacao = ci.get("operacao", "")
+
+            tipo = "Disponível"
+            if "PRODUTIVA" in grupo.upper():
+                tipo = "Produtivo"
+            elif "MANUTENÇÃO" in grupo.upper() or "MANUTENCAO" in grupo.upper():
+                tipo = "Manutenção"
+
+            intervalos_operacao.append({
+                "equipamento": frota_id,
+                "tipo": tipo,
+                "inicio": ci.get("inicio", ""),
+                "duracaoHoras": round(dur, 6),
+                "fonte": "case",
+            })
+
+            if "IMPRODUTIVA" in grupo.upper() or "MANUTENÇÃO" in grupo.upper():
+                operation_stats[operacao] += dur
+
+    total_improd = sum(operation_stats.values())
+    ofensores = sorted(operation_stats.items(), key=lambda x: x[1], reverse=True)[:5]
+    ofensores_list = []
+    for i, (op, tempo) in enumerate(ofensores):
+        ofensores_list.append({
+            "id": str(i),
+            "tempo": round(tempo, 4),
+            "operacao": op,
+            "porcentagem": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
+        })
+
+    dados_case = {}
+    for frota_id, case_info in case_frotas.items():
+        if frota_id.startswith("_"):
+            continue
+        dados_case[frota_id] = {
+            k: v for k, v in case_info.items() if not k.startswith("_")
+        }
+
+    resultado = {
+        "metadata": {
+            "date": iso_date,
+            "type": "tt_diario_novo",
+            "frente": "frente5",
+            "generated_at": datetime.now().isoformat(),
+            "fontes": fontes_usadas,
+        },
+        "metas": METAS_DEFAULT,
+        "eficiencia_energetica": eficiencia_energetica,
+        "eficiencia_operacional": eficiencia_operacional,
+        "horas_elevador": horas_elevador,
+        "uso_gps": uso_gps,
+        "media_velocidade": media_velocidade,
+        "manobras_frotas": manobras_frotas,
+        "motor_ocioso": motor_ocioso,
+        "disponibilidade_mecanica": disponibilidade_mecanica,
+        "horas_por_frota": horas_por_frota,
+        "intervalos_operacao": intervalos_operacao,
+        "ofensores": ofensores_list,
+        "lavagem": [],
+        "roletes": [],
         "producao": round(total_producao, 2),
         "producao_total": [{"valor": round(total_producao, 2)}],
         "producao_por_frota": producao_por_frota,
@@ -661,7 +886,7 @@ def main():
             print(f"     OPC: sem dados")
 
         # Consolidar
-        resultado = consolidar_dia(date_str, solinftec_raw, case_data, opc_data)
+        resultado = consolidar_dia(date_str, solinftec_raw, case_data, opc_data, False)
 
         # Salvar
         output_name = f"colhedora_frota_{date_str}.json"
@@ -675,6 +900,20 @@ def main():
         print(f"     ✅ Salvo: {output_name}")
         print(f"        {n_total} frotas, {n_intervalos} intervalos, {n_ofensores} ofensores")
         print(f"        Fontes: {resultado['metadata']['fontes']}")
+
+        resultado_tratores = consolidar_tratores_case(date_str, case_data)
+        os.makedirs(TRATORES_JSON_DIR, exist_ok=True)
+        output_name_tratores = f"tratores_frota_{date_str}.json"
+        output_path_tratores = os.path.join(TRATORES_JSON_DIR, output_name_tratores)
+        with open(output_path_tratores, "w", encoding="utf-8") as f:
+            json.dump(resultado_tratores, f, ensure_ascii=False, indent=2)
+
+        n_total_tratores = len(resultado_tratores.get("eficiencia_energetica", []))
+        n_intervalos_tratores = len(resultado_tratores.get("intervalos_operacao", []))
+        n_ofensores_tratores = len(resultado_tratores.get("ofensores", []))
+        print(f"     ✅ Salvo: {output_name_tratores}")
+        print(f"        {n_total_tratores} frotas, {n_intervalos_tratores} intervalos, {n_ofensores_tratores} ofensores")
+        print(f"        Fontes: {resultado_tratores['metadata']['fontes']}")
 
     print(f"\n{'=' * 60}")
     print(f"  ✅ Consolidação concluída! {len(dates)} dias processados.")

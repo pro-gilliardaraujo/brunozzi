@@ -75,7 +75,12 @@ def extrair_zips(diretorio, arquivos_zip):
     for arquivo_zip in arquivos_zip:
         try:
             with zipfile.ZipFile(arquivo_zip, "r") as zf:
-                zf.extractall(diretorio)
+                membros = [
+                    n for n in zf.namelist()
+                    if n.lower().endswith(".xls") or n.lower().endswith(".xlsx")
+                ]
+                for membro in membros:
+                    zf.extract(membro, diretorio)
             print(f"ZIP extraído: {os.path.basename(arquivo_zip)}")
         except Exception as e:
             print(f"ERRO ao extrair ZIP {os.path.basename(arquivo_zip)}: {e}")
@@ -206,7 +211,7 @@ def tratar_arquivo(caminho_arquivo):
             df_tratado.loc[mask_colhedora_cana, "Descrição do Equipamento"] = "COLHEDORA"
             
             mask_trator_transbordo = desc_series.str.strip().str.upper() == "TRATOR TRANSBORDO"
-            df_tratado.loc[mask_trator_transbordo, "Descrição do Equipamento"] = "TRANSBORDO"
+            df_tratado.loc[mask_trator_transbordo, "Descrição do Equipamento"] = "TRATORES"
 
         df_calc = df_tratado.copy()
 

@@ -1,0 +1,242 @@
+{
+  "235": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 31.5619444444,
+        "Horas_Improdutivas_total": 29.9341666667,
+        "Horas_Auxiliar_total": 29.1575,
+        "Horas_Climático_total": 51.1855555556,
+        "Horas_Manutencao_total": 26.1588888889,
+        "Disponibilidade_Mecanica": 0.8442905258,
+        "Horas_Motor_Ligado_total": 118.4891666667,
+        "Porcentagem_Motor_Ligado": 70.5300821934,
+        "Horas_Motor_Ocioso_total": 26.59,
+        "Porcentagem_Motor_Ocioso": 15.8275641418,
+        "Tempo_Sem_Apontamento_h_total": 14.2783333333,
+        "Porcentagem_Sem_Apontamento": 8.4991063058,
+        "Eficiencia_Energetica": 0.2663698744,
+        "Eficiencia_Operacional": 0.1878708914,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 3.32375
+      }
+    ]
+  },
+  "279": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 43.1013888889,
+        "Horas_Improdutivas_total": 119.1336111111,
+        "Horas_Auxiliar_total": 4.8941666667,
+        "Horas_Climático_total": 0.0,
+        "Horas_Manutencao_total": 0.8688888889,
+        "Disponibilidade_Mecanica": 0.9948279825,
+        "Horas_Motor_Ligado_total": 110.7405555556,
+        "Porcentagem_Motor_Ligado": 65.9177602915,
+        "Horas_Motor_Ocioso_total": 77.3088888889,
+        "Porcentagem_Motor_Ocioso": 46.0177283798,
+        "Tempo_Sem_Apontamento_h_total": 111.61,
+        "Porcentagem_Sem_Apontamento": 66.4352927365,
+        "Eficiencia_Energetica": 0.3892105171,
+        "Eficiencia_Operacional": 0.2565588557,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 9.6636111111
+      }
+    ]
+  },
+  "298": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 63.8713888889,
+        "Horas_Improdutivas_total": 27.4772222222,
+        "Horas_Auxiliar_total": 8.1833333333,
+        "Horas_Climático_total": 43.5894444444,
+        "Horas_Manutencao_total": 24.8766666667,
+        "Disponibilidade_Mecanica": 0.8519228893,
+        "Horas_Motor_Ligado_total": 124.4152777778,
+        "Porcentagem_Motor_Ligado": 74.0575701108,
+        "Horas_Motor_Ocioso_total": 23.3027777778,
+        "Porcentagem_Motor_Ocioso": 13.8708616006,
+        "Tempo_Sem_Apontamento_h_total": 8.0363888889,
+        "Porcentagem_Sem_Apontamento": 4.7836201808,
+        "Eficiencia_Energetica": 0.5133725538,
+        "Eficiencia_Operacional": 0.380191239,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 2.9128472222
+      }
+    ]
+  },
+  "354": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 56.2669444444,
+        "Horas_Improdutivas_total": 92.2816666667,
+        "Horas_Auxiliar_total": 3.1016666667,
+        "Horas_Climático_total": 12.5563888889,
+        "Horas_Manutencao_total": 3.7913888889,
+        "Disponibilidade_Mecanica": 0.9774319478,
+        "Horas_Motor_Ligado_total": 102.2725,
+        "Porcentagem_Motor_Ligado": 60.8771926924,
+        "Horas_Motor_Ocioso_total": 35.6391666667,
+        "Porcentagem_Motor_Ocioso": 21.2140352154,
+        "Tempo_Sem_Apontamento_h_total": 76.7541666667,
+        "Porcentagem_Sem_Apontamento": 45.6875327591,
+        "Eficiencia_Energetica": 0.5501669016,
+        "Eficiencia_Operacional": 0.3349261648,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 4.4548958333
+      }
+    ]
+  },
+  "369": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 85.8441666667,
+        "Horas_Improdutivas_total": 67.0783333333,
+        "Horas_Auxiliar_total": 5.4466666667,
+        "Horas_Climático_total": 9.1769444444,
+        "Horas_Manutencao_total": 0.4519444444,
+        "Disponibilidade_Mecanica": 0.9973098234,
+        "Horas_Motor_Ligado_total": 136.3730555556,
+        "Porcentagem_Motor_Ligado": 81.1753773605,
+        "Horas_Motor_Ocioso_total": 52.2361111111,
+        "Porcentagem_Motor_Ocioso": 31.0932831564,
+        "Tempo_Sem_Apontamento_h_total": 55.0102777778,
+        "Porcentagem_Sem_Apontamento": 32.7445919513,
+        "Eficiencia_Energetica": 0.6294804081,
+        "Eficiencia_Operacional": 0.5109830967,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 6.5295138889
+      }
+    ]
+  },
+  "375": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 56.6680555556,
+        "Horas_Improdutivas_total": 25.0322222222,
+        "Horas_Auxiliar_total": 6.3972222222,
+        "Horas_Climático_total": 7.4005555556,
+        "Horas_Manutencao_total": 72.5,
+        "Disponibilidade_Mecanica": 0.5684473861,
+        "Horas_Motor_Ligado_total": 107.7797222222,
+        "Porcentagem_Motor_Ligado": 64.1553390995,
+        "Horas_Motor_Ocioso_total": 18.1011111111,
+        "Porcentagem_Motor_Ocioso": 10.7745956054,
+        "Tempo_Sem_Apontamento_h_total": 5.2855555556,
+        "Porcentagem_Sem_Apontamento": 3.1462004355,
+        "Eficiencia_Energetica": 0.5257765968,
+        "Eficiencia_Operacional": 0.3373137586,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 2.2626388889
+      }
+    ]
+  },
+  "469": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 14.7755555556,
+        "Horas_Improdutivas_total": 152.1119444444,
+        "Horas_Auxiliar_total": 1.0636111111,
+        "Horas_Climático_total": 0.0,
+        "Horas_Manutencao_total": 0.0469444444,
+        "Disponibilidade_Mecanica": 0.9997205655,
+        "Horas_Motor_Ligado_total": 57.1061111111,
+        "Porcentagem_Motor_Ligado": 33.9921262316,
+        "Horas_Motor_Ocioso_total": 43.2613888889,
+        "Porcentagem_Motor_Ocioso": 25.751124765,
+        "Tempo_Sem_Apontamento_h_total": 148.1941666667,
+        "Porcentagem_Sem_Apontamento": 88.2118344624,
+        "Eficiencia_Energetica": 0.2587386055,
+        "Eficiencia_Operacional": 0.0879507534,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 5.4076736111
+      }
+    ]
+  },
+  "517": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 14.4658333333,
+        "Horas_Improdutivas_total": 56.55,
+        "Horas_Auxiliar_total": 12.2769444444,
+        "Horas_Climático_total": 26.3366666667,
+        "Horas_Manutencao_total": 58.3686111111,
+        "Disponibilidade_Mecanica": 0.6525637698,
+        "Horas_Motor_Ligado_total": 97.6236111111,
+        "Porcentagem_Motor_Ligado": 58.1099648971,
+        "Horas_Motor_Ocioso_total": 27.7138888889,
+        "Porcentagem_Motor_Ocioso": 16.4965533662,
+        "Tempo_Sem_Apontamento_h_total": 27.2825,
+        "Porcentagem_Sem_Apontamento": 16.2397712936,
+        "Eficiencia_Energetica": 0.1481796583,
+        "Eficiencia_Operacional": 0.0861071474,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 3.4642361111
+      }
+    ]
+  },
+  "547": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 59.6483333333,
+        "Horas_Improdutivas_total": 21.3388888889,
+        "Horas_Auxiliar_total": 8.8483333333,
+        "Horas_Climático_total": 48.445,
+        "Horas_Manutencao_total": 29.7175,
+        "Disponibilidade_Mecanica": 0.8231080717,
+        "Horas_Motor_Ligado_total": 115.1763888889,
+        "Porcentagem_Motor_Ligado": 68.5581678359,
+        "Horas_Motor_Ocioso_total": 18.9222222222,
+        "Porcentagem_Motor_Ocioso": 11.2633578762,
+        "Tempo_Sem_Apontamento_h_total": 4.5419444444,
+        "Porcentagem_Sem_Apontamento": 2.7035696511,
+        "Eficiencia_Energetica": 0.5178868161,
+        "Eficiencia_Operacional": 0.3550537126,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 2.3652777778
+      }
+    ]
+  },
+  "560": {
+    "Resumo_Periodo": [
+      {
+        "Horas_Registradas_total": 167.9980555556,
+        "Horas_Produtivas_total": 90.9044444444,
+        "Horas_Improdutivas_total": 60.9502777778,
+        "Horas_Auxiliar_total": 3.0938888889,
+        "Horas_Climático_total": 12.6033333333,
+        "Horas_Manutencao_total": 0.4461111111,
+        "Disponibilidade_Mecanica": 0.997344546,
+        "Horas_Motor_Ligado_total": 133.9825,
+        "Porcentagem_Motor_Ligado": 79.7524111556,
+        "Horas_Motor_Ocioso_total": 39.8897222222,
+        "Porcentagem_Motor_Ocioso": 23.7441570918,
+        "Tempo_Sem_Apontamento_h_total": 40.3302777778,
+        "Porcentagem_Sem_Apontamento": 24.0063955767,
+        "Eficiencia_Energetica": 0.6784799839,
+        "Eficiencia_Operacional": 0.5411041464,
+        "Dias_com_dados": 8,
+        "Horas_media_por_dia": 20.9997569444,
+        "Horas_Motor_Ocioso_media_por_dia": 4.9862152778
+      }
+    ]
+  }
+}

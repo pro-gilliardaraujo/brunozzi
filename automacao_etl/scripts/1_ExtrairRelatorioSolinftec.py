@@ -74,6 +74,12 @@ XPATHS = {
     }
 }
 
+def normalizar_pasta_download(nome_pasta):
+    valor = str(nome_pasta or "").strip().replace("\\", "/")
+    if not valor or "/" in valor or "scripts" in valor.lower():
+        return "dados"
+    return valor
+
 
 def preparar_perfil_selenium():
     if sys.platform.startswith("win"):
@@ -160,6 +166,7 @@ def abrir_navegador_com_perfil_padrao(config=None):
         except KeyError:
             pass
             
+    nome_pasta_download = normalizar_pasta_download(nome_pasta_download)
     download_path = os.path.join(base_dir, nome_pasta_download)
     os.makedirs(download_path, exist_ok=True)
     logging.info(f"Pasta de download configurada: {download_path}")
@@ -853,6 +860,7 @@ def gerar_relatorio(driver, config):
             return
 
         nome_pasta_download = cfg_parametros.get("download_dir", "dados")
+        nome_pasta_download = normalizar_pasta_download(nome_pasta_download)
         download_path = os.path.join(base_dir, nome_pasta_download)
         os.makedirs(download_path, exist_ok=True)
 

@@ -1,0 +1,3573 @@
+{
+  "metadata": {
+    "date": "2025-10-12",
+    "type": "cd_diario_novo",
+    "frente": "frente5",
+    "generated_at": "2026-02-10T18:20:01.566027",
+    "fontes": [
+      "solinftec",
+      "opc"
+    ]
+  },
+  "metas": {
+    "eficienciaEnergetica": 85,
+    "eficienciaOperacional": 60,
+    "horaElevador": 5,
+    "usoGPS": 90,
+    "mediaVelocidade": 5,
+    "manobras": 60,
+    "producao": 1000,
+    "disponibilidadeMecanica": 90,
+    "motorOcioso": 15
+  },
+  "eficiencia_energetica": [
+    {
+      "id": 1,
+      "nome": "235",
+      "eficiencia": 44.18,
+      "horasMotor": 5.3303,
+      "horasElevador": 2.3547,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "eficiencia": 0.0,
+      "horasMotor": 0.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "eficiencia": 42.47,
+      "horasMotor": 5.2714,
+      "horasElevador": 2.2386,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "eficiencia": 0.0,
+      "horasMotor": 0.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "eficiencia": 69.95,
+      "horasMotor": 4.8036,
+      "horasElevador": 3.3603,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "eficiencia": 0.0,
+      "horasMotor": 0.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "eficiencia": 0.0,
+      "horasMotor": 0.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "eficiencia": 87.16,
+      "horasMotor": 2.8028,
+      "horasElevador": 2.4428,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "eficiencia": 101.1,
+      "horasMotor": 3.4153,
+      "horasElevador": 3.4528,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "eficiencia": 60.7,
+      "horasMotor": 5.0033,
+      "horasElevador": 3.0372,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "eficiencia": 0.0,
+      "horasMotor": 0.0,
+      "horasElevador": 0,
+      "fonte": "solinftec"
+    }
+  ],
+  "eficiencia_operacional": [
+    {
+      "id": 1,
+      "nome": "235",
+      "eficiencia": 39.25,
+      "horasMotor": 6.0,
+      "horasElevador": 2.3547,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "eficiencia": 0.0,
+      "horasMotor": 6.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "eficiencia": 37.31,
+      "horasMotor": 6.0,
+      "horasElevador": 2.2386,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "eficiencia": 0.0,
+      "horasMotor": 6.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "eficiencia": 56.0,
+      "horasMotor": 6.0,
+      "horasElevador": 3.3603,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "eficiencia": 0.0,
+      "horasMotor": 6.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "eficiencia": 0.0,
+      "horasMotor": 6.0,
+      "horasElevador": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "eficiencia": 40.71,
+      "horasMotor": 6.0,
+      "horasElevador": 2.4428,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "eficiencia": 57.55,
+      "horasMotor": 6.0,
+      "horasElevador": 3.4528,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "eficiencia": 50.62,
+      "horasMotor": 6.0,
+      "horasElevador": 3.0372,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "eficiencia": 0.0,
+      "horasMotor": 0,
+      "horasElevador": 0,
+      "fonte": "solinftec"
+    }
+  ],
+  "horas_elevador": [
+    {
+      "id": 1,
+      "nome": "235",
+      "valor": 2.3547,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "valor": 2.2386,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "valor": 3.3603,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "valor": 2.4428,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "valor": 3.4528,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "valor": 3.0372,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "valor": 0,
+      "fonte": "solinftec"
+    }
+  ],
+  "uso_gps": [
+    {
+      "id": 1,
+      "nome": "235",
+      "porcentagem": 99.83,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "porcentagem": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "porcentagem": 53.4,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "porcentagem": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "porcentagem": 87.94,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "porcentagem": 100.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "porcentagem": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "porcentagem": 100.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "porcentagem": 100.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "porcentagem": 89.82,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "porcentagem": 0.0,
+      "fonte": "solinftec"
+    }
+  ],
+  "media_velocidade": [
+    {
+      "id": 1,
+      "nome": "235",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "velocidade": 0.0,
+      "fonte": "solinftec"
+    }
+  ],
+  "manobras_frotas": [
+    {
+      "Frota": "235",
+      "Tempo Total": 0.5225,
+      "Tempo Médio": 0.026125,
+      "Intervalos Válidos": 20,
+      "Tempo Total (hh:mm)": "00:31:20",
+      "Tempo Médio (hh:mm)": "00:01:34",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "279",
+      "Tempo Total": 0.0,
+      "Tempo Médio": 0,
+      "Intervalos Válidos": 0,
+      "Tempo Total (hh:mm)": "00:00:00",
+      "Tempo Médio (hh:mm)": "00:00:00",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "298",
+      "Tempo Total": 0.3086,
+      "Tempo Médio": 0.023739,
+      "Intervalos Válidos": 13,
+      "Tempo Total (hh:mm)": "00:18:30",
+      "Tempo Médio (hh:mm)": "00:01:25",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "354",
+      "Tempo Total": 0.0,
+      "Tempo Médio": 0,
+      "Intervalos Válidos": 0,
+      "Tempo Total (hh:mm)": "00:00:00",
+      "Tempo Médio (hh:mm)": "00:00:00",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "369",
+      "Tempo Total": 0.7392,
+      "Tempo Médio": 0.020532,
+      "Intervalos Válidos": 36,
+      "Tempo Total (hh:mm)": "00:44:21",
+      "Tempo Médio (hh:mm)": "00:01:13",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "375",
+      "Tempo Total": 0.0,
+      "Tempo Médio": 0,
+      "Intervalos Válidos": 0,
+      "Tempo Total (hh:mm)": "00:00:00",
+      "Tempo Médio (hh:mm)": "00:00:00",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "469",
+      "Tempo Total": 0.0,
+      "Tempo Médio": 0,
+      "Intervalos Válidos": 0,
+      "Tempo Total (hh:mm)": "00:00:00",
+      "Tempo Médio (hh:mm)": "00:00:00",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "517",
+      "Tempo Total": 0.2522,
+      "Tempo Médio": 0.019402,
+      "Intervalos Válidos": 13,
+      "Tempo Total (hh:mm)": "00:15:07",
+      "Tempo Médio (hh:mm)": "00:01:09",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "547",
+      "Tempo Total": 0.6189,
+      "Tempo Médio": 0.022103,
+      "Intervalos Válidos": 28,
+      "Tempo Total (hh:mm)": "00:37:08",
+      "Tempo Médio (hh:mm)": "00:01:19",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "560",
+      "Tempo Total": 0.5231,
+      "Tempo Médio": 0.018036,
+      "Intervalos Válidos": 29,
+      "Tempo Total (hh:mm)": "00:31:23",
+      "Tempo Médio (hh:mm)": "00:01:04",
+      "fonte": "solinftec"
+    },
+    {
+      "Frota": "Geral",
+      "Tempo Total": 0.0,
+      "Tempo Médio": 0,
+      "Intervalos Válidos": 0,
+      "Tempo Total (hh:mm)": "00:00:00",
+      "Tempo Médio (hh:mm)": "00:00:00",
+      "fonte": "solinftec"
+    }
+  ],
+  "motor_ocioso": [
+    {
+      "id": 1,
+      "nome": "235",
+      "percentual": 28.412,
+      "tempoLigado": 5.3303,
+      "tempoOcioso": 1.7047,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "percentual": 0.0,
+      "tempoLigado": 0.0,
+      "tempoOcioso": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "percentual": 47.75,
+      "tempoLigado": 5.2714,
+      "tempoOcioso": 2.865,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "percentual": 0.0,
+      "tempoLigado": 0.0,
+      "tempoOcioso": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "percentual": 33.8426,
+      "tempoLigado": 4.8036,
+      "tempoOcioso": 2.0306,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "percentual": 0.0,
+      "tempoLigado": 0.0,
+      "tempoOcioso": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "percentual": 0.0,
+      "tempoLigado": 0.0,
+      "tempoOcioso": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "percentual": 5.8657,
+      "tempoLigado": 2.8028,
+      "tempoOcioso": 0.3519,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "percentual": 1.6713,
+      "tempoLigado": 3.4153,
+      "tempoOcioso": 0.1003,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "percentual": 39.2176,
+      "tempoLigado": 5.0033,
+      "tempoOcioso": 2.3531,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "percentual": 0,
+      "tempoLigado": 0.0,
+      "tempoOcioso": 0,
+      "fonte": "solinftec"
+    }
+  ],
+  "disponibilidade_mecanica": [
+    {
+      "id": 1,
+      "nome": "235",
+      "disponibilidade": 100.0,
+      "horasMotor": 5.3303,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "disponibilidade": 100.0,
+      "horasMotor": 0.0,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "disponibilidade": 100.0,
+      "horasMotor": 5.2714,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "disponibilidade": 100.0,
+      "horasMotor": 0.0,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "disponibilidade": 100.0,
+      "horasMotor": 4.8036,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "disponibilidade": 0.0,
+      "horasMotor": 0.0,
+      "tempoManutencao": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "disponibilidade": 100.0,
+      "horasMotor": 0.0,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "disponibilidade": 50.08,
+      "horasMotor": 2.8028,
+      "tempoManutencao": 2.9953,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "disponibilidade": 64.93,
+      "horasMotor": 3.4153,
+      "tempoManutencao": 2.1044,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "disponibilidade": 100.0,
+      "horasMotor": 5.0033,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "disponibilidade": 100.0,
+      "horasMotor": 0.0,
+      "tempoManutencao": 0.0,
+      "fonte": "solinftec"
+    }
+  ],
+  "horas_por_frota": [
+    {
+      "id": 1,
+      "nome": "235",
+      "frota": "235",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "frota": "279",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "frota": "298",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "frota": "354",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "frota": "369",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "frota": "375",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "frota": "469",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "frota": "517",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "frota": "547",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "frota": "560",
+      "horas": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "frota": "Geral",
+      "horas": 0,
+      "fonte": "solinftec"
+    }
+  ],
+  "intervalos_operacao": [
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "00:00:00",
+      "duracaoHoras": 0.492778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "00:29:34",
+      "duracaoHoras": 0.010556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "00:30:12",
+      "duracaoHoras": 0.192222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Falta de Informação",
+      "inicio": "00:41:44",
+      "duracaoHoras": 0.006111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "00:42:06",
+      "duracaoHoras": 0.015556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "00:43:02",
+      "duracaoHoras": 0.014444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "00:43:54",
+      "duracaoHoras": 0.006944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "00:44:19",
+      "duracaoHoras": 0.011389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "00:45:00",
+      "duracaoHoras": 0.081111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "00:49:52",
+      "duracaoHoras": 0.247222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "01:04:42",
+      "duracaoHoras": 0.021111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "01:05:58",
+      "duracaoHoras": 0.242222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "01:20:30",
+      "duracaoHoras": 0.095833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "01:26:15",
+      "duracaoHoras": 0.246111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "01:41:01",
+      "duracaoHoras": 0.038889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "01:43:21",
+      "duracaoHoras": 0.243333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "01:57:57",
+      "duracaoHoras": 0.050556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "02:00:59",
+      "duracaoHoras": 1.373056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "03:23:22",
+      "duracaoHoras": 0.050556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Falta de Informação",
+      "inicio": "03:26:24",
+      "duracaoHoras": 0.004167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:26:39",
+      "duracaoHoras": 0.096667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:32:27",
+      "duracaoHoras": 0.028889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:34:11",
+      "duracaoHoras": 0.021944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:35:30",
+      "duracaoHoras": 0.020278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:36:43",
+      "duracaoHoras": 0.024722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:38:12",
+      "duracaoHoras": 0.030556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:40:02",
+      "duracaoHoras": 0.076944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:44:39",
+      "duracaoHoras": 0.016944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:45:40",
+      "duracaoHoras": 0.0825,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:50:37",
+      "duracaoHoras": 0.028611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:52:20",
+      "duracaoHoras": 0.025556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:53:52",
+      "duracaoHoras": 0.025833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "03:55:25",
+      "duracaoHoras": 0.121389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "04:02:42",
+      "duracaoHoras": 0.276111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "04:19:16",
+      "duracaoHoras": 0.001111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "04:19:20",
+      "duracaoHoras": 0.008611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "04:19:51",
+      "duracaoHoras": 0.127778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "04:27:31",
+      "duracaoHoras": 0.254167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "04:42:46",
+      "duracaoHoras": 0.000556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "04:42:48",
+      "duracaoHoras": 0.130556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "04:50:38",
+      "duracaoHoras": 0.038611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "04:52:57",
+      "duracaoHoras": 0.197222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:04:47",
+      "duracaoHoras": 0.003889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:05:01",
+      "duracaoHoras": 0.032778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:06:59",
+      "duracaoHoras": 0.018056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:08:04",
+      "duracaoHoras": 0.032222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:10:00",
+      "duracaoHoras": 0.031944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "05:11:55",
+      "duracaoHoras": 0.103889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:18:09",
+      "duracaoHoras": 0.000278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "05:18:10",
+      "duracaoHoras": 0.201111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "05:30:14",
+      "duracaoHoras": 0.041111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:32:42",
+      "duracaoHoras": 0.056944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:36:07",
+      "duracaoHoras": 0.021111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:37:23",
+      "duracaoHoras": 0.042778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:39:57",
+      "duracaoHoras": 0.035278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:42:04",
+      "duracaoHoras": 0.0025,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Disponível",
+      "inicio": "05:42:13",
+      "duracaoHoras": 0.141389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:50:42",
+      "duracaoHoras": 0.008333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:51:12",
+      "duracaoHoras": 0.042778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:53:46",
+      "duracaoHoras": 0.015833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:54:43",
+      "duracaoHoras": 0.009167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:55:16",
+      "duracaoHoras": 0.031389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:57:09",
+      "duracaoHoras": 0.037778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:59:25",
+      "duracaoHoras": 0.0075,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "235",
+      "tipo": "Produtivo",
+      "inicio": "05:59:52",
+      "duracaoHoras": 0.002222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "279",
+      "tipo": "Falta de Informação",
+      "inicio": "00:00:00",
+      "duracaoHoras": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:00:00",
+      "duracaoHoras": 0.035556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:02:08",
+      "duracaoHoras": 0.016667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:03:08",
+      "duracaoHoras": 0.108056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:09:37",
+      "duracaoHoras": 0.012222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:10:21",
+      "duracaoHoras": 0.009722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:10:56",
+      "duracaoHoras": 0.013889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:11:46",
+      "duracaoHoras": 0.023611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:13:11",
+      "duracaoHoras": 0.039167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:15:32",
+      "duracaoHoras": 0.119444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:22:42",
+      "duracaoHoras": 0.029722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:24:29",
+      "duracaoHoras": 0.141944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:33:00",
+      "duracaoHoras": 0.020833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:34:15",
+      "duracaoHoras": 0.125,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "00:41:45",
+      "duracaoHoras": 0.287778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:59:01",
+      "duracaoHoras": 0.015556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "00:59:57",
+      "duracaoHoras": 0.265278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "01:15:52",
+      "duracaoHoras": 1.141944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "02:24:23",
+      "duracaoHoras": 0.015278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "02:25:18",
+      "duracaoHoras": 0.001389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "02:25:23",
+      "duracaoHoras": 0.172222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "02:35:43",
+      "duracaoHoras": 0.008889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "02:36:15",
+      "duracaoHoras": 0.1975,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "02:48:06",
+      "duracaoHoras": 0.100556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "02:54:08",
+      "duracaoHoras": 0.241667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "03:08:38",
+      "duracaoHoras": 0.136111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "03:16:48",
+      "duracaoHoras": 0.041111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "03:19:16",
+      "duracaoHoras": 0.0625,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "03:23:01",
+      "duracaoHoras": 0.016111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "03:23:59",
+      "duracaoHoras": 0.006667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "03:24:23",
+      "duracaoHoras": 0.434167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "03:50:26",
+      "duracaoHoras": 0.030556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "03:52:16",
+      "duracaoHoras": 0.323333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:11:40",
+      "duracaoHoras": 0.007778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:12:08",
+      "duracaoHoras": 0.0225,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:13:29",
+      "duracaoHoras": 0.013333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:14:17",
+      "duracaoHoras": 0.045278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:17:00",
+      "duracaoHoras": 0.091667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "04:22:30",
+      "duracaoHoras": 0.067222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:26:32",
+      "duracaoHoras": 0.101944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "04:32:39",
+      "duracaoHoras": 0.450278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "04:59:40",
+      "duracaoHoras": 0.107778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "05:06:08",
+      "duracaoHoras": 0.022222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "05:07:28",
+      "duracaoHoras": 0.101111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "05:13:32",
+      "duracaoHoras": 0.624444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Disponível",
+      "inicio": "05:51:00",
+      "duracaoHoras": 0.006944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Falta de Informação",
+      "inicio": "05:51:25",
+      "duracaoHoras": 0.013056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "05:52:12",
+      "duracaoHoras": 0.101667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "05:58:18",
+      "duracaoHoras": 0.020556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "298",
+      "tipo": "Produtivo",
+      "inicio": "05:59:32",
+      "duracaoHoras": 0.007778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "354",
+      "tipo": "Falta de Informação",
+      "inicio": "00:00:00",
+      "duracaoHoras": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:00:00",
+      "duracaoHoras": 0.008889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:00:32",
+      "duracaoHoras": 0.039444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:02:54",
+      "duracaoHoras": 0.021667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:04:12",
+      "duracaoHoras": 0.024444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:05:40",
+      "duracaoHoras": 0.078056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:10:21",
+      "duracaoHoras": 0.012222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:11:05",
+      "duracaoHoras": 0.058611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Disponível",
+      "inicio": "00:14:36",
+      "duracaoHoras": 0.181111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:25:28",
+      "duracaoHoras": 0.020833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:26:43",
+      "duracaoHoras": 0.023333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:28:07",
+      "duracaoHoras": 0.0725,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:32:28",
+      "duracaoHoras": 0.021944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:33:47",
+      "duracaoHoras": 0.067778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:37:51",
+      "duracaoHoras": 0.028333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:39:33",
+      "duracaoHoras": 0.073333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:43:57",
+      "duracaoHoras": 0.019167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:45:06",
+      "duracaoHoras": 0.067222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Falta de Informação",
+      "inicio": "00:49:08",
+      "duracaoHoras": 0.036944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:51:21",
+      "duracaoHoras": 0.014444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:52:13",
+      "duracaoHoras": 0.021944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:53:32",
+      "duracaoHoras": 0.071667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:57:50",
+      "duracaoHoras": 0.023611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "00:59:15",
+      "duracaoHoras": 0.066667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:03:15",
+      "duracaoHoras": 0.023333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:04:39",
+      "duracaoHoras": 0.075556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:09:11",
+      "duracaoHoras": 0.019722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:10:22",
+      "duracaoHoras": 0.044444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Disponível",
+      "inicio": "01:13:02",
+      "duracaoHoras": 0.383611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:36:03",
+      "duracaoHoras": 0.023056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:37:26",
+      "duracaoHoras": 0.019167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:38:35",
+      "duracaoHoras": 0.068611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:42:42",
+      "duracaoHoras": 0.016111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:43:40",
+      "duracaoHoras": 0.059167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:47:13",
+      "duracaoHoras": 0.023056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:48:36",
+      "duracaoHoras": 0.066944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:52:37",
+      "duracaoHoras": 0.019444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:53:47",
+      "duracaoHoras": 0.021111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:55:03",
+      "duracaoHoras": 0.046944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "01:57:52",
+      "duracaoHoras": 0.059722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:01:27",
+      "duracaoHoras": 0.021667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:02:45",
+      "duracaoHoras": 0.069444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:06:55",
+      "duracaoHoras": 0.026667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:08:31",
+      "duracaoHoras": 0.056389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Falta de Informação",
+      "inicio": "02:11:54",
+      "duracaoHoras": 0.038611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:14:13",
+      "duracaoHoras": 0.0175,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:15:16",
+      "duracaoHoras": 0.019167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:16:25",
+      "duracaoHoras": 0.067778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:20:29",
+      "duracaoHoras": 0.020278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:21:42",
+      "duracaoHoras": 0.0675,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:25:45",
+      "duracaoHoras": 0.021944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:27:04",
+      "duracaoHoras": 0.069167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:31:13",
+      "duracaoHoras": 0.02,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:32:25",
+      "duracaoHoras": 0.038611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Disponível",
+      "inicio": "02:34:44",
+      "duracaoHoras": 0.295278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:52:27",
+      "duracaoHoras": 0.031389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:54:20",
+      "duracaoHoras": 0.014444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:55:12",
+      "duracaoHoras": 0.035556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:57:20",
+      "duracaoHoras": 0.012222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "02:58:04",
+      "duracaoHoras": 0.059167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "03:01:37",
+      "duracaoHoras": 0.016389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "03:02:36",
+      "duracaoHoras": 0.078333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "03:07:18",
+      "duracaoHoras": 0.018889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "03:08:26",
+      "duracaoHoras": 0.08,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "03:13:14",
+      "duracaoHoras": 0.02,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "03:14:26",
+      "duracaoHoras": 0.080833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Disponível",
+      "inicio": "03:19:17",
+      "duracaoHoras": 1.050278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "04:22:18",
+      "duracaoHoras": 0.074167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "04:26:45",
+      "duracaoHoras": 0.018333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "04:27:51",
+      "duracaoHoras": 0.147222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "04:36:41",
+      "duracaoHoras": 0.016944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "04:37:42",
+      "duracaoHoras": 0.065833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Falta de Informação",
+      "inicio": "04:41:39",
+      "duracaoHoras": 0.648056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Disponível",
+      "inicio": "05:20:32",
+      "duracaoHoras": 0.005833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:20:53",
+      "duracaoHoras": 0.087222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:26:07",
+      "duracaoHoras": 0.018056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:27:12",
+      "duracaoHoras": 0.071944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:31:31",
+      "duracaoHoras": 0.009444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:32:05",
+      "duracaoHoras": 0.078333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:36:47",
+      "duracaoHoras": 0.019167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:37:56",
+      "duracaoHoras": 0.068056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:42:01",
+      "duracaoHoras": 0.019167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:43:10",
+      "duracaoHoras": 0.015833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:44:07",
+      "duracaoHoras": 0.008889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:44:39",
+      "duracaoHoras": 0.057222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:48:05",
+      "duracaoHoras": 0.016667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:49:05",
+      "duracaoHoras": 0.069167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:53:14",
+      "duracaoHoras": 0.018611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "369",
+      "tipo": "Produtivo",
+      "inicio": "05:54:21",
+      "duracaoHoras": 0.094167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "375",
+      "tipo": "Disponível",
+      "inicio": "00:00:00",
+      "duracaoHoras": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "469",
+      "tipo": "Falta de Informação",
+      "inicio": "00:00:00",
+      "duracaoHoras": 6.0,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "00:00:00",
+      "duracaoHoras": 0.000556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "00:00:02",
+      "duracaoHoras": 0.1575,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:09:29",
+      "duracaoHoras": 0.193889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:21:07",
+      "duracaoHoras": 0.013056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:21:54",
+      "duracaoHoras": 0.048611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:24:49",
+      "duracaoHoras": 0.014444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:25:41",
+      "duracaoHoras": 0.153056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:34:52",
+      "duracaoHoras": 0.019444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:36:02",
+      "duracaoHoras": 0.204444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "00:48:18",
+      "duracaoHoras": 0.050278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "00:51:19",
+      "duracaoHoras": 0.146944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "01:00:08",
+      "duracaoHoras": 0.013889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "01:00:58",
+      "duracaoHoras": 0.296389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "01:18:45",
+      "duracaoHoras": 0.006944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "01:19:10",
+      "duracaoHoras": 0.1825,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "01:30:07",
+      "duracaoHoras": 0.301667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "01:48:13",
+      "duracaoHoras": 0.310278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:06:50",
+      "duracaoHoras": 0.020278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:08:03",
+      "duracaoHoras": 0.177778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:18:43",
+      "duracaoHoras": 0.021111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:19:59",
+      "duracaoHoras": 0.021667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:21:17",
+      "duracaoHoras": 0.019722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:22:28",
+      "duracaoHoras": 0.142222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:31:00",
+      "duracaoHoras": 0.039722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:33:23",
+      "duracaoHoras": 0.0525,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:36:32",
+      "duracaoHoras": 0.018333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:37:38",
+      "duracaoHoras": 0.053056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:40:49",
+      "duracaoHoras": 0.020278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:42:02",
+      "duracaoHoras": 0.074444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:46:30",
+      "duracaoHoras": 0.008333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:47:00",
+      "duracaoHoras": 0.102778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:53:10",
+      "duracaoHoras": 0.036667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Produtivo",
+      "inicio": "02:55:22",
+      "duracaoHoras": 0.03,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "02:57:10",
+      "duracaoHoras": 0.046389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "02:59:57",
+      "duracaoHoras": 0.006111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "517",
+      "tipo": "Disponível",
+      "inicio": "03:00:19",
+      "duracaoHoras": 2.994722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "00:00:00",
+      "duracaoHoras": 0.131667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "00:07:54",
+      "duracaoHoras": 0.063611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "00:11:43",
+      "duracaoHoras": 1.9125,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "02:06:28",
+      "duracaoHoras": 0.013333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:07:16",
+      "duracaoHoras": 0.032222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:09:12",
+      "duracaoHoras": 0.021389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:10:29",
+      "duracaoHoras": 0.2025,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:22:38",
+      "duracaoHoras": 0.006944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:23:03",
+      "duracaoHoras": 0.061389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:26:44",
+      "duracaoHoras": 0.0075,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:27:11",
+      "duracaoHoras": 0.010556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:27:49",
+      "duracaoHoras": 0.013889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:28:39",
+      "duracaoHoras": 0.109167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:35:12",
+      "duracaoHoras": 0.0075,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:35:39",
+      "duracaoHoras": 0.013333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:36:27",
+      "duracaoHoras": 0.048889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:39:23",
+      "duracaoHoras": 0.039167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:41:44",
+      "duracaoHoras": 0.036944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:43:57",
+      "duracaoHoras": 0.143056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:52:32",
+      "duracaoHoras": 0.017778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "02:53:36",
+      "duracaoHoras": 0.051667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "02:56:42",
+      "duracaoHoras": 0.1975,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:08:33",
+      "duracaoHoras": 0.236944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:22:46",
+      "duracaoHoras": 0.0125,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:23:31",
+      "duracaoHoras": 0.296111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:41:17",
+      "duracaoHoras": 0.043889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:43:55",
+      "duracaoHoras": 0.120556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:51:09",
+      "duracaoHoras": 0.021389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:52:26",
+      "duracaoHoras": 0.022222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:53:46",
+      "duracaoHoras": 0.013056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "03:54:33",
+      "duracaoHoras": 0.150556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:03:35",
+      "duracaoHoras": 0.011389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:04:16",
+      "duracaoHoras": 0.077778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:08:56",
+      "duracaoHoras": 0.009722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:09:31",
+      "duracaoHoras": 0.063333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:13:19",
+      "duracaoHoras": 0.011944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:14:02",
+      "duracaoHoras": 0.156944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:23:27",
+      "duracaoHoras": 0.015,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:24:21",
+      "duracaoHoras": 0.019167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:25:30",
+      "duracaoHoras": 0.011944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:26:13",
+      "duracaoHoras": 0.003889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:26:27",
+      "duracaoHoras": 0.04,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:28:51",
+      "duracaoHoras": 0.208333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "04:41:21",
+      "duracaoHoras": 0.068056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:45:26",
+      "duracaoHoras": 0.014167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:46:17",
+      "duracaoHoras": 0.023333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:47:41",
+      "duracaoHoras": 0.007778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:48:09",
+      "duracaoHoras": 0.109722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:54:44",
+      "duracaoHoras": 0.0375,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "04:56:59",
+      "duracaoHoras": 0.098333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:02:53",
+      "duracaoHoras": 0.006944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:03:18",
+      "duracaoHoras": 0.023333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:04:42",
+      "duracaoHoras": 0.031944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:06:37",
+      "duracaoHoras": 0.031389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:08:30",
+      "duracaoHoras": 0.035,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:10:36",
+      "duracaoHoras": 0.111667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "05:17:18",
+      "duracaoHoras": 0.100278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:23:19",
+      "duracaoHoras": 0.017222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:24:21",
+      "duracaoHoras": 0.033333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:26:21",
+      "duracaoHoras": 0.084722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:31:26",
+      "duracaoHoras": 0.061667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:35:08",
+      "duracaoHoras": 0.038333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:37:26",
+      "duracaoHoras": 0.007222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:37:52",
+      "duracaoHoras": 0.140833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:46:19",
+      "duracaoHoras": 0.031667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Produtivo",
+      "inicio": "05:48:13",
+      "duracaoHoras": 0.136111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "547",
+      "tipo": "Disponível",
+      "inicio": "05:56:23",
+      "duracaoHoras": 0.060278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:00:00",
+      "duracaoHoras": 0.015556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "00:00:56",
+      "duracaoHoras": 0.084167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:05:59",
+      "duracaoHoras": 0.032778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:07:57",
+      "duracaoHoras": 0.023889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:09:23",
+      "duracaoHoras": 0.074722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:13:52",
+      "duracaoHoras": 0.019444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:15:02",
+      "duracaoHoras": 0.082222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:19:58",
+      "duracaoHoras": 0.02,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:21:10",
+      "duracaoHoras": 0.084167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:26:13",
+      "duracaoHoras": 0.019444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:27:23",
+      "duracaoHoras": 0.042778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Falta de Informação",
+      "inicio": "00:29:57",
+      "duracaoHoras": 0.071389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:34:14",
+      "duracaoHoras": 0.124167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:41:41",
+      "duracaoHoras": 0.017222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:42:43",
+      "duracaoHoras": 0.071944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:47:02",
+      "duracaoHoras": 0.014444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:47:54",
+      "duracaoHoras": 0.074722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:52:23",
+      "duracaoHoras": 0.015556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "00:53:19",
+      "duracaoHoras": 0.050278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "00:56:20",
+      "duracaoHoras": 0.144167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Falta de Informação",
+      "inicio": "01:04:59",
+      "duracaoHoras": 0.026389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:06:34",
+      "duracaoHoras": 0.025278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:08:05",
+      "duracaoHoras": 0.013889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:08:55",
+      "duracaoHoras": 0.079722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:13:42",
+      "duracaoHoras": 0.014167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:14:33",
+      "duracaoHoras": 0.072778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:18:55",
+      "duracaoHoras": 0.0175,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:19:58",
+      "duracaoHoras": 0.068333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:24:04",
+      "duracaoHoras": 0.021944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:25:23",
+      "duracaoHoras": 0.084444,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:30:27",
+      "duracaoHoras": 0.015833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:31:24",
+      "duracaoHoras": 0.078889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:36:08",
+      "duracaoHoras": 0.014167,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:36:59",
+      "duracaoHoras": 0.068611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:41:06",
+      "duracaoHoras": 0.018056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:42:11",
+      "duracaoHoras": 0.073333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:46:35",
+      "duracaoHoras": 0.013889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:47:25",
+      "duracaoHoras": 0.073611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "01:51:50",
+      "duracaoHoras": 0.13,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "01:59:38",
+      "duracaoHoras": 0.071111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:03:54",
+      "duracaoHoras": 0.016111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:04:52",
+      "duracaoHoras": 0.069722,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:09:03",
+      "duracaoHoras": 0.015556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:09:59",
+      "duracaoHoras": 0.068889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:14:07",
+      "duracaoHoras": 0.015,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:15:01",
+      "duracaoHoras": 0.068333,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "02:19:07",
+      "duracaoHoras": 0.121944,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Falta de Informação",
+      "inicio": "02:26:26",
+      "duracaoHoras": 0.446111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "02:53:12",
+      "duracaoHoras": 0.003611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:53:25",
+      "duracaoHoras": 0.082222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:58:21",
+      "duracaoHoras": 0.013611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "02:59:10",
+      "duracaoHoras": 0.075278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "03:03:41",
+      "duracaoHoras": 0.02,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "03:04:53",
+      "duracaoHoras": 0.072778,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "03:09:15",
+      "duracaoHoras": 0.015278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "03:10:10",
+      "duracaoHoras": 0.025556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "03:11:42",
+      "duracaoHoras": 1.290833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "04:29:09",
+      "duracaoHoras": 0.05,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "04:32:09",
+      "duracaoHoras": 0.016389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "04:33:08",
+      "duracaoHoras": 0.075,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "04:37:38",
+      "duracaoHoras": 0.013056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "04:38:25",
+      "duracaoHoras": 0.076389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "04:43:00",
+      "duracaoHoras": 0.443889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:09:38",
+      "duracaoHoras": 0.082222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:14:34",
+      "duracaoHoras": 0.008056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:15:03",
+      "duracaoHoras": 0.0875,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "05:20:18",
+      "duracaoHoras": 0.12,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Falta de Informação",
+      "inicio": "05:27:30",
+      "duracaoHoras": 0.066667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Disponível",
+      "inicio": "05:31:30",
+      "duracaoHoras": 0.013611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:32:19",
+      "duracaoHoras": 0.081389,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:37:12",
+      "duracaoHoras": 0.016111,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:38:10",
+      "duracaoHoras": 0.048611,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:41:05",
+      "duracaoHoras": 0.053889,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:44:19",
+      "duracaoHoras": 0.025278,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:45:50",
+      "duracaoHoras": 0.020833,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:47:05",
+      "duracaoHoras": 0.075556,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:51:37",
+      "duracaoHoras": 0.018056,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:52:42",
+      "duracaoHoras": 0.072222,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:57:02",
+      "duracaoHoras": 0.021667,
+      "fonte": "solinftec"
+    },
+    {
+      "equipamento": "560",
+      "tipo": "Produtivo",
+      "inicio": "05:58:20",
+      "duracaoHoras": 0.027778,
+      "fonte": "solinftec"
+    }
+  ],
+  "ofensores": [],
+  "lavagem": [],
+  "roletes": [],
+  "producao": 0.0,
+  "producao_total": [
+    {
+      "valor": 0.0
+    }
+  ],
+  "producao_por_frota": [
+    {
+      "id": 1,
+      "nome": "235",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 2,
+      "nome": "279",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 3,
+      "nome": "298",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 4,
+      "nome": "354",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 5,
+      "nome": "369",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 6,
+      "nome": "375",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 7,
+      "nome": "469",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 8,
+      "nome": "517",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 9,
+      "nome": "547",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 10,
+      "nome": "560",
+      "valor": 0.0,
+      "fonte": "solinftec"
+    },
+    {
+      "id": 11,
+      "nome": "Geral",
+      "valor": 0,
+      "fonte": "solinftec"
+    }
+  ],
+  "imagens": {
+    "mapaGPS": "",
+    "areaTrabalhada": ""
+  }
+}
