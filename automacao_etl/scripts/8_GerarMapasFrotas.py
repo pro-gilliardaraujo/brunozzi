@@ -26,10 +26,10 @@ from sklearn.cluster import DBSCAN
 # ============================================================================
 
 # --- CAMINHOS ---
-BASE_DIR = Path(__file__).parent.parent.parent  # Sobe de scripts -> automacao_etl -> brunozzi
-PASTA_JSONS = BASE_DIR / "automacao_etl" / "scripts" / "dados" / "separados" / "json" / "colhedora" / "frotas" / "diario"
-PASTA_ZIPS = BASE_DIR / "automacao_etl" / "dados"
-PASTA_SAIDA = BASE_DIR / "automacao_etl" / "mapas"
+ETL_DIR = Path(__file__).parent.parent
+PASTA_JSONS = ETL_DIR / "dados" / "separados" / "json" / "colhedora" / "frotas" / "diario"
+PASTA_ZIPS = ETL_DIR / "dados"
+PASTA_SAIDA = ETL_DIR / "mapas"
 
 # --- VISUALIZAÇÃO ---
 # Cores para diferenciar frotas no mapa
@@ -770,7 +770,7 @@ def main():
         return
 
     # 1. Carregar configuração e definir filtro de datas
-    config_path = BASE_DIR / "automacao_etl" / "utils" / "config_automacao.json"
+    config_path = ETL_DIR / "utils" / "config_automacao.json"
     filtro_datas = None
     
     if config_path.exists():
@@ -849,6 +849,12 @@ def main():
         for arq in arquivos:
             print(f"  📍 {arq.name}")
         print("=" * 80)
+        for zip_path in PASTA_ZIPS.glob("Colhedora_*.zip"):
+            try:
+                zip_path.unlink()
+                print(f"🧹 Shape removido: {zip_path.name}")
+            except Exception as e:
+                print(f"⚠️ Falha ao remover {zip_path.name}: {e}")
     else:
         print("\n⚠️ Nenhum mapa gerado.")
 

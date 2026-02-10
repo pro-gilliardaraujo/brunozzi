@@ -37,11 +37,11 @@ SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 ETL_ROOT = os.path.dirname(SCRIPTS_DIR)
 
 SOLINFTEC_JSON_DIR = os.path.join(
-    SCRIPTS_DIR, "dados", "separados", "json", "colhedora", "frotas", "diario"
+    ETL_ROOT, "dados", "separados", "json", "colhedora", "frotas", "diario"
 )
-OPC_XLSX_DIR = os.path.join(SCRIPTS_DIR, "dados", "separados", "xlsx")
+OPC_XLSX_DIR = os.path.join(ETL_ROOT, "dados", "separados", "xlsx")
 CASE_DIR = os.path.join(ETL_ROOT, "dados")
-LINHA_TEMPO_DIR = os.path.join(SCRIPTS_DIR, "dados")
+LINHA_TEMPO_DIR = os.path.join(ETL_ROOT, "dados")
 
 # Saída (mesmo diretório do Solinftec — sobrescreve com formato unificado)
 OUTPUT_DIR = SOLINFTEC_JSON_DIR

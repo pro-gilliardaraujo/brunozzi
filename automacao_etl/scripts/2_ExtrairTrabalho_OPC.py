@@ -5,10 +5,12 @@ import time
 from datetime import datetime, timedelta
 from playwright.sync_api import sync_playwright
 
-ESTADO_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "utils", "processos_opc_case.json")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "dados")
+ESTADO_FILE = os.path.join(BASE_DIR, "utils", "processos_opc_case.json")
 
 def load_config():
-    config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "utils", "config_automacao.json")
+    config_path = os.path.join(BASE_DIR, "utils", "config_automacao.json")
     with open(config_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
@@ -137,8 +139,8 @@ def monitorar_e_baixar_arquivos(page, arquivos_esperados):
                                 page.get_by_role("button", name="Baixar").click()
                                 
                             download = download_info.value
-                            caminho_final = os.path.join("dados", download.suggested_filename)
-                            os.makedirs("dados", exist_ok=True)
+                            caminho_final = os.path.join(DATA_DIR, download.suggested_filename)
+                            os.makedirs(DATA_DIR, exist_ok=True)
                             download.save_as(caminho_final)
                             
                             print(f"Download concluído com SUCESSO: {caminho_final}")

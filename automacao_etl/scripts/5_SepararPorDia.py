@@ -12,9 +12,8 @@ from openpyxl.utils import get_column_letter
 warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 
 # --- CONFIGURAÇÕES ---
-# Usa o diretório de trabalho atual como base para construir o caminho absoluto
-BASE_CWD = os.getcwd()
-DIRETORIO_DADOS = os.path.join(BASE_CWD, "automacao_etl", "scripts", "dados")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DIRETORIO_DADOS = os.path.join(BASE_DIR, "dados")
 DIRETORIO_SAIDA = os.path.join(DIRETORIO_DADOS, "separados")
 DIRETORIO_XLSX = os.path.join(DIRETORIO_SAIDA, "xlsx")
 DIRETORIO_JSON = os.path.join(DIRETORIO_SAIDA, "json")

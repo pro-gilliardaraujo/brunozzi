@@ -150,7 +150,7 @@ def carregar_configuracoes():
 
 
 def abrir_navegador_com_perfil_padrao(config=None):
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     # Define pasta de download (padrão 'dados' ou via config)
     nome_pasta_download = "dados"
@@ -412,6 +412,12 @@ def selecionar_equipamentos(driver, config):
             return " ".join((s or "").split()).lower()
 
         def clicar(xpath, espera_click=True):
+            try:
+                WebDriverWait(driver, 30).until(
+                    EC.invisibility_of_element_located((By.CSS_SELECTOR, ".router-animation-loader"))
+                )
+            except TimeoutException:
+                pass
             espera.until(EC.visibility_of_element_located((By.XPATH, xpath)))
             el = espera.until(EC.element_to_be_clickable((By.XPATH, xpath)))
             driver.execute_script(
@@ -652,6 +658,12 @@ def selecionar_data_uib_datepicker(driver, xpath_botao_calendario, data_alvo):
     mes_alvo = dt_alvo.month
     ano_alvo = dt_alvo.year
 
+    try:
+        WebDriverWait(driver, 30).until(
+            EC.invisibility_of_element_located((By.CSS_SELECTOR, ".router-animation-loader"))
+        )
+    except TimeoutException:
+        pass
     espera.until(EC.visibility_of_element_located((By.XPATH, xpath_botao_calendario)))
     botao = espera.until(EC.element_to_be_clickable((By.XPATH, xpath_botao_calendario)))
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", botao)
@@ -840,9 +852,8 @@ def gerar_relatorio(driver, config):
             logging.error("XPath do botão Gerar não está configurado.")
             return
 
-        base_dir_scripts = os.path.dirname(os.path.abspath(__file__))
         nome_pasta_download = cfg_parametros.get("download_dir", "dados")
-        download_path = os.path.join(base_dir_scripts, nome_pasta_download)
+        download_path = os.path.join(base_dir, nome_pasta_download)
         os.makedirs(download_path, exist_ok=True)
 
         try:
@@ -1035,7 +1046,6 @@ def main():
             logging.info("O navegador permanecerá aberto (detach=True).")
 
         print("\nVerifique o arquivo 'extrair_relatorio.log' para detalhes.")
-        input("Pressione ENTER para fechar esta janela do terminal...")
 
 
 if __name__ == "__main__":

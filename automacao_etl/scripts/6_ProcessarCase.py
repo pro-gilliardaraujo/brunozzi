@@ -11,7 +11,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Configurações
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # automacao_etl/
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "dados")
 
 def processar_ultimo_arquivo_case():

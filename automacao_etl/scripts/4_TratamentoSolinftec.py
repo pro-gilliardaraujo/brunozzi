@@ -15,7 +15,8 @@ warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
 
 # --- CONFIGURAÇÕES GERAIS ---
 # Diretório onde estão os arquivos Excel originais
-DIRETORIO_ENTRADA = r"automacao_etl/scripts/dados"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DIRETORIO_ENTRADA = os.path.join(BASE_DIR, "dados")
 
 # Colunas a serem removidas na etapa 1
 COLUNAS_PARA_REMOVER = [
@@ -66,7 +67,7 @@ def obter_arquivos_zip(diretorio):
     arquivos = [
         os.path.join(diretorio, f)
         for f in os.listdir(diretorio)
-        if f.lower().endswith(".zip") and not f.startswith("~$")
+        if f.lower().endswith(".zip") and not f.startswith("~$") and "linha_do_tempo" in f.lower()
     ]
     return arquivos
 
