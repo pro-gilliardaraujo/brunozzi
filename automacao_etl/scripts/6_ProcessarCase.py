@@ -265,6 +265,39 @@ def processar_ultimo_arquivo_case():
                             # 5. Média Velocidade
                             if 'Velocidade' in df.columns:
                                 stats['Velocidade Média'] = pd.to_numeric(df['Velocidade'], errors='coerce').mean()
+
+                            # 6. GPS Ligado (Tempo e %)
+                            gps_ligado = 0
+                            col_gps_status = 'Auto Guidance Engaged Status'
+                            if col_gps_status in df.columns:
+                                # Garante serie de velocidade
+                                s_velocidade_gps = pd.Series(0, index=df.index)
+                                if 'Velocidade' in df.columns:
+                                    s_velocidade_gps = pd.to_numeric(df['Velocidade'], errors='coerce').fillna(0)
+                                    
+                                mask_gps_active = (df[col_gps_status].astype(str).str.upper() == 'GUIDANCE_ACTIVE') & \
+                                                  (s_velocidade_gps > 0)
+                                gps_ligado = df.loc[mask_gps_active, 'Duração'].sum()
+                            
+                            # Baseado em HORAS MOTOR (Produtivo + Ocioso), não total
+                            tempo_motor_ligado = horas_produtivas + motor_ocioso
+                            
+                            # Se GPS Ligado for maior que motor ligado (pode acontecer por inconsistencia), limita
+                            if gps_ligado > tempo_motor_ligado:
+                                gps_ligado = tempo_motor_ligado
+
+                            tempo_gps_desligado = tempo_motor_ligado - gps_ligado
+                            
+                            stats['Tempo GPS Ligado'] = gps_ligado
+                            stats['Tempo GPS Desligado'] = tempo_gps_desligado
+                            
+                            # Percentuais baseados no TEMPO DE MOTOR LIGADO
+                            if tempo_motor_ligado > 0:
+                                stats['% GPS Ligado'] = (gps_ligado / tempo_motor_ligado * 100)
+                                stats['% GPS Desligado'] = (tempo_gps_desligado / tempo_motor_ligado * 100)
+                            else:
+                                stats['% GPS Ligado'] = 0
+                                stats['% GPS Desligado'] = 0
                                 
                             return stats
 
@@ -308,7 +341,7 @@ def processar_ultimo_arquivo_case():
 
                         # Filtragem de Colunas (Remover Indesejadas)
                         colunas_excluir = [
-                            "APM_GSM", "Altitude", "Auto Guidance Engaged Status", "Carga do Motor", 
+                            "APM_GSM", "Altitude", "Carga do Motor", 
                             "Cross Track Error 3", "Deslizamento da roda", "Direção", "Engine Oil Level Status", 
                             "GPS_ALT", "GPS_CURRENT", "GPS_DIR", "GPS_PDOP", "GPS_SAT", "GPS_SPEED", 
                             "Gear Selected", "Hor.linha trans.", "Latitude bruta", "NETWORK_CONNECTION", 

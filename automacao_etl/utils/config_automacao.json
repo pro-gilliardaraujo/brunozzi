@@ -31,7 +31,7 @@
     "selecao_equipamentos": {
       "unidade": "Selecionar Tudo",
       "frente": ["Selecionar Tudo"],
-      "tipo_equipamento": ["1 - COLHEDORA", "2 - TRANSBORDO", "53 - Caminhão de Vinhaça"],
+      "tipo_equipamento": ["1 - COLHEDORA", "2 - TRANSBORDO"],
       "frota": ["Selecionar Tudo"]
     },
     "parametros": {

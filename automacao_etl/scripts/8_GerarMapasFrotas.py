@@ -1,13 +1,3 @@
-"""
-3_GerarMapasFrotas.py
-
-Gera mapas interativos Leaflet integrando dados de frotas (JSON) 
-com coordenadas geoespaciais (Shapefiles).
-
-Autor: Sistema de Automação ETL
-Data: 2026-02-04
-"""
-
 import os
 import json
 import re

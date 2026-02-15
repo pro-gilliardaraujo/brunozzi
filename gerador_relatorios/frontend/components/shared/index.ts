@@ -1,0 +1,12 @@
+// Shared components - exported for use across different report types
+export * from './cores'
+export * from './CardIndicador'
+export * from './GraficoEficiencia'
+export * from './GraficoMotorOcioso'
+export * from './GraficoManobras'
+export * from './GraficoMediaVelocidade'
+export * from './GraficoUsoGPS'
+export * from './GraficoTop5Ofensores'
+export * from './GraficoDisponibilidadeMecanica'
+export * from './GraficoIntervalos'
+export * from './TabelaResumo'

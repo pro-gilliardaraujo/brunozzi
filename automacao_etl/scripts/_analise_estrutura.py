@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-"""Script para mapear headers de todas as fontes de dados."""
 import json, os, glob
 import openpyxl
 

@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-"""
-6_ConsolidarJSON.py
-
-Consolida dados de múltiplas fontes (Solinftec, Case IH, OPC) 
-em um único JSON por dia, no formato que o frontend espera.
-
-Fontes:
-  - Solinftec: scripts/dados/separados/json/colhedora/frotas/diario/*.json
-  - Case IH:  dados/Consolidado_Case_*.xlsx
-  - OPC:      scripts/dados/separados/xlsx/*.xlsx (Linha do tempo tratado)
-
-Saída:
-  - scripts/dados/separados/json/colhedora/frotas/diario/*.json (sobrescreve)
-"""
-
 import json
 import os
 import glob

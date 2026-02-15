@@ -1,13 +1,3 @@
-"""
-3_ExtrairCase.py
-
-Extrai relatórios de máquinas do Case IH FieldOps usando Playwright.
-Baseado em código gravado e adaptado para automação robusta.
-
-Autor: Sistema de Automação ETL
-Data: 2026-02-08
-"""
-
 import json
 import os
 import time
