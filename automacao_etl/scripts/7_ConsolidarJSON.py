@@ -393,7 +393,9 @@ def consolidar_dia(
 
         # ── Média de Velocidade ──
         vel = 0.0
-        if resumo and "Vel_Colheita_media" in resumo:
+        if resumo and "Velocidade_Media" in resumo:
+            vel = safe_float(resumo["Velocidade_Media"])
+        elif resumo and "Vel_Colheita_media" in resumo:
             vel = safe_float(resumo["Vel_Colheita_media"])
         elif case_extra.get("velocidadeMedia"):
             vel = safe_float(case_extra["velocidadeMedia"])
@@ -503,7 +505,7 @@ def consolidar_dia(
                 "fonte": "solinftec",
             })
 
-            # Agregar ofensores
+            # Agregar ofensores (Fallback se não vier pronto)
             if grupo in ("IMPRODUTIVA", "MANUTENÇÃO"):
                 operation_stats[descricao] += dur
 
@@ -532,6 +534,20 @@ def consolidar_dia(
                 operation_stats[operacao] += dur
 
     # ── Ofensores (Top 5) ──
+    # Se TODOS os dados vierem do Solinftec e tivermos Top5 pré-calculado, poderíamos usar.
+    # Mas como misturamos Case e Solinftec, e o Ofensores é GERAL (não por frota no JSON final, mas global),
+    # a lógica existente de agregar operation_stats globalmente faz sentido para combinar fontes.
+    # PORÉM, o usuário reclamou que estava "esquecendo".
+    # Se quisermos usar o cálculo preciso do Solinftec (com denominador correto),
+    # teríamos que pegar o Top5 de CADA frota Solinftec e somar?
+    # O JSON de saída tem "ofensores" como uma lista GLOBAL.
+    # Mas o Step 4 calcula Top 5 POR EQUIPAMENTO/DIA.
+    # O JSON final espera "ofensores" globais do dia?
+    # "classificando as 5 maiores nesses tempos" -> parece global para o relatório do dia.
+    
+    # Se o relatório do dia é para VÁRIAS frotas, devemos somar tudo.
+    # O problema do cálculo anterior era o denominador (tempo total do dia vs tempo total improdutivo).
+    # Aqui no Step 7:
     total_improd = sum(operation_stats.values())
     ofensores = sorted(operation_stats.items(), key=lambda x: x[1], reverse=True)[:5]
     ofensores_list = []

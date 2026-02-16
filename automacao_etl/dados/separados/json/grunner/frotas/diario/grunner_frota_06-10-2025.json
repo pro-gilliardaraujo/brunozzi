@@ -17,7 +17,8 @@
         "Eficiencia_Operacional": 0.7056100186,
         "Tempo_Total_Manobras_h": 1.3266666667,
         "Quantidade_Manobras": 70,
-        "Tempo_Medio_Manobras_min": 1.1371428571
+        "Tempo_Medio_Manobras_min": 1.1371428571,
+        "Velocidade_Media": 8.9666959189
       }
     ],
     "Intervalos": [
@@ -1961,7 +1962,8 @@
         "Eficiencia_Operacional": 0.0,
         "Tempo_Total_Manobras_h": 0.0,
         "Quantidade_Manobras": 0,
-        "Tempo_Medio_Manobras_min": 0.0
+        "Tempo_Medio_Manobras_min": 0.0,
+        "Velocidade_Media": 0.0
       }
     ],
     "Intervalos": [
@@ -1978,32 +1980,27 @@
       {
         "Descrição da Operação": "INDETERMINADO",
         "Duracao_Improd_h": 23.9997222222,
-        "Total_Horas_Dia_h": 47.9994444444,
-        "Porcentagem_Improdutiva": 50.0
+        "Porcentagem_Improdutiva": 79.8888570398
       },
       {
         "Descrição da Operação": "SEM APONTAMENTO",
         "Duracao_Improd_h": 5.3502777778,
-        "Total_Horas_Dia_h": 47.9994444444,
-        "Porcentagem_Improdutiva": 11.1465410479
+        "Porcentagem_Improdutiva": 17.8096884853
       },
       {
         "Descrição da Operação": "AGUARDANDO COLHEDORA",
         "Duracao_Improd_h": 0.4122222222,
-        "Total_Horas_Dia_h": 47.9994444444,
-        "Porcentagem_Improdutiva": 0.8588062362
+        "Porcentagem_Improdutiva": 1.3721809725
       },
       {
         "Descrição da Operação": "PARADA PROGRAMADA",
         "Duracao_Improd_h": 0.2022222222,
-        "Total_Horas_Dia_h": 47.9994444444,
-        "Porcentagem_Improdutiva": 0.4213011725
+        "Porcentagem_Improdutiva": 0.6731453828
       },
       {
         "Descrição da Operação": "AGUARD COMBOIO",
         "Duracao_Improd_h": 0.0769444444,
-        "Total_Horas_Dia_h": 47.9994444444,
-        "Porcentagem_Improdutiva": 0.1603027813
+        "Porcentagem_Improdutiva": 0.2561281195
       }
     ]
   }

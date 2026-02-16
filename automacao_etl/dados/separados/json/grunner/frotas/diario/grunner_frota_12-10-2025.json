@@ -17,7 +17,8 @@
         "Eficiencia_Operacional": 0.5655092593,
         "Tempo_Total_Manobras_h": 0.2191666667,
         "Quantidade_Manobras": 10,
-        "Tempo_Medio_Manobras_min": 1.315
+        "Tempo_Medio_Manobras_min": 1.315,
+        "Velocidade_Media": 5.4465460499
       }
     ],
     "Intervalos": [
@@ -353,7 +354,8 @@
         "Eficiencia_Operacional": 0.0,
         "Tempo_Total_Manobras_h": 0.0,
         "Quantidade_Manobras": 0,
-        "Tempo_Medio_Manobras_min": 0.0
+        "Tempo_Medio_Manobras_min": 0.0,
+        "Velocidade_Media": 0.0
       }
     ],
     "Intervalos": [
@@ -370,14 +372,12 @@
       {
         "Descrição da Operação": "INDETERMINADO",
         "Duracao_Improd_h": 6.0,
-        "Total_Horas_Dia_h": 12.0,
-        "Porcentagem_Improdutiva": 50.0
+        "Porcentagem_Improdutiva": 97.2272236226
       },
       {
         "Descrição da Operação": "AGUARDANDO COLHEDORA",
         "Duracao_Improd_h": 0.1711111111,
-        "Total_Horas_Dia_h": 12.0,
-        "Porcentagem_Improdutiva": 1.4259259259
+        "Porcentagem_Improdutiva": 2.7727763774
       }
     ]
   }

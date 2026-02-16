@@ -371,6 +371,7 @@ def tratar_arquivo(caminho_arquivo):
         df_calc["vel_colheita_x_min"] = np.where(df_calc["dur_colheita"] > 0, vm * df_calc["dur_colheita"], 0)
         df_calc["vel_vazio_x_min"] = np.where(df_calc["dur_vazio"] > 0, vm * df_calc["dur_vazio"], 0)
         df_calc["vel_carregado_x_min"] = np.where(df_calc["dur_carregado"] > 0, vm * df_calc["dur_carregado"], 0)
+        df_calc["vel_prod_x_min"] = np.where(grupo_norm == "PRODUTIVA", vm * df_calc["Duracao_min"], 0)
 
         df_calc["cnt_manobra"] = np.where(df_calc.get(op_col, "") == "MANOBRA", 1, 0)
         df_calc["cnt_transbordo"] = np.where(df_calc.get(op_col, "") == "TRANSBORDANDO CANA", 1, 0)
@@ -402,6 +403,7 @@ def tratar_arquivo(caminho_arquivo):
                 "vel_carregado_x_min": ("vel_carregado_x_min", "sum"),
                 "cnt_manobra": ("cnt_manobra", "sum"),
                 "cnt_transbordo": ("cnt_transbordo", "sum"),
+                "vel_prod_x_min": ("vel_prod_x_min", "sum"),
             }
             for col_dur in dur_grupo_cols:
                 agg_frota[col_dur] = (col_dur, "sum")
@@ -493,6 +495,11 @@ def tratar_arquivo(caminho_arquivo):
                 df_dia_frota["vel_carregado_x_min"] / df_dia_frota["dur_carregado_min"],
                 np.nan,
             )
+            df_dia_frota["Velocidade_Media"] = np.where(
+                df_dia_frota["dur_prod_min"] > 0,
+                df_dia_frota["vel_prod_x_min"] / df_dia_frota["dur_prod_min"],
+                0,
+            )
             
             # Remover colunas auxiliares em minutos que não são mais necessárias
             cols_drop = [
@@ -528,6 +535,7 @@ def tratar_arquivo(caminho_arquivo):
                 "Tempo_Total_Transbordo_h",
                 "Quantidade_Transbordos",
                 "Tempo_Medio_Transbordo_min",
+                "Velocidade_Media",
             ])
             # Caso Disponibilidade_Mecanica não tenha sido inserida (coluna de manutenção não encontrada nos grupos)
             if "Disponibilidade_Mecanica" in df_dia_frota.columns and "Disponibilidade_Mecanica" not in horas_ordem:
@@ -558,6 +566,7 @@ def tratar_arquivo(caminho_arquivo):
                 "vel_carregado_x_min": ("vel_carregado_x_min", "sum"),
                 "cnt_manobra": ("cnt_manobra", "sum"),
                 "cnt_transbordo": ("cnt_transbordo", "sum"),
+                "vel_prod_x_min": ("vel_prod_x_min", "sum"),
             }
             for col_dur in dur_grupo_cols:
                 agg_operador[col_dur] = (col_dur, "sum")
@@ -656,6 +665,11 @@ def tratar_arquivo(caminho_arquivo):
                 df_dia_operador["vel_carregado_x_min"] / df_dia_operador["dur_carregado_min"],
                 np.nan,
             )
+            df_dia_operador["Velocidade_Media"] = np.where(
+                df_dia_operador["dur_prod_min"] > 0,
+                df_dia_operador["vel_prod_x_min"] / df_dia_operador["dur_prod_min"],
+                0,
+            )
 
             cols_drop = [
                 "dur_total_min", "dur_prod_min", "dur_improd_min", "dur_motor_ocioso_min", "dur_motor_ligado_min", "dur_sem_apont_min",
@@ -685,6 +699,7 @@ def tratar_arquivo(caminho_arquivo):
                 "Tempo_Total_Transbordo_h",
                 "Quantidade_Transbordos",
                 "Tempo_Medio_Transbordo_min",
+                "Velocidade_Media",
             ]
             df_dia_operador = ordenar_colunas(df_dia_operador, group_cols_op, horas_ordem)
 
@@ -865,27 +880,32 @@ def tratar_arquivo(caminho_arquivo):
         # Verificar colunas necessárias
         if all(c in df_calc.columns for c in [col_equip_desc, col_data, grupo_col, op_col]):
             # Filtrar apenas o que é improdutivo (Ofensores)
+            # Definir o que conta como "Improdutiva" para o TOTAL (denominador)
+            # O usuário pediu "tempo de 'IMPRODUTIVA' total".
+            # Isso geralmente refere-se ao Grupo da Operação = 'IMPRODUTIVA'.
+            # df_improd_only já foi filtrado por dur_improd > 0 (na criação do dataframe abaixo),
+            # mas precisamos da soma TOTAL desse grupo para o denominador.
+            
             df_improd_only = df_calc[df_calc["dur_improd"] > 0].copy()
             
             if not df_improd_only.empty:
-                # 1. Calcular Total de Horas por (Equipamento, Data) - usando df_calc completo (todo o tempo)
+                # 1. Calcular Total de Horas IMPRODUTIVAS por (Equipamento, Data)
                 # Isso servirá de denominador para a porcentagem
-                df_total_dia = df_calc.groupby([col_equip_desc, col_data])["Duracao_min"].sum().reset_index()
-                df_total_dia.rename(columns={"Duracao_min": "Total_Horas_Dia_min"}, inplace=True)
+                df_total_improd = df_improd_only.groupby([col_equip_desc, col_data])["dur_improd"].sum().reset_index()
+                df_total_improd.rename(columns={"dur_improd": "Total_Improdutivo_Dia_min"}, inplace=True)
                 
-                # 2. Agrupar por (Equipamento, Data, Operação) - usando apenas improdutivos
-                # Incluímos grupo_col apenas para referência
-                df_grp = df_improd_only.groupby([col_equip_desc, col_data, op_col, grupo_col]).agg(
+                # 2. Agrupar por (Equipamento, Data, Operação)
+                df_grp = df_improd_only.groupby([col_equip_desc, col_data, op_col]).agg(
                     Duracao_Improd_min=("dur_improd", "sum")
                 ).reset_index()
                 
-                # 3. Merge com o Tempo Total do Dia
-                df_grp = df_grp.merge(df_total_dia, on=[col_equip_desc, col_data], how="left")
+                # 3. Merge com o Tempo Total Improdutivo do Dia
+                df_grp = df_grp.merge(df_total_improd, on=[col_equip_desc, col_data], how="left")
                 
-                # 4. Calcular Porcentagem
+                # 4. Calcular Porcentagem (Operação / Total Improdutivo)
                 df_grp["Porcentagem_Improdutiva"] = np.where(
-                    df_grp["Total_Horas_Dia_min"] > 0,
-                    (df_grp["Duracao_Improd_min"] / df_grp["Total_Horas_Dia_min"]) * 100,
+                    df_grp["Total_Improdutivo_Dia_min"] > 0,
+                    (df_grp["Duracao_Improd_min"] / df_grp["Total_Improdutivo_Dia_min"]) * 100,
                     0
                 )
                 
@@ -895,10 +915,13 @@ def tratar_arquivo(caminho_arquivo):
                 
                 # 6. Converter para Horas
                 df_top5_ofensores["Duracao_Improd_h"] = df_top5_ofensores["Duracao_Improd_min"] / 60
-                df_top5_ofensores["Total_Horas_Dia_h"] = df_top5_ofensores["Total_Horas_Dia_min"] / 60
+                
+                # Opcional: manter Total_Improdutivo_Dia_h para referência, se quiserem
+                df_top5_ofensores["Total_Improdutivo_Dia_h"] = df_top5_ofensores["Total_Improdutivo_Dia_min"] / 60
                 
                 # 7. Selecionar e Renomear Colunas
-                cols_top5 = [col_equip_desc, col_data, op_col, "Duracao_Improd_h", "Total_Horas_Dia_h", "Porcentagem_Improdutiva"]
+                # 'Total_Horas_Dia_h' removido pois a porcentagem agora é sobre o improdutivo total
+                cols_top5 = [col_equip_desc, col_data, op_col, "Duracao_Improd_h", "Porcentagem_Improdutiva"]
                 df_top5_ofensores = df_top5_ofensores[cols_top5]
 
         df_frota_intervalos = pd.DataFrame()

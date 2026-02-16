@@ -83,12 +83,12 @@ export function GraficoManobras({ dados, meta, compact = true, listrado = true }
       </div>
 
       {/* Lista */}
-      <div className={`flex flex-col flex-1 ${compact ? "gap-2 overflow-hidden" : "gap-4 overflow-auto"}`}>
+      <div className={`flex flex-col flex-1 ${compact ? "gap-2 overflow-hidden" : "gap-4 overflow-visible"}`}>
         {dadosOrdenados.map((item, index) => {
           const valorSeconds = timeStringToSeconds(item["Tempo Médio (hh:mm)"])
           // Menor é melhor (inverso = true)
           const corItem = corPorMeta(valorSeconds, meta, true)
-          const larguraBarra = (valorSeconds / maxEscala) * 100
+          const larguraBarra = Math.min((valorSeconds / maxEscala) * 100, 100)
           const bgBarra = listrado && index % 2 === 0 ? "bg-white" : "bg-slate-100"
 
           return (
@@ -101,7 +101,7 @@ export function GraficoManobras({ dados, meta, compact = true, listrado = true }
               {/* Nome da Frota: Se compacto, inline (à esquerda) */}
               {!compact && <div className={`font-bold text-xs ${compact ? "mb-0.5" : "mb-1"}`}>{item.Frota}</div>}
 
-              <div className={`flex items-center ${compact ? "gap-1.5" : "gap-2"}`}>
+              <div className={`flex items-center ${compact ? "gap-1.5" : "gap-4"}`}>
                 
                 {/* Se compacto, nome à esquerda */}
                 {compact && (
@@ -109,22 +109,22 @@ export function GraficoManobras({ dados, meta, compact = true, listrado = true }
                 )}
 
                 {/* Lado Esquerdo: Quantidade de Manobras */}
-                <div className="flex flex-col items-center w-20 min-w-[80px]">
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
                   <span 
                     className="font-bold text-xs"
                     style={{ color: corItem }}
                   >
                     {item["Intervalos Válidos"]}
                   </span>
-                  <span className="text-[9px] font-medium text-slate-600">
-                    Manobras
+                  <span className="text-[9px] font-medium text-slate-600 text-center leading-tight">
+                    Qtd
                   </span>
                 </div>
 
                 {/* Centro: Barra */}
                 <div
                   className={`flex-1 ${compact ? "h-5" : "h-6"} ${bgBarra} rounded-sm relative border border-slate-200 ${
-                    compact ? "" : "mt-3 mb-1"
+                    compact ? "" : "my-1"
                   }`}
                 >
                   {/* Barra Colorida */}
@@ -137,7 +137,7 @@ export function GraficoManobras({ dados, meta, compact = true, listrado = true }
                   />
                    {/* Linha da Meta */}
                    <div 
-                      className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10"
+                      className="absolute top-0 bottom-0 w-[2px] bg-black/40 z-10"
                       style={{ left: `${posMeta}%` }}
                     />
                     
@@ -153,18 +153,21 @@ export function GraficoManobras({ dados, meta, compact = true, listrado = true }
                       ? minutesToHm(item["Tempo Total"])
                       : item["Tempo Total (hh:mm)"] || "00:00:00"}
                   </span>
-                  <span className="text-[9px] font-medium text-slate-600">
-                    Tempo Total
+                  <span className="text-[9px] font-medium text-slate-600 text-center leading-tight">
+                    Total
                   </span>
                 </div>
 
                 {/* Valor Final (Tempo Médio em mm:ss) */}
-                <div className="flex flex-col items-center w-20 min-w-[80px]">
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
                   <span 
                     className="font-bold text-xs"
                     style={{ color: corItem }}
                   >
                     {secondsToMmSs(valorSeconds)}
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-600 text-center leading-tight">
+                    Média
                   </span>
                 </div>
               </div>

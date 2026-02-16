@@ -17,6 +17,8 @@
     "Tempo_Total_Manobras_h": 5.5386111111,
     "Quantidade_Manobras": 235,
     "Tempo_Medio_Manobras_min": 1.4141134752,
+    "Velocidade_Media": 4.1790824188,
+    "vel_prod_x_min": 5153.3658333333,
     "Frotas_no_dia": "279, 369, 547, 560",
     "Vel_Colheita_media": 4.6971327869
   },
@@ -38,6 +40,8 @@
     "Tempo_Total_Manobras_h": 2.5166666667,
     "Quantidade_Manobras": 136,
     "Tempo_Medio_Manobras_min": 1.1102941176,
+    "Velocidade_Media": 4.5490327628,
+    "vel_prod_x_min": 5475.2158333333,
     "Frotas_no_dia": "235, 298, 354, 517, 547, 560",
     "Vel_Colheita_media": 4.8595169105
   },
@@ -59,6 +63,8 @@
     "Tempo_Total_Manobras_h": 0.5758333333,
     "Quantidade_Manobras": 29,
     "Tempo_Medio_Manobras_min": 1.1913793103,
+    "Velocidade_Media": 5.2773516342,
+    "vel_prod_x_min": 2454.3203333333,
     "Frotas_no_dia": "375",
     "Vel_Colheita_media": 5.5155592118
   },
@@ -80,6 +86,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "547",
     "Vel_Colheita_media": null
   },
@@ -101,6 +109,8 @@
     "Tempo_Total_Manobras_h": 0.5625,
     "Quantidade_Manobras": 27,
     "Tempo_Medio_Manobras_min": 1.25,
+    "Velocidade_Media": 5.0202118302,
+    "vel_prod_x_min": 932.1696666667,
     "Frotas_no_dia": "235",
     "Vel_Colheita_media": 5.4053674857
   },
@@ -122,6 +132,8 @@
     "Tempo_Total_Manobras_h": 2.2525,
     "Quantidade_Manobras": 98,
     "Tempo_Medio_Manobras_min": 1.3790816327,
+    "Velocidade_Media": 4.3127963894,
+    "vel_prod_x_min": 1186.5221666667,
     "Frotas_no_dia": "235, 517",
     "Vel_Colheita_media": 4.8637246964
   },
@@ -143,6 +155,8 @@
     "Tempo_Total_Manobras_h": 0.6569444444,
     "Quantidade_Manobras": 38,
     "Tempo_Medio_Manobras_min": 1.0372807018,
+    "Velocidade_Media": 5.1883346005,
+    "vel_prod_x_min": 2161.0278333333,
     "Frotas_no_dia": "375",
     "Vel_Colheita_media": 5.4902709273
   },
@@ -164,6 +178,8 @@
     "Tempo_Total_Manobras_h": 1.0077777778,
     "Quantidade_Manobras": 54,
     "Tempo_Medio_Manobras_min": 1.1197530864,
+    "Velocidade_Media": 3.2744577347,
+    "vel_prod_x_min": 748.2681666667,
     "Frotas_no_dia": "547",
     "Vel_Colheita_media": 3.6507101061
   },
@@ -185,6 +201,8 @@
     "Tempo_Total_Manobras_h": 0.8608333333,
     "Quantidade_Manobras": 36,
     "Tempo_Medio_Manobras_min": 1.4347222222,
+    "Velocidade_Media": 3.9498427856,
+    "vel_prod_x_min": 1130.5766666667,
     "Frotas_no_dia": "298",
     "Vel_Colheita_media": 4.353251865
   },
@@ -206,6 +224,8 @@
     "Tempo_Total_Manobras_h": 0.9069444444,
     "Quantidade_Manobras": 44,
     "Tempo_Medio_Manobras_min": 1.2367424242,
+    "Velocidade_Media": 5.0201785587,
+    "vel_prod_x_min": 2347.6028333333,
     "Frotas_no_dia": "354",
     "Vel_Colheita_media": 5.4437776792
   },
@@ -227,6 +247,8 @@
     "Tempo_Total_Manobras_h": 0.5641666667,
     "Quantidade_Manobras": 20,
     "Tempo_Medio_Manobras_min": 1.6925,
+    "Velocidade_Media": 4.2839461532,
+    "vel_prod_x_min": 912.2663333333,
     "Frotas_no_dia": "298, 469",
     "Vel_Colheita_media": 4.7747264098
   }

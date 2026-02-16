@@ -68,7 +68,7 @@ export function GraficoMotorOcioso({ dados, meta, compact = true, listrado = tru
               {/* Nome da Frota: Se compacto, inline (à esquerda) */}
               {!compact && <div className={`font-bold text-xs ${compact ? "mb-0.5" : "mb-1"}`}>{item.nome}</div>}
               
-              <div className={`flex items-center ${compact ? "gap-1.5" : "gap-2"}`}>
+              <div className={`flex items-center ${compact ? "gap-1.5" : "gap-4"}`}>
                 
                 {/* Se compacto, nome à esquerda */}
                 {compact && (
@@ -76,23 +76,25 @@ export function GraficoMotorOcioso({ dados, meta, compact = true, listrado = tru
                 )}
 
                 {/* Lado Esquerdo: Tempo Ocioso */}
-                <div className="flex flex-col items-center w-20 min-w-[80px]">
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
                   <span className="font-bold text-xs" style={{ color: corItem }}>
                     {formatarHorasMinutos(item.tempoOcioso)}
                   </span>
                   <span className="text-[9px] font-medium text-slate-600">
-                    Tempo Ocioso
+                    Ocioso
                   </span>
                 </div>
 
                 {/* Barra Combinada */}
-                <div className={`flex-1 ${compact ? "h-5" : "h-6"} bg-[#48BB78] rounded-sm relative border border-slate-200 overflow-hidden`}>
+                <div className={`flex-1 ${compact ? "h-5" : "h-6"} bg-[#48BB78] rounded-sm relative border border-slate-200 overflow-hidden ${
+                    compact ? "" : "my-1"
+                  }`}>
                    {/* Barra Ocioso */}
                    <div 
                       className="h-full transition-all duration-500"
                       style={{ 
                         width: `${larguraOcioso}%`,
-                        backgroundColor: 'red'
+                        backgroundColor: '#E53E3E'
                       }}
                    />
                    
@@ -104,18 +106,23 @@ export function GraficoMotorOcioso({ dados, meta, compact = true, listrado = tru
                 </div>
 
                 {/* Lado Direito: Tempo Ligado */}
-                <div className="flex flex-col items-center w-20 min-w-[80px]">
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
                   <span className="font-bold text-xs" style={{ color: '#48BB78' }}>
                     {formatarHorasMinutos(item.tempoLigado)}
                   </span>
                   <span className="text-[9px] font-medium text-slate-500">
-                    Tempo Ligado
+                    Ligado
                   </span>
                 </div>
 
                 {/* Valor Final Percentual */}
-                <div className="font-bold text-sm w-16 text-right" style={{ color: corItem }}>
-                  {item.percentual.toFixed(2)}%
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
+                  <span className="font-bold text-sm" style={{ color: corItem }}>
+                    {item.percentual.toFixed(2)}%
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-600">
+                    % Ocioso
+                  </span>
                 </div>
 
               </div>

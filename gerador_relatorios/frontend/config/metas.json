@@ -6,5 +6,6 @@
   "manobras": 60,
   "producao": 1000,
   "disponibilidade": 90,
-  "motorOcioso": 15
+  "motorOcioso": 15,
+  "usoGPS": 90
 }

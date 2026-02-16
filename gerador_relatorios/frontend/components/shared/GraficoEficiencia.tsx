@@ -48,67 +48,74 @@ export function GraficoEficiencia({ dados, meta, compact = true, listrado = true
             {/* Nome da Frota: Se compacto, inline (à esquerda) */}
             {!compact && <div className="font-bold text-xs mb-1">{item.nome}</div>}
             
-            <div className={`flex items-center ${compact ? "gap-1.5" : "gap-2"}`}>
-              {/* Se compacto, nome à esquerda */}
-              {compact && (
-                 <div className="font-bold text-xs w-10 text-center flex-shrink-0 self-center">{item.nome}</div>
-              )}
+              <div className={`flex items-center ${compact ? "gap-1.5" : "gap-4"}`}>
+                {/* Se compacto, nome à esquerda */}
+                {compact && (
+                   <div className="font-bold text-xs w-10 text-center flex-shrink-0 self-center">{item.nome}</div>
+                )}
 
-              {/* Lado Esquerdo: Horas Elevador */}
-              <div className="flex flex-col items-center w-20 min-w-[80px]">
-                <span 
-                  className="font-bold text-xs"
-                  style={{ color: corItem }}
-                >
-                  {formatarHoras(item.horasElevador)}
-                </span>
-                <span className="text-[9px] font-medium text-slate-600">
-                  Horas Elevador
-                </span>
-              </div>
+                {/* Lado Esquerdo: Horas Elevador */}
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
+                  <span 
+                    className="font-bold text-xs"
+                    style={{ color: corItem }}
+                  >
+                    {formatarHoras(item.horasElevador)}
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-600">
+                    Elevador
+                  </span>
+                </div>
 
-              {/* Barra de Progresso */}
-              <div className={`flex-1 ${compact ? "h-5" : "h-6"} ${bgBarra} rounded-sm relative border border-slate-200`}>
-                {/* Barra Colorida */}
-                <div 
-                  className="h-full rounded-l-sm transition-all duration-500"
-                  style={{ 
-                    width: `${larguraBarra}%`,
-                    backgroundColor: corItem
-                  }}
-                />
-                
-                {/* Linha da Meta */}
-                <div 
-                  className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10"
-                  style={{ left: `${meta}%` }}
-                />
-              </div>
+                {/* Barra de Progresso */}
+                <div className={`flex-1 ${compact ? "h-5" : "h-6"} ${bgBarra} rounded-sm relative border border-slate-200 ${
+                  compact ? "" : "my-1"
+                }`}>
+                  {/* Barra Colorida */}
+                  <div 
+                    className="h-full rounded-l-sm transition-all duration-500"
+                    style={{ 
+                      width: `${larguraBarra}%`,
+                      backgroundColor: corItem
+                    }}
+                  />
+                  
+                  {/* Linha da Meta */}
+                  <div 
+                    className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10"
+                    style={{ left: `${meta}%` }}
+                  />
+                </div>
 
-              {/* Lado Direito: Horas Motor */}
-              <div className="flex flex-col items-center w-20 min-w-[80px]">
-                <span 
-                  className="font-bold text-xs"
-                  style={{ color: corItem }}
-                >
-                  {formatarHoras(item.horasMotor)}
-                </span>
-                <span className="text-[9px] font-medium text-slate-600">
-                  Horas Motor
-                </span>
-              </div>
+                {/* Lado Direito: Horas Motor */}
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
+                  <span 
+                    className="font-bold text-xs"
+                    style={{ color: corItem }}
+                  >
+                    {formatarHoras(item.horasMotor)}
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-600">
+                    Motor
+                  </span>
+                </div>
 
-              {/* Valor Final Eficiência */}
-              <div 
-                className="font-bold text-sm w-16 text-right"
-                style={{ color: corItem }}
-              >
-                {item.eficiencia.toFixed(2)}%
+                {/* Valor Final Eficiência */}
+                <div className="flex flex-col items-center w-16 min-w-[64px]">
+                  <span 
+                    className="font-bold text-sm"
+                    style={{ color: corItem }}
+                  >
+                    {item.eficiencia.toFixed(2)}%
+                  </span>
+                  <span className="text-[9px] font-medium text-slate-600">
+                    Eficiência
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
     </div>
   )
 }

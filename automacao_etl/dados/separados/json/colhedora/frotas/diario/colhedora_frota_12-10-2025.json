@@ -3,7 +3,7 @@
     "date": "2025-10-12",
     "type": "cd_diario_novo",
     "frente": "frente5",
-    "generated_at": "2026-02-10T18:20:01.566027",
+    "generated_at": "2026-02-15T10:48:08.956510",
     "fontes": [
       "solinftec",
       "opc"
@@ -340,7 +340,7 @@
     {
       "id": 1,
       "nome": "235",
-      "velocidade": 0.0,
+      "velocidade": 4.0839,
       "fonte": "solinftec"
     },
     {
@@ -352,7 +352,7 @@
     {
       "id": 3,
       "nome": "298",
-      "velocidade": 0.0,
+      "velocidade": 3.3544,
       "fonte": "solinftec"
     },
     {
@@ -364,7 +364,7 @@
     {
       "id": 5,
       "nome": "369",
-      "velocidade": 0.0,
+      "velocidade": 4.634,
       "fonte": "solinftec"
     },
     {
@@ -382,19 +382,19 @@
     {
       "id": 8,
       "nome": "517",
-      "velocidade": 0.0,
+      "velocidade": 2.7925,
       "fonte": "solinftec"
     },
     {
       "id": 9,
       "nome": "547",
-      "velocidade": 0.0,
+      "velocidade": 3.4271,
       "fonte": "solinftec"
     },
     {
       "id": 10,
       "nome": "560",
-      "velocidade": 0.0,
+      "velocidade": 4.5206,
       "fonte": "solinftec"
     },
     {

@@ -17,6 +17,8 @@
     "Tempo_Total_Manobras_h": 1.2622222222,
     "Quantidade_Manobras": 65,
     "Tempo_Medio_Manobras_min": 1.1651282051,
+    "Velocidade_Media": 4.5801311276,
+    "vel_prod_x_min": 1758.0833333333,
     "Frotas_no_dia": "279, 369, 560",
     "Vel_Colheita_media": 5.1308308541
   },
@@ -38,6 +40,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "235",
     "Vel_Colheita_media": null
   },
@@ -59,6 +63,8 @@
     "Tempo_Total_Manobras_h": 1.1413888889,
     "Quantidade_Manobras": 48,
     "Tempo_Medio_Manobras_min": 1.4267361111,
+    "Velocidade_Media": 3.6934237337,
+    "vel_prod_x_min": 1286.9735,
     "Frotas_no_dia": "235, 547",
     "Vel_Colheita_media": 4.0253434933
   },
@@ -80,6 +86,8 @@
     "Tempo_Total_Manobras_h": 0.2522222222,
     "Quantidade_Manobras": 13,
     "Tempo_Medio_Manobras_min": 1.1641025641,
+    "Velocidade_Media": 2.792455083,
+    "vel_prod_x_min": 409.2808333333,
     "Frotas_no_dia": "517",
     "Vel_Colheita_media": 3.0299581537
   },
@@ -101,6 +109,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "375",
     "Vel_Colheita_media": null
   },
@@ -122,6 +132,8 @@
     "Tempo_Total_Manobras_h": 0.3086111111,
     "Quantidade_Manobras": 13,
     "Tempo_Medio_Manobras_min": 1.4243589744,
+    "Velocidade_Media": 3.3543603425,
+    "vel_prod_x_min": 450.5465,
     "Frotas_no_dia": "298",
     "Vel_Colheita_media": 3.6725158319
   },
@@ -143,6 +155,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "354",
     "Vel_Colheita_media": null
   },
@@ -164,6 +178,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "469",
     "Vel_Colheita_media": null
   }

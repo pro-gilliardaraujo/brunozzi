@@ -17,6 +17,8 @@
     "Tempo_Total_Manobras_h": 4.1188888889,
     "Quantidade_Manobras": 210,
     "Tempo_Medio_Manobras_min": 1.1768253968,
+    "Velocidade_Media": 4.8002379136,
+    "vel_prod_x_min": 5034.0095,
     "Frotas_no_dia": "279, 369, 560",
     "Vel_Colheita_media": 5.417629434
   },
@@ -38,6 +40,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 5.17,
+    "vel_prod_x_min": 25.85,
     "Frotas_no_dia": "235, 298, 517",
     "Vel_Colheita_media": 5.17
   },
@@ -59,6 +63,8 @@
     "Tempo_Total_Manobras_h": 0.5216666667,
     "Quantidade_Manobras": 27,
     "Tempo_Medio_Manobras_min": 1.1592592593,
+    "Velocidade_Media": 4.2261619032,
+    "vel_prod_x_min": 867.4901666667,
     "Frotas_no_dia": "547",
     "Vel_Colheita_media": 4.6004253688
   },
@@ -80,6 +86,8 @@
     "Tempo_Total_Manobras_h": 0.2741666667,
     "Quantidade_Manobras": 12,
     "Tempo_Medio_Manobras_min": 1.3708333333,
+    "Velocidade_Media": 3.1625166596,
+    "vel_prod_x_min": 371.7538333333,
     "Frotas_no_dia": "517",
     "Vel_Colheita_media": 3.4582937685
   },
@@ -101,6 +109,8 @@
     "Tempo_Total_Manobras_h": 0.0341666667,
     "Quantidade_Manobras": 3,
     "Tempo_Medio_Manobras_min": 0.6833333333,
+    "Velocidade_Media": 4.159804878,
+    "vel_prod_x_min": 113.7013333333,
     "Frotas_no_dia": "517",
     "Vel_Colheita_media": 4.4698747528
   },
@@ -122,6 +132,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "375",
     "Vel_Colheita_media": null
   },
@@ -143,6 +155,8 @@
     "Tempo_Total_Manobras_h": 0.8211111111,
     "Quantidade_Manobras": 38,
     "Tempo_Medio_Manobras_min": 1.2964912281,
+    "Velocidade_Media": 3.1035886796,
+    "vel_prod_x_min": 623.2523333333,
     "Frotas_no_dia": "298, 547",
     "Vel_Colheita_media": 3.5129572198
   },
@@ -164,6 +178,8 @@
     "Tempo_Total_Manobras_h": 0.0,
     "Quantidade_Manobras": 0,
     "Tempo_Medio_Manobras_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "354",
     "Vel_Colheita_media": null
   },
@@ -185,6 +201,8 @@
     "Tempo_Total_Manobras_h": 0.2672222222,
     "Quantidade_Manobras": 11,
     "Tempo_Medio_Manobras_min": 1.4575757576,
+    "Velocidade_Media": 4.0904716432,
+    "vel_prod_x_min": 585.4146666667,
     "Frotas_no_dia": "298, 469",
     "Vel_Colheita_media": 4.3735265574
   }

@@ -20,7 +20,10 @@
     "Tempo_Total_Transbordo_h": 0.3530555556,
     "Quantidade_Transbordos": 13,
     "Tempo_Medio_Transbordo_min": 1.6294871795,
+    "Velocidade_Media": 4.7730919616,
+    "vel_prod_x_min": 1566.6083333333,
     "Frotas_no_dia": "153, 163, 202",
+    "Vel_Colheita_media": 5.2304009575,
     "Vel_Desl_Vazio_media": 4.8879875195,
     "Vel_Desl_Carregado_media": 4.119340708
   },
@@ -45,7 +48,10 @@
     "Tempo_Total_Transbordo_h": 1.4058333333,
     "Quantidade_Transbordos": 8,
     "Tempo_Medio_Transbordo_min": 10.54375,
+    "Velocidade_Media": 6.6493680778,
+    "vel_prod_x_min": 1971.2051666667,
     "Frotas_no_dia": "371",
+    "Vel_Colheita_media": 3.9641239368,
     "Vel_Desl_Vazio_media": 6.4761025063,
     "Vel_Desl_Carregado_media": 8.7303448276
   },
@@ -70,7 +76,10 @@
     "Tempo_Total_Transbordo_h": 0.0,
     "Quantidade_Transbordos": 0,
     "Tempo_Medio_Transbordo_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "508",
+    "Vel_Colheita_media": null,
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": null
   },
@@ -95,7 +104,10 @@
     "Tempo_Total_Transbordo_h": 0.36,
     "Quantidade_Transbordos": 10,
     "Tempo_Medio_Transbordo_min": 2.16,
+    "Velocidade_Media": 6.0821864333,
+    "vel_prod_x_min": 3266.7423333333,
     "Frotas_no_dia": "421, 422",
+    "Vel_Colheita_media": 4.2718678475,
     "Vel_Desl_Vazio_media": 9.1898046376,
     "Vel_Desl_Carregado_media": 6.7077889984
   },
@@ -120,7 +132,10 @@
     "Tempo_Total_Transbordo_h": 0.0,
     "Quantidade_Transbordos": 0,
     "Tempo_Medio_Transbordo_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "506",
+    "Vel_Colheita_media": null,
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": null
   },
@@ -145,7 +160,10 @@
     "Tempo_Total_Transbordo_h": 0.0,
     "Quantidade_Transbordos": 0,
     "Tempo_Medio_Transbordo_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "112",
+    "Vel_Colheita_media": null,
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": null
   },
@@ -170,7 +188,10 @@
     "Tempo_Total_Transbordo_h": 0.0,
     "Quantidade_Transbordos": 0,
     "Tempo_Medio_Transbordo_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "507",
+    "Vel_Colheita_media": null,
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": null
   },
@@ -195,7 +216,10 @@
     "Tempo_Total_Transbordo_h": 0.0,
     "Quantidade_Transbordos": 0,
     "Tempo_Medio_Transbordo_min": 0.0,
+    "Velocidade_Media": 0.0,
+    "vel_prod_x_min": 0.0,
     "Frotas_no_dia": "317",
+    "Vel_Colheita_media": null,
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": null
   },
@@ -220,7 +244,10 @@
     "Tempo_Total_Transbordo_h": 0.0,
     "Quantidade_Transbordos": 0,
     "Tempo_Medio_Transbordo_min": 0.0,
+    "Velocidade_Media": 5.7007738005,
+    "vel_prod_x_min": 1247.5193333333,
     "Frotas_no_dia": "372",
+    "Vel_Colheita_media": 3.9485705381,
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": 7.2127461936
   }
