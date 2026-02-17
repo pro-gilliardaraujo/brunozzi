@@ -15,6 +15,7 @@ import { TabelaLavagem } from "./componentes/TabelaLavagem"
 import { TabelaRoletes } from "./componentes/TabelaRoletes"
 import { GraficoMotorOcioso } from "./componentes/GraficoMotorOcioso"
 import { GraficoTop5Ofensores } from "./componentes/GraficoTop5Ofensores"
+import { GraficoEficienciaOperacional } from "./componentes/GraficoEficienciaOperacional"
 import { GraficoDisponibilidadeMecanica } from "./componentes/GraficoDisponibilidadeMecanica"
 import { GraficoIntervalos, Intervalo } from "./componentes/GraficoIntervalos"
 import { CardIndicador } from "./componentes/CardIndicador"
@@ -167,6 +168,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     ofensores, 
     disponibilidade_mecanica, 
     eficiencia_energetica, 
+    eficiencia_operacional,
     motor_ocioso, 
     uso_gps, 
     media_velocidade, 
@@ -662,6 +664,25 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   const dadosEficienciaNaoZero = dadosValidos.filter(d => d.eficiencia > 0)
   const mediaEficiencia = dadosEficienciaNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaNaoZero.length || 1)
 
+  // Cálculos para Eficiência Operacional
+  const dadosOperacionalBase = React.useMemo(() => {
+    const lista = Array.isArray(eficiencia_operacional) ? eficiencia_operacional : []
+    return lista.filter((d: any) => d?.nome)
+  }, [eficiencia_operacional])
+
+  const dadosValidosOperacional = React.useMemo(() => {
+    return buildNamedSeries(
+      dadosOperacionalBase,
+      qtdFrotasEfetivo,
+      "nome",
+      (name, idx) => ({ id: `ef-op-${idx + 1}`, nome: name, eficiencia: 0, horasMotor: 0, horasElevador: 0 })
+    )
+  }, [buildNamedSeries, dadosOperacionalBase, qtdFrotasEfetivo])
+
+  const metaEficienciaOperacional = metas.eficienciaOperacional || 60
+  const dadosEficienciaOperacionalNaoZero = dadosValidosOperacional.filter(d => d.eficiencia > 0)
+  const mediaEficienciaOperacional = dadosEficienciaOperacionalNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaOperacionalNaoZero.length || 1)
+
   // Cálculos para Horas Elevador
   // Usando os mesmos dados de eficiência energética para consistência
   const metaHorasElevador = metas.horaElevador // ex: 5
@@ -913,6 +934,33 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                   <GraficoEficiencia 
                     dados={dadosValidos} 
                     meta={metaEficiencia} 
+                    compact={false}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 3 - Eficiência Operacional */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col h-full">
+              <SectionTitle title={`Eficiência Operacional${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
+              <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
+                <CabecalhoMeta 
+                  meta={metaEficienciaOperacional} 
+                  media={mediaEficienciaOperacional} 
+                  tipo="porcentagem"
+                  compact={false}
+                />
+                <div className="flex-1 overflow-hidden mt-1">
+                  <GraficoEficienciaOperacional 
+                    dados={dadosValidosOperacional} 
+                    meta={metaEficienciaOperacional} 
                     compact={false}
                   />
                 </div>
