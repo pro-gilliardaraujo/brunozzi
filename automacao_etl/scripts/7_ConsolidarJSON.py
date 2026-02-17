@@ -3,6 +3,7 @@ import os
 import glob
 import re
 import sys
+import zipfile
 from datetime import datetime
 from collections import defaultdict
 
@@ -119,7 +120,11 @@ def load_case_data() -> dict:
 
     for cf in case_files:
         print(f"  📂 Carregando Case: {os.path.basename(cf)}")
-        wb = openpyxl.load_workbook(cf, read_only=True)
+        try:
+            wb = openpyxl.load_workbook(cf, read_only=True)
+        except (KeyError, zipfile.BadZipFile, OSError) as e:
+            print(f"  ⚠️  Arquivo Case inválido ou corrompido, ignorando: {os.path.basename(cf)} ({e})")
+            continue
 
         # Aba "Resumo" contém dados por frota para o período inteiro
         if "Resumo" in wb.sheetnames:

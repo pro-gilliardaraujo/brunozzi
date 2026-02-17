@@ -640,7 +640,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       base,
       qtdFrotasEfetivo,
       "nome",
-      (name, idx) => ({ id: `oc-${idx + 1}`, nome: name, percentual: 0 })
+      (name, idx) => ({ id: `oc-${idx + 1}`, nome: name, percentual: 0, tempoLigado: 0, tempoOcioso: 0 })
     )
   }, [buildNamedSeries, motor_ocioso, qtdFrotasEfetivo])
 
@@ -726,12 +726,13 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   // Página 7 - Ofensores e Disponibilidade
   const dadosOfensores = (ofensores || []).map(item => {
     // Tenta extrair o nome após o código (ex: "8040 - MANUTENCAO" -> "MANUTENCAO")
-    const parts = item.nome.split(' - ')
-    const nome = parts.length > 1 ? parts.slice(1).join(' - ') : item.nome
+    const rawNome = ((item as any)?.nome ?? (item as any)?.operacao ?? '') as string
+    const parts = typeof rawNome === 'string' ? rawNome.split(' - ') : []
+    const nome = parts.length > 1 ? parts.slice(1).join(' - ') : rawNome
     return {
       nome,
-      percentual: item.percentual,
-      duracao: item.duracao
+      percentual: (item as any)?.percentual ?? (item as any)?.porcentagem ?? 0,
+      duracao: (item as any)?.duracao ?? (item as any)?.tempo ?? 0
     }
   })
 
@@ -1097,21 +1098,31 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       </div>
 
 
-      {/* PÁGINA 7 - Top 5 Ofensores e Disponibilidade Mecânica */}
-      {/* PÁGINA 7 - Top 5 Ofensores */}
+      {/* PÁGINA 7 - Motor Ocioso */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-          <div className="flex-1 flex flex-col GAP-2 overflow-hidden">
-            {/* Top 5 Ofensores - 40% */}
-            <div className="flex flex-col" style={{ height: "40%" }}>
-              <SectionTitle title={`Top 5 Ofensores${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                <GraficoTop5Ofensores dados={dadosOfensores} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col h-full">
+              <SectionTitle title={`Motor Ocioso${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
+              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
+                 <GraficoMotorOcioso 
+                    dados={motorOciosoFiltrado} 
+                    meta={metas.motorOcioso || 5} 
+                    compact={false}
+                 />
               </div>
             </div>
-            {/* Disponibilidade Mecânica - 60% */}
-            <div className="flex flex-col" style={{ height: "60%" }}>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 8 - Disponibilidade Mecânica */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col h-full">
               <SectionTitle title={`Disponibilidade Mecânica${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col">
                 <CabecalhoMeta 
@@ -1127,7 +1138,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                   <GraficoDisponibilidadeMecanica 
                     dados={disponibilidadeFiltrada || []} 
                     meta={metas.disponibilidadeMecanica || 90} 
-                    compact={true}
+                    compact={false}
                   />
                 </div>
               </div>
@@ -1135,6 +1146,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
           </div>
         </div>
       </div>
+
 
       {/* PÁGINAS DINÂMICAS - Intervalos de Operação */}
       {/* 

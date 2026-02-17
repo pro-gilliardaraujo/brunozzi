@@ -546,8 +546,8 @@ def criar_mapa_padrao(dados_frotas, titulo_legenda, nome_arquivo, pasta_saida, c
         folium.PolyLine(
             locations=coords,
             color=cor,
-            weight=4,
-            opacity=0.8,
+            weight=ESPESSURA_LINHA_PADRAO,
+            opacity=OPACIDADE_LINHA,
             tooltip=f"Frota {frota_id} ({fonte})"
         ).add_to(mapa)
         
