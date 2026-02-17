@@ -30,12 +30,12 @@ import { downloadPdfBuffer } from "@/lib/pdf-utils"
 
 import { MapaIframe } from './componentes/MapaIframe'
 
-const LOGO_URL = "https://kjlwqezxzqjfhacmjhbh.supabase.co/storage/v1/object/public/sourcefiles/Logo%20IB%20Full.png"
+const LOGO_URL = "/logo.png"
 
 function Header({ tituloCompleto, date, fonte }: { tituloCompleto: string; date: string; fonte?: string }) {
   return (
     <div className="flex items-center justify-between px-4 pt-4 mb-2">
-      <img src={LOGO_URL} alt="Logo IB" className="h-12 object-contain" />
+      <img src={LOGO_URL} alt="Logo Empresa" className="h-12 object-contain" />
       <div className="text-center">
         <div className="text-lg font-bold text-black">{tituloCompleto}</div>
         <div className="text-sm font-medium text-gray-700 mt-1 flex items-center justify-center gap-2">
@@ -54,7 +54,7 @@ function Header({ tituloCompleto, date, fonte }: { tituloCompleto: string; date:
           )}
         </div>
       </div>
-      <img src={LOGO_URL} alt="Logo IB" className="h-12 object-contain" />
+      <img src={LOGO_URL} alt="Logo Empresa" className="h-12 object-contain" />
     </div>
   )
 }
@@ -237,7 +237,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   const MAP_FRENTES: Record<string, string> = { 'frente5': 'Frente BP Ituiutaba' }
   const frenteNome = frenteNomeStorage || MAP_FRENTES[frenteCodigo] || (frenteCodigo?.startsWith('Frente') ? frenteCodigo : (frenteCodigo ? `Frente ${frenteCodigo}` : 'Frente Desconhecida'))
   const periodoLabel = period === "semanal" ? "Semanal" : "Diário"
-  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Colhedoras ${frenteNome}`
+  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Colhedoras`
   const nomeDataArquivo =
     period === "semanal"
       ? `${startStr.replace(/\//g, "_")}-${endStr.replace(/\//g, "_")}`
@@ -1097,10 +1097,10 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       */}
       {period === "diario" &&
         (() => {
-          const totalPages = Math.ceil(intervalosAgrupados.length / 4)
+          const totalPages = Math.ceil(intervalosAgrupados.length / 5)
           return Array.from({ length: totalPages }).map((_, pageIndex) => {
-            const startIndex = pageIndex * 4
-            const pageItems = intervalosAgrupados.slice(startIndex, startIndex + 4)
+            const startIndex = pageIndex * 5
+            const pageItems = intervalosAgrupados.slice(startIndex, startIndex + 5)
 
             return (
               <div key={`intervalos-page-${pageIndex}`} data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
