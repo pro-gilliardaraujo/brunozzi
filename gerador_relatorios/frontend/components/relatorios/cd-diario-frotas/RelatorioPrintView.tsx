@@ -741,9 +741,8 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     const nome = f.nome;
     const disp = (disponibilidadeFiltrada || []).find((d: any) => d.nome === nome);
     const ocioso = (motorOciosoFiltrado || []).find((d: any) => d.nome === nome);
-    const gps = (dadosUsoGPS || []).find((d: any) => d.nome === nome);
     const vel = (mediaVelocidadeFiltrada || []).find((d: any) => d.nome === nome);
-    const prod = (producao_por_frota || []).find((d: any) => d.nome === nome);
+    const efop = (dadosValidosOperacional || []).find((d: any) => d.nome === nome);
     const man = (manobrasFiltradas || []).find((d: any) => String(d.Frota) === nome);
     const elev = (horas_elevador || []).filter((d: any) => d.nome === nome).reduce((acc: number, curr: any) => acc + Number(curr?.valor || 0), 0);
 
@@ -751,9 +750,8 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       frota: nome,
       eficiencia: f.eficiencia || 0,
       horasElevador: elev || 0,
-      producao: prod?.valor || 0,
       velocidade: vel?.velocidade || 0,
-      gps: gps?.porcentagem || 0,
+      eficienciaOperacional: efop?.eficiencia || 0,
       manobra: man ? Number(man['Tempo Total'] || 0) * 60 : 0,
       ocioso: ocioso?.percentual || 0,
       disponibilidade: disp?.disponibilidade || 0
@@ -1214,7 +1212,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                   titulo="Uso GPS"
                   meta={metas.usoGPS}
                   unidade="%"
-                  dados={dadosResumo.map(d => ({ valor: d.gps }))}
+                  dados={dadosUsoGPS.map(d => ({ valor: d.porcentagem }))}
                   tipo="asc"
                 />
               )}
@@ -1346,45 +1344,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                   <Download className="mr-2 h-3.5 w-3.5" /> {isGenerating ? "Gerando..." : "Baixar PDF"}
                 </Button>
               </div>
-
-              {showMockControls && (
-                <div className="flex flex-col gap-2 border-t pt-2">
-                  <div className="text-[11px] font-semibold text-slate-700">Mocks</div>
-                  <div className="grid grid-cols-[1fr_66px] items-center gap-2">
-                    <Label className="text-[11px] text-slate-600">Qtd frotas</Label>
-                    <Input
-                      type="number"
-                      className="h-8 text-xs"
-                      min={1}
-                      max={MAX_MOCK_QTD_FROTAS}
-                      value={clampInt(mockQtdFrotas, 1, MAX_MOCK_QTD_FROTAS)}
-                      onChange={(e) => setMockQtdFrotas(clampInt(e.target.value, 1, MAX_MOCK_QTD_FROTAS))}
-                    />
-                  </div>
-                  <div className="grid grid-cols-[1fr_66px] items-center gap-2">
-                    <Label className="text-[11px] text-slate-600">Rows lavagem</Label>
-                    <Input
-                      type="number"
-                      className="h-8 text-xs"
-                      min={0}
-                      max={50}
-                      value={clampInt(mockQtdLavagemRows, 0, 50)}
-                      onChange={(e) => setMockQtdLavagemRows(clampInt(e.target.value, 0, 50))}
-                    />
-                  </div>
-                  <div className="grid grid-cols-[1fr_66px] items-center gap-2">
-                    <Label className="text-[11px] text-slate-600">Rows roletes</Label>
-                    <Input
-                      type="number"
-                      className="h-8 text-xs"
-                      min={0}
-                      max={50}
-                      value={clampInt(mockQtdRoletesRows, 0, 50)}
-                      onChange={(e) => setMockQtdRoletesRows(clampInt(e.target.value, 0, 50))}
-                    />
-                  </div>
-                </div>
-              )}
             </>
           )}
 
