@@ -327,10 +327,11 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     setZoomPercent(next)
   }, [zoomPercent])
   const handleDownloadPdf = React.useCallback(async () => {
+    if (isGenerating) return
     const reportEl = reportRef.current
     if (!reportEl) return
 
-    const filename = `${tituloRelatorio} - ${nomeDataArquivo}.pdf`
+    const filename = `${tituloRelatorio} ${nomeDataArquivo}.pdf`
     const debug = process.env.NODE_ENV !== 'production'
     
     // Captura cookies e localStorage para autenticação no servidor PDF
@@ -349,7 +350,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       
       const currentUrl = typeof window !== 'undefined' ? window.location.href : ''
       
-      const pdfBuffer = await generateRelatorioPdfFromUrl(
+      await generateRelatorioPdfFromUrl(
         currentUrl, 
         filename,
         { 
@@ -363,13 +364,11 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
           }
         }
       )
-
-      downloadPdfBuffer(pdfBuffer, filename)
       
       if (debug) {
-        console.log('[PDF][CD-DIARIO] PDF finalizado e baixado', { filename })
+        console.log('[PDF][CD-DIARIO] PDF finalizado e salvo no backend', { filename })
       }
-      toast({ title: 'PDF gerado', description: 'Verifique a pasta de Downloads do navegador.' })
+      toast({ title: 'PDF gerado', description: 'Arquivo salvo em pasta pdfs na raiz do projeto.' })
     } catch (e) {
       // Se for um erro de "user aborted" ou algo similar que na verdade foi sucesso no download, ignoramos
       console.error('Erro ao gerar PDF', e)
@@ -377,7 +376,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     } finally {
       setIsGenerating(false)
     }
-  }, [tituloRelatorio, nomeDataArquivo, toast, mockQtdFrotas, mockQtdLavagemRows, mockQtdRoletesRows, showMockControls])
+  }, [isGenerating, tituloRelatorio, nomeDataArquivo, toast, mockQtdFrotas, mockQtdLavagemRows, mockQtdRoletesRows, showMockControls])
 
   const computePageMetrics = React.useCallback(() => {
     const pagesRoot = reportRef.current
@@ -444,7 +443,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
           setCurrentPage(bestIndex + 1)
         })
       },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+      { threshold: [0, 0.25, 0.5, 0.75, 1], root: scrollWrapRef.current }
     )
 
     pages.forEach((p) => observer.observe(p))
@@ -908,7 +907,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       `}</style>
       <div className="flex items-start gap-4">
         <div className="flex-1 min-w-0">
-          <div ref={scrollWrapRef} className="overflow-auto report-scroll">
+          <div ref={scrollWrapRef} className={`${isPdfMode ? "overflow-visible" : "overflow-auto"} report-scroll`}>
             <div className="w-fit mx-auto">
               <div
                 ref={reportRef}
@@ -1264,6 +1263,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       <div
         className={`fixed top-3 z-[9999] w-[190px] max-w-[calc(100vw-1.5rem)] print:hidden ${utilitiesPanelLeft == null ? "right-3" : ""}`}
         style={utilitiesPanelLeft == null ? undefined : { left: utilitiesPanelLeft }}
+        data-utilities-panel
       >
         <div
           ref={utilitiesPanelRef}
