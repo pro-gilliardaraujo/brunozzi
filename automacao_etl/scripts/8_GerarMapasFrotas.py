@@ -73,7 +73,8 @@ def normalizar_id_frota(identificador):
 
 def ler_jsons_frotas(pasta_json):
     """
-    Lê todos os arquivos JSON de frotas e agrupa por ID
+    Lê todos os arquivos JSON de frotas e agrupa por ID.
+    Suporta tanto formato bruto {frota_id: info} quanto consolidado {metadata, eficiencia_energetica, ...}.
     
     Args:
         pasta_json: Path para pasta com JSONs diários
@@ -104,12 +105,30 @@ def ler_jsons_frotas(pasta_json):
             with open(arquivo, 'r', encoding='utf-8') as f:
                 dados = json.load(f)
             
-            # Cada JSON tem múltiplas frotas
-            for frota_id, info_frota in dados.items():
-                if frota_id not in frotas_dados:
-                    frotas_dados[frota_id] = {}
-                
-                frotas_dados[frota_id][data_obj] = info_frota
+            # Detectar formato consolidado (tem metadata + eficiencia_energetica)
+            if isinstance(dados, dict) and "metadata" in dados and "eficiencia_energetica" in dados:
+                # Formato consolidado: extrair frotas de eficiencia_energetica[].nome
+                ee_list = dados.get("eficiencia_energetica", [])
+                for entry in ee_list:
+                    nome = entry.get("nome", "")
+                    if not nome:
+                        continue
+                    # Normalizar: extrair só número (ex: "469" de "Frota 469")
+                    num_match = re.search(r'(\d+)', str(nome))
+                    frota_id = num_match.group(1) if num_match else str(nome)
+                    
+                    if frota_id not in frotas_dados:
+                        frotas_dados[frota_id] = {}
+                    
+                    # Guardar dados mínimos para o matching funcionar
+                    frotas_dados[frota_id][data_obj] = {"_consolidado": True, "nome": nome}
+            else:
+                # Formato bruto: cada chave é um frota_id
+                for frota_id, info_frota in dados.items():
+                    if frota_id not in frotas_dados:
+                        frotas_dados[frota_id] = {}
+                    
+                    frotas_dados[frota_id][data_obj] = info_frota
         
         except Exception as e:
             print(f"  ⚠️ Erro ao ler {arquivo.name}: {e}")
@@ -839,12 +858,6 @@ def main():
         for arq in arquivos:
             print(f"  📍 {arq.name}")
         print("=" * 80)
-        for zip_path in PASTA_ZIPS.glob("Colhedora_*.zip"):
-            try:
-                zip_path.unlink()
-                print(f"🧹 Shape removido: {zip_path.name}")
-            except Exception as e:
-                print(f"⚠️ Falha ao remover {zip_path.name}: {e}")
     else:
         print("\n⚠️ Nenhum mapa gerado.")
 

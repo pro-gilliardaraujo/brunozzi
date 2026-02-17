@@ -42,24 +42,7 @@ export function GraficoDisponibilidadeMecanica({ dados, meta, compact = false }:
     : 0
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Cabeçalho */}
-      <div className="bg-slate-50 border border-slate-200 rounded-md p-2 mb-4 text-center">
-        <div className="text-sm font-semibold text-slate-700">
-          <span className="text-black">Meta: </span>
-          <span className="text-[#48BB78] font-bold">{meta.toFixed(2)}%</span>
-          <span className="mx-2 text-slate-400">|</span>
-          <span className="text-black">Média: </span>
-          <span className="font-bold" style={{ color: mediaTotal >= meta ? '#48BB78' : mediaTotal >= meta * 0.9 ? '#ECC94B' : '#E53E3E' }}>
-            {mediaTotal.toFixed(2)}%
-          </span>
-        </div>
-        <div className="text-[10px] text-slate-500 italic mt-0.5">
-          * Média calculada excluindo valores 0h0m
-        </div>
-      </div>
-
-      <div className={`flex flex-col ${compact ? 'gap-2' : 'gap-6'}`}>
+    <div className={`flex flex-col ${compact ? "gap-2" : "gap-4"}`}>
         {dadosOrdenados.map((item, index) => {
           const corItem = corPorMeta(item.disponibilidade, meta, false)
           const larguraBarra = Math.min(item.disponibilidade, 100)
@@ -77,7 +60,7 @@ export function GraficoDisponibilidadeMecanica({ dados, meta, compact = false }:
               */}
               {!compact && <div className="font-bold text-xs mb-1">{item.nome}</div>}
               
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 {/* Se compacto, nome à esquerda */}
                 {compact && (
                    <div className="font-bold text-xs w-10 text-center flex-shrink-0 self-center">{item.nome}</div>
@@ -94,72 +77,44 @@ export function GraficoDisponibilidadeMecanica({ dados, meta, compact = false }:
                 </div>
 
                 {/* Barra de Progresso */}
-                <div className={`flex-1 relative ${compact ? 'mt-3 mb-3' : 'mt-4 mb-4'}`}> 
-                  {/* Container da Barra */}
-                  <div className={`h-6 ${bgBarra} rounded-sm relative border border-slate-200 overflow-visible`}>
-                    {/* Barra Colorida */}
-                    <div 
-                      className="h-full rounded-l-sm transition-all duration-500 relative"
-                      style={{ 
-                        width: `${larguraBarra}%`,
-                        backgroundColor: corItem
-                      }}
-                    >
-                      {/* Linha vertical no fim da barra preenchida (opcional) */}
-                      <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-black/20" />
-                    </div>
-                    
-                    {/* Linha da Meta */}
-                    <div 
-                      className="absolute top-0 bottom-0 w-[2px] bg-black/40 z-0"
-                      style={{ left: `${meta}%` }}
-                    />
-
-                    {/* Valor Porcentagem Acompanhando (Sempre Ativo) */}
-                    <div 
-                      className="absolute bottom-[100%] mb-1 font-bold text-[13px] whitespace-nowrap"
-                      style={{ 
-                        left: `${larguraBarra}%`,
-                        color: corItem 
-                      }}
-                    >
-                      {item.disponibilidade.toFixed(2).replace('.', ',')}%
-                    </div>
-                  </div>
-
-                  {/* Labels da Barra (0%, Meta, 100%) */}
-                  <div className="absolute top-full mt-1 w-full text-[9px] font-medium text-slate-400 h-4 pointer-events-none">
-                    <span className="absolute left-0">0%</span>
-                    {/* Meta alinhada à esquerda da linha (translateX -100% menos um paddingzinho se quiser, mas -100% cola o final do texto na linha) */}
-                    {/* O usuário pediu para o % alinhar à esquerda da barra de meta. 
-                        Isso significa que o texto deve ficar inteiramente à esquerda da linha.
-                        style={{ left: `${meta}%`, transform: 'translateX(-100%)' }} faz exatamente isso.
-                        Adicionando um pequeno margin-right para não colar na linha se desejar, mas o user disse "alinhe a esquerda da barra de meta".
-                    */}
-                    <span 
-                      className="absolute transform -translate-x-full pr-1 whitespace-nowrap" 
-                      style={{ left: `${meta}%` }}
-                    >
-                      Meta: {meta}%
-                    </span>
-                    <span className="absolute right-0">100%</span>
-                  </div>
+                <div className={`flex-1 ${compact ? 'h-5' : 'h-6'} ${bgBarra} rounded-sm relative border border-slate-200`}>
+                  {/* Barra Colorida */}
+                  <div 
+                    className="h-full rounded-l-sm transition-all duration-500"
+                    style={{ 
+                      width: `${larguraBarra}%`,
+                      backgroundColor: corItem
+                    }}
+                  />
+                  
+                  {/* Linha da Meta */}
+                  <div 
+                    className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10"
+                    style={{ left: `${meta}%` }}
+                  />
                 </div>
 
                 {/* Lado Direito: Tempo Manutenção */}
-                <div className="flex flex-col items-center w-24 min-w-[90px]">
+                <div className="flex flex-col items-center w-20 min-w-[80px]">
                   <span className="font-bold text-xs" style={{ color: corItem }}>
                     {formatarHoras(item.tempoManutencao)}
                   </span>
-                  <span className="text-[9px] font-medium text-slate-500 text-center">
+                  <span className="text-[9px] font-medium text-slate-600">
                     Tempo Manutenção
                   </span>
+                </div>
+
+                {/* Valor Final Disponibilidade */}
+                <div 
+                  className="font-bold text-sm w-16 text-right"
+                  style={{ color: corItem }}
+                >
+                  {item.disponibilidade.toFixed(2)}%
                 </div>
               </div>
             </div>
           )
         })}
-      </div>
     </div>
   )
 }

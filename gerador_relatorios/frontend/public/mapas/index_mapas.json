@@ -1,0 +1,174 @@
+[
+    {
+        "arquivo": "mapa_05-10-2025_Area1.html",
+        "data": "05-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_05-10-2025_Area2.html",
+        "data": "05-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_06-10-2025_Area1.html",
+        "data": "06-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_06-10-2025_Area2.html",
+        "data": "06-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_07-10-2025_Area1.html",
+        "data": "07-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_07-10-2025_Area2.html",
+        "data": "07-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_08-10-2025_Area1.html",
+        "data": "08-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_08-10-2025_Area2.html",
+        "data": "08-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_09-10-2025_Area1.html",
+        "data": "09-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_09-10-2025_Area2.html",
+        "data": "09-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_10-10-2025_Area1.html",
+        "data": "10-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_10-10-2025_Area2.html",
+        "data": "10-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_11-10-2025_Area1.html",
+        "data": "11-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_11-10-2025_Area2.html",
+        "data": "11-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 2",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_11-10-2025_Area3.html",
+        "data": "11-10-2025",
+        "tipo": "DIARIO",
+        "area": "Area 3",
+        "frotas": [
+            "547"
+        ]
+    },
+    {
+        "arquivo": "mapa_PERIODO_COMPLETO_Area1.html",
+        "data": "PERIODO",
+        "tipo": "PERIODO",
+        "area": "Area 1",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_PERIODO_COMPLETO_Area2.html",
+        "data": "PERIODO",
+        "tipo": "PERIODO",
+        "area": "Area 2",
+        "frotas": [
+            "560",
+            "469"
+        ]
+    },
+    {
+        "arquivo": "mapa_PERIODO_COMPLETO_Area3.html",
+        "data": "PERIODO",
+        "tipo": "PERIODO",
+        "area": "Area 3",
+        "frotas": [
+            "547"
+        ]
+    }
+]

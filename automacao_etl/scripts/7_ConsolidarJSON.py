@@ -287,6 +287,37 @@ def consolidar_dia(
                     resultado["metadata"]["fontes"] = [f for f in fontes if f != "case"]
             if "dados_case" in resultado:
                 del resultado["dados_case"]
+
+        # ── Recalcular ofensores se estiverem vazios (fix: early return bypassa cálculo) ──
+        if not resultado.get("ofensores"):
+            op_stats = defaultdict(float)
+            for intv in resultado.get("intervalos_operacao", []):
+                tipo = intv.get("tipo", "")
+                # "Disponível" no JSON corresponde a IMPRODUTIVA (tudo que não é produtivo/manutenção/falta de info)
+                # Mas precisamos dos grupos originais. No JSON consolidado, "tipo" é simplificado.
+                # Melhor abordagem: verificar se o intervalo NÃO é Produtivo e NÃO é Falta de Informação
+                if tipo in ("Disponível", "Manutenção"):
+                    # Usamos "tipo" como descrição genérica se não tiver nome da operação
+                    # No JSON consolidado, não temos "Descrição da Operação" preservada
+                    # Vamos tentar usar o campo se existir, senão usar o tipo
+                    desc = intv.get("operacao", intv.get("descricao", tipo))
+                    dur = safe_float(intv.get("duracaoHoras", 0))
+                    if dur > 0 and desc:
+                        op_stats[desc] += dur
+
+            if op_stats:
+                total_improd = sum(op_stats.values())
+                ofensores_sorted = sorted(op_stats.items(), key=lambda x: x[1], reverse=True)[:5]
+                resultado["ofensores"] = [
+                    {
+                        "id": str(i),
+                        "tempo": round(tempo, 4),
+                        "operacao": op,
+                        "porcentagem": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
+                    }
+                    for i, (op, tempo) in enumerate(ofensores_sorted)
+                ]
+
         return resultado
 
     # Coletar todas as frotas de todas as fontes
@@ -382,8 +413,9 @@ def consolidar_dia(
 
         # ── Uso GPS ──
         uso_gps_val = 0.0
-        if resumo and "Porcentagem_Sem_Apontamento" in resumo:
-            uso_gps_val = 100 - safe_float(resumo["Porcentagem_Sem_Apontamento"])
+        # Solinftec não fornece dados de piloto/GPS. Não inventar dados baseados em "Sem Apontamento".
+        # if resumo and "Porcentagem_Sem_Apontamento" in resumo:
+        #     uso_gps_val = 100 - safe_float(resumo["Porcentagem_Sem_Apontamento"])
         uso_gps.append({
             "id": idx,
             "nome": frota_id,

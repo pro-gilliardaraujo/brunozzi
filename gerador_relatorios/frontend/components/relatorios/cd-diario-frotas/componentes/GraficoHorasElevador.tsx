@@ -50,11 +50,16 @@ export function GraficoHorasElevador({ dados, meta, compact = true, listrado = t
             key={item.id}
             className={`flex flex-col ${bgContainer} rounded-sm px-2 py-1`}
           >
-            {/* Nome da Frota */}
-            <div className={`font-bold text-xs ${compact ? "mb-0.5" : "mb-1"}`}>{item.nome}</div>
+            {/* Nome da Frota: Se NÃO compacto, mostrar acima */}
+            {!compact && <div className="font-bold text-xs mb-1">{item.nome}</div>}
             
             <div className={`flex items-center ${compact ? "gap-1.5" : "gap-2"}`}>
-              {/* Ícone ou Espaço Esquerdo (para alinhar visualmente com o outro gráfico se necessário) */}
+              {/* Se compacto, nome à esquerda */}
+              {compact && (
+                <div className="font-bold text-xs w-10 text-center flex-shrink-0 self-center">{item.nome}</div>
+              )}
+
+              {/* Ícone ou Espaço Esquerdo */}
               <div className="w-4">
                 <div 
                   className="w-3 h-3 rounded-sm" 
