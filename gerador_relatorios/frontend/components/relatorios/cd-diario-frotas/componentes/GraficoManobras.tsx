@@ -34,10 +34,8 @@ function secondsToMmSs(seconds: number): string {
 }
 
 function minutesToHm(minutes: number): string {
-  const totalMinutes = Math.round(minutes || 0)
-  const h = Math.floor(totalMinutes / 60)
-  const m = totalMinutes % 60
-  return `${h}h${m.toString().padStart(2, '0')}m`
+  const totalSeconds = Math.round((minutes || 0) * 60)
+  return secondsToMmSs(totalSeconds)
 }
 
 function excelLikeToMinutes(timeStr: string): number {
