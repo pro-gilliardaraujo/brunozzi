@@ -41,7 +41,6 @@ METAS_DEFAULT = {
     "usoGPS": 90,
     "mediaVelocidade": 5,
     "manobras": 60,
-    "producao": 1000,
     "disponibilidadeMecanica": 90,
     "motorOcioso": 15,
 }
@@ -280,7 +279,6 @@ def consolidar_dia(
                 "motor_ocioso",
                 "disponibilidade_mecanica",
                 "horas_por_frota",
-                "producao_por_frota",
                 "intervalos_operacao",
             ]
             for chave in chaves_filtrar:
@@ -292,6 +290,12 @@ def consolidar_dia(
                     resultado["metadata"]["fontes"] = [f for f in fontes if f != "case"]
             if "dados_case" in resultado:
                 del resultado["dados_case"]
+
+        # ── Remover chaves obsoletas explicitamente ──
+        chaves_remover = ["lavagem", "roletes", "producao", "producao_total", "producao_por_frota"]
+        for chave in chaves_remover:
+            if chave in resultado:
+                del resultado[chave]
 
         # ── Recalcular ofensores se estiverem vazios (fix: early return bypassa cálculo) ──
         if not resultado.get("ofensores"):
@@ -315,10 +319,9 @@ def consolidar_dia(
                 ofensores_sorted = sorted(op_stats.items(), key=lambda x: x[1], reverse=True)[:5]
                 resultado["ofensores"] = [
                     {
-                        "id": str(i),
-                        "tempo": round(tempo, 4),
-                        "operacao": op,
-                        "porcentagem": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
+                        "nome": op,
+                        "percentual": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
+                        "duracao": round(tempo, 4),
                     }
                     for i, (op, tempo) in enumerate(ofensores_sorted)
                 ]
@@ -351,10 +354,8 @@ def consolidar_dia(
     disponibilidade_mecanica = []
     intervalos_operacao = []
     horas_por_frota = []
-    producao_por_frota = []
 
     operation_stats = defaultdict(float)  # Para ofensores
-    total_producao = 0.0
     idx = 0
 
     for frota_id in sorted(all_frotas):
@@ -480,15 +481,6 @@ def consolidar_dia(
             "fonte": fonte,
         })
 
-        # ── Produção por Frota ──
-        prod_frota = safe_float(resumo.get("Frotas_no_dia", 0)) if resumo else 0
-        producao_por_frota.append({
-            "id": idx,
-            "nome": frota_id,
-            "valor": round(prod_frota, 2),
-            "fonte": fonte,
-        })
-        total_producao += prod_frota
 
         # ── Manobras ──
         qtd_manobras = 0
@@ -523,8 +515,8 @@ def consolidar_dia(
             end_str = intv.get("Fim", "")
             dur = calc_duration_hours(start_str, end_str)
 
-            grupo = intv.get("Grupo", "")
-            descricao = intv.get("Descrição da Operação", "")
+            grupo = str(intv.get("Descrição do Grupo da Operação", intv.get("Grupo", ""))).strip().upper()
+            descricao = str(intv.get("Descrição da Operação", intv.get("operacao", ""))).strip()
 
             tipo = "Disponível"
             if grupo == "PRODUTIVA":
@@ -543,8 +535,9 @@ def consolidar_dia(
             })
 
             # Agregar ofensores (Fallback se não vier pronto)
-            if grupo in ("IMPRODUTIVA", "MANUTENÇÃO"):
-                operation_stats[descricao] += dur
+            if grupo in ("IMPRODUTIVA", "MANUTENÇÃO", "MANUTENCAO"):
+                if descricao:
+                    operation_stats[descricao] += dur
 
         # Intervalos Case (se houver)
         case_intervals = case_extra.get("_intervalos", [])
@@ -571,68 +564,60 @@ def consolidar_dia(
                 operation_stats[operacao] += dur
 
     # ── Ofensores (Top 5) ──
-    # Se TODOS os dados vierem do Solinftec e tivermos Top5 pré-calculado, poderíamos usar.
-    # Mas como misturamos Case e Solinftec, e o Ofensores é GERAL (não por frota no JSON final, mas global),
-    # a lógica existente de agregar operation_stats globalmente faz sentido para combinar fontes.
-    # PORÉM, o usuário reclamou que estava "esquecendo".
-    # Se quisermos usar o cálculo preciso do Solinftec (com denominador correto),
-    # teríamos que pegar o Top5 de CADA frota Solinftec e somar?
-    # O JSON de saída tem "ofensores" como uma lista GLOBAL.
-    # Mas o Step 4 calcula Top 5 POR EQUIPAMENTO/DIA.
-    # O JSON final espera "ofensores" globais do dia?
-    # "classificando as 5 maiores nesses tempos" -> parece global para o relatório do dia.
-    
-    # Se o relatório do dia é para VÁRIAS frotas, devemos somar tudo.
-    # O problema do cálculo anterior era o denominador (tempo total do dia vs tempo total improdutivo).
-    # Aqui no Step 7:
-    total_improd = sum(operation_stats.values())
-    ofensores = sorted(operation_stats.items(), key=lambda x: x[1], reverse=True)[:5]
     ofensores_list = []
-    for i, (op, tempo) in enumerate(ofensores):
-        ofensores_list.append({
-            "id": str(i),
-            "tempo": round(tempo, 4),
-            "operacao": op,
-            "porcentagem": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
-        })
+    top5_agg = defaultdict(float)
+    found_source = False
 
-    # ── Lavagem e Roletes (dos Intervalos Solinftec) ──
-    lavagem = []
-    roletes = []
-    if solinftec_raw:
-        for frota_id, frota_data in solinftec_raw.items():
-            for intv in frota_data.get("Intervalos", []):
-                descricao = intv.get("Descrição da Operação", "").upper()
-                if "LAVAGEM" in descricao:
-                    dur = calc_duration_hours(intv["Início"], intv["Fim"])
-                    lavagem.append({
-                        "Data": date_display,
-                        "Equipamento": frota_id,
-                        "Início": time_hhmmss(intv["Início"]),
-                        "Fim": time_hhmmss(intv["Fim"]),
-                        "Duração (horas)": round(dur, 6),
-                        "Intervalo": "Intervalo 1",
-                        "Tempo Total do Dia": round(dur, 6),
-                    })
-                elif "ROLETE" in descricao or "GIRO DO ROLETE" in descricao:
-                    dur = calc_duration_hours(intv["Início"], intv["Fim"])
-                    roletes.append({
-                        "Data": date_display,
-                        "Equipamento": frota_id,
-                        "Início": time_hhmmss(intv["Início"]),
-                        "Fim": time_hhmmss(intv["Fim"]),
-                        "Duração (horas)": round(dur, 6),
-                        "Intervalo": "Intervalo 1",
-                        "Tempo Total do Dia": round(dur, 6),
-                    })
+    # 1. Tentar carregar do OPC (XLSX Diário processado) - Fonte Prioritária
+    if opc_data:
+        # Tenta nomes possíveis para a aba de ofensores da colhedora
+        sheet = opc_data.get("Top5Ofensores_COLHEDORA") or opc_data.get("Top5Ofensores_COLHEDORA_DE_CANA")
+        if isinstance(sheet, list) and sheet:
+            for row in sheet:
+                desc = str(row.get("Descrição da Operação", "")).strip()
+                dur = safe_float(row.get("Duracao_Improd_h"))
+                if desc and dur > 0:
+                    top5_agg[desc] += dur
+            if top5_agg:
+                found_source = True
 
-    # Agrupar lavagem/roletes por equipamento para calcular Tempo Total do Dia
-    for lista in [lavagem, roletes]:
-        equip_totals = defaultdict(float)
-        for item in lista:
-            equip_totals[item["Equipamento"]] += item["Duração (horas)"]
-        for item in lista:
-            item["Tempo Total do Dia"] = round(equip_totals[item["Equipamento"]], 6)
+    # 2. Se não achou no OPC, tentar do Solinftec Geral (Legado/Fallback)
+    if not found_source and solinftec_raw:
+        geral = solinftec_raw.get("Geral")
+        if isinstance(geral, dict):
+            for item in geral.get("Top5Ofensores", []):
+                desc = str(item.get("Descrição da Operação", "")).strip()
+                dur = safe_float(item.get("Duracao_Improd_h"))
+                if desc and dur > 0:
+                    top5_agg[desc] += dur
+            if top5_agg:
+                found_source = True
+
+    # Gerar lista final
+    if top5_agg:
+        total_improd = sum(top5_agg.values())
+        ofensores_sorted = sorted(top5_agg.items(), key=lambda x: x[1], reverse=True)[:5]
+        ofensores_list = [
+            {
+                "nome": op,
+                "percentual": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
+                "duracao": round(tempo, 4),
+            }
+            for i, (op, tempo) in enumerate(ofensores_sorted)
+        ]
+    else:
+        # Último caso: calcular dos intervalos (apenas se não achou nada pronto)
+        # Evitar "Disponível" como ofensor
+        valid_stats = {k: v for k, v in operation_stats.items() if k not in ["Disponível", "Manutenção", "Falta de Informação", ""]}
+        if valid_stats:
+             total_improd = sum(valid_stats.values())
+             ofensores = sorted(valid_stats.items(), key=lambda x: x[1], reverse=True)[:5]
+             for i, (op, tempo) in enumerate(ofensores):
+                ofensores_list.append({
+                    "nome": op,
+                    "percentual": round((tempo / total_improd * 100) if total_improd > 0 else 0, 2),
+                    "duracao": round(tempo, 4),
+                })
 
     # ── Dados Case Extra (para seção complementar) ──
     # ── JSON Unificado ──
@@ -656,11 +641,6 @@ def consolidar_dia(
         "horas_por_frota": horas_por_frota,
         "intervalos_operacao": intervalos_operacao,
         "ofensores": ofensores_list,
-        "lavagem": lavagem,
-        "roletes": roletes,
-        "producao": round(total_producao, 2),
-        "producao_total": [{"valor": round(total_producao, 2)}],
-        "producao_por_frota": producao_por_frota,
         "imagens": {
             "mapaGPS": "",
             "areaTrabalhada": "",
@@ -702,10 +682,8 @@ def consolidar_tratores_case(
     disponibilidade_mecanica = []
     intervalos_operacao = []
     horas_por_frota = []
-    producao_por_frota = []
 
     operation_stats = defaultdict(float)
-    total_producao = 0.0
     idx = 0
 
     for frota_id in sorted(case_frotas_ids):
@@ -776,13 +754,6 @@ def consolidar_tratores_case(
             "nome": frota_id,
             "frota": frota_id,
             "horas": 0.0,
-            "fonte": "case",
-        })
-
-        producao_por_frota.append({
-            "id": idx,
-            "nome": frota_id,
-            "valor": 0.0,
             "fonte": "case",
         })
 
@@ -858,11 +829,6 @@ def consolidar_tratores_case(
         "horas_por_frota": horas_por_frota,
         "intervalos_operacao": intervalos_operacao,
         "ofensores": ofensores_list,
-        "lavagem": [],
-        "roletes": [],
-        "producao": round(total_producao, 2),
-        "producao_total": [{"valor": round(total_producao, 2)}],
-        "producao_por_frota": producao_por_frota,
         "imagens": {
             "mapaGPS": "",
             "areaTrabalhada": "",
@@ -892,7 +858,37 @@ def main():
         print("  ❌ Nenhum JSON Solinftec encontrado.")
         return
 
-    print(f"\n  📅 Datas encontradas: {dates}")
+    # 1.1 Respeitar intervalo configurado em utils/config_automacao.json (se existir)
+    cfg_path = os.path.join(ETL_ROOT, "utils", "config_automacao.json")
+    if os.path.exists(cfg_path):
+        try:
+            with open(cfg_path, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+            params = cfg.get("automacao", {}).get("parametros", {})
+            str_ini = params.get("data_inicial") or params.get("data_inicio")
+            str_fim = params.get("data_final") or params.get("data_fim")
+            if str_ini and str_fim:
+                dt_ini = datetime.strptime(str_ini, "%d/%m/%Y").date()
+                dt_fim = datetime.strptime(str_fim, "%d/%m/%Y").date()
+                filtered = []
+                for d in dates:
+                    # d está em DD-MM-YYYY
+                    try:
+                        dd, mm, yyyy = d.split("-")
+                        dt = datetime(int(yyyy), int(mm), int(dd)).date()
+                        if dt_ini <= dt <= dt_fim:
+                            filtered.append(d)
+                    except Exception:
+                        continue
+                dates = filtered
+        except Exception as e:
+            print(f"  ⚠️ Erro ao aplicar filtro de datas do config_automacao.json: {e}")
+
+    if not dates:
+        print("  ❌ Nenhuma data dentro do intervalo configurado.")
+        return
+
+    print(f"\n  📅 Datas encontradas (após filtro): {dates}")
 
     # 2. Carregar dados Case (uma vez para todas as datas)
     print("\n  📦 Carregando dados Case IH...")

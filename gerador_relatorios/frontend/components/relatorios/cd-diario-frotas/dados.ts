@@ -18,55 +18,6 @@ export const DADOS_MOCK = {
     "mapaGPS": "https://placehold.co/750x975/png?text=Mapa+de+Utilizacao+GPS",
     "areaTrabalhada": "https://placehold.co/750x975/png?text=Area+Trabalhada"
   },
-  "lavagem": [
-    {
-      "Fim": "13:08:58",
-      "Data": "10/10/2025",
-      "Início": "13:01:58",
-      "Intervalo": "Intervalo 1",
-      "Equipamento": 7032,
-      "Duração (horas)": 0.1283333333333333,
-      "Tempo Total do Dia": 0.1283333333333333
-    },
-    {
-      "Fim": "20:14:47",
-      "Data": "10/10/2025",
-      "Início": "19:34:08",
-      "Intervalo": "Intervalo 1",
-      "Equipamento": 7036,
-      "Duração (horas)": 0.6797222222222223,
-      "Tempo Total do Dia": 0.6797222222222223
-    }
-  ],
-  "roletes": [
-    {
-      "Fim": "16:50:21",
-      "Data": "10/10/2025",
-      "Início": "16:42:21",
-      "Intervalo": "Intervalo 1",
-      "Equipamento": 7032,
-      "Duração (horas)": 0.1447,
-      "Tempo Total do Dia": 0.1447
-    },
-    {
-      "Fim": "14:12:35",
-      "Data": "10/10/2025",
-      "Início": "13:52:35",
-      "Intervalo": "Intervalo 1",
-      "Equipamento": 7037,
-      "Duração (horas)": 0.3358,
-      "Tempo Total do Dia": 0.5133
-    },
-    {
-      "Fim": "18:12:20",
-      "Data": "10/10/2025",
-      "Início": "18:02:20",
-      "Intervalo": "Intervalo 2",
-      "Equipamento": 7037,
-      "Duração (horas)": 0.1775,
-      "Tempo Total do Dia": 0.5133
-    }
-  ],
   "uso_gps": [
     {
       "id": 1,
@@ -96,7 +47,6 @@ export const DADOS_MOCK = {
     "generated_at": "2025-12-05T08:58:56.422173",
     "equipment_ids": null
   },
-  "producao": 685.9,
   "ofensores": [
     {
       "id": "0",
@@ -255,11 +205,6 @@ export const DADOS_MOCK = {
       "valor": 2.1047
     }
   ],
-  "producao_total": [
-    {
-      "valor": 685.9
-    }
-  ],
   "horas_por_frota": [
     {
       "id": 1,
@@ -340,28 +285,6 @@ export const DADOS_MOCK = {
       "id": 4,
       "nome": "7036",
       "velocidade": 3.690207914151577
-    }
-  ],
-  "producao_por_frota": [
-    {
-      "id": 1,
-      "nome": "7032",
-      "valor": 142.82
-    },
-    {
-      "id": 2,
-      "nome": "7036",
-      "valor": 28.91
-    },
-    {
-      "id": 3,
-      "nome": "7037",
-      "valor": 273.49
-    },
-    {
-      "id": 4,
-      "nome": "7038",
-      "valor": 240.67
     }
   ],
   "eficiencia_energetica": [

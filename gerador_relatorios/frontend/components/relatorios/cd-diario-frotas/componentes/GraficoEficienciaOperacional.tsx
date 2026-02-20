@@ -22,8 +22,9 @@ export function GraficoEficienciaOperacional({ dados, meta, compact = true, list
 
   const formatarHoras = (decimal: number) => {
     if (typeof decimal !== 'number' || isNaN(decimal)) return "0h00m"
-    const horas = Math.floor(decimal)
-    const minutos = Math.round((decimal - horas) * 60)
+    const totalMinutos = Math.round(decimal * 60)
+    const horas = Math.floor(totalMinutos / 60)
+    const minutos = totalMinutos % 60
     return `${horas}h${minutos.toString().padStart(2, '0')}m`
   }
 
@@ -87,7 +88,7 @@ export function GraficoEficienciaOperacional({ dados, meta, compact = true, list
                 />
               </div>
 
-              {/* Lado Direito: Horas Motor */}
+              {/* Lado Direito: Horas Registradas */}
               <div className="flex flex-col items-center w-20 min-w-[80px]">
                 <span 
                   className="font-bold text-xs"
@@ -96,7 +97,7 @@ export function GraficoEficienciaOperacional({ dados, meta, compact = true, list
                   {formatarHoras(item.horasMotor)}
                 </span>
                 <span className="text-[9px] font-medium text-slate-600">
-                  Horas Motor
+                  Horas Registradas
                 </span>
               </div>
 

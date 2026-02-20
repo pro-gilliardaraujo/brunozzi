@@ -4,7 +4,6 @@ interface DadosFrota {
   frota: string
   eficiencia: number
   horasElevador: number
-  producao: number
   velocidade: number
   gps: number
   manobra: number
@@ -55,7 +54,6 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
             <th className="border border-slate-300 p-2">Frota</th>
             <th className="border border-slate-300 p-2">Eficiência</th>
             <th className="border border-slate-300 p-2">Elevador</th>
-            <th className="border border-slate-300 p-2">Produção (t)</th>
             <th className="border border-slate-300 p-2">Vel Efetiva</th>
             <th className="border border-slate-300 p-2">GPS</th>
             <th className="border border-slate-300 p-2">Manobra</th>
@@ -76,11 +74,6 @@ export function TabelaResumo({ dados, metas }: TabelaResumoProps) {
               {/* Elevador (Maior melhor) */}
               <td className={`border border-slate-300 p-2 font-bold ${getColor(d.horasElevador, metas.horaElevador, 'asc', 0.5)}`}>
                 {formatHour(d.horasElevador)}
-              </td>
-
-              {/* Produção (Preto padrão) */}
-              <td className="border border-slate-300 p-2 font-bold">
-                {d.producao.toFixed(2)}
               </td>
 
               {/* Velocidade (Menor melhor) */}

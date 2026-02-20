@@ -73,7 +73,6 @@ export default function TratorFrotasDiarioPage({ params }: PageProps) {
       frota: f.nome,
       eficiencia: f.eficiencia || 0,
       horasElevador: f.horasElevador || 0,
-      producao: 0,
       velocidade: vel?.velocidade || 0,
       gps: 0,
       manobra: man ? Number(man["Tempo Total"] || 0) * 60 : 0,

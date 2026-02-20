@@ -4,22 +4,17 @@ import dynamic from 'next/dynamic'
 import { Card, CardContent } from "@/components/ui/card"
 import { ColhedoraFrotaData } from "@/lib/types"
 import { CabecalhoMeta } from "./componentes/CabecalhoMeta"
-import { CabecalhoProducao } from "./componentes/CabecalhoProducao"
 import { GraficoEficiencia } from "./componentes/GraficoEficiencia"
 import { GraficoHorasElevador } from "./componentes/GraficoHorasElevador"
-import { GraficoToneladasPorFrota } from "./componentes/GraficoToneladasPorFrota"
 import { GraficoUsoGPS } from "./componentes/GraficoUsoGPS"
 import { GraficoMediaVelocidade } from "./componentes/GraficoMediaVelocidade"
 import { GraficoManobras } from "./componentes/GraficoManobras"
-import { TabelaLavagem } from "./componentes/TabelaLavagem"
-import { TabelaRoletes } from "./componentes/TabelaRoletes"
 import { GraficoMotorOcioso } from "./componentes/GraficoMotorOcioso"
 import { GraficoTop5Ofensores } from "./componentes/GraficoTop5Ofensores"
 import { GraficoEficienciaOperacional } from "./componentes/GraficoEficienciaOperacional"
 import { GraficoDisponibilidadeMecanica } from "./componentes/GraficoDisponibilidadeMecanica"
 import { GraficoIntervalos, Intervalo } from "./componentes/GraficoIntervalos"
 import { CardIndicador } from "./componentes/CardIndicador"
-import { CardProducao } from "./componentes/CardProducao"
 import { TabelaResumo } from "./componentes/TabelaResumo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -87,20 +82,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     }
     return 4
   })
-  const [mockQtdLavagemRows, setMockQtdLavagemRows] = React.useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const p = new URLSearchParams(window.location.search)
-      if (p.has("mockQtdLavagem")) return Number(p.get("mockQtdLavagem"))
-    }
-    return 0
-  })
-  const [mockQtdRoletesRows, setMockQtdRoletesRows] = React.useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const p = new URLSearchParams(window.location.search)
-      if (p.has("mockQtdRoletes")) return Number(p.get("mockQtdRoletes"))
-    }
-    return 0
-  })
 
   // Carregar estado dos mocks do localStorage na inicialização
   React.useEffect(() => {
@@ -110,12 +91,10 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       if (savedMock) {
         const parsed = JSON.parse(savedMock)
         if (typeof parsed.qtdFrotas === 'number') setMockQtdFrotas(parsed.qtdFrotas)
-        if (typeof parsed.qtdLavagem === 'number') setMockQtdLavagemRows(parsed.qtdLavagem)
-        if (typeof parsed.qtdRoletes === 'number') setMockQtdRoletesRows(parsed.qtdRoletes)
         
         // Se houver qualquer configuração salva, forçamos a exibição dos controles (ativação do mock)
         // Isso garante que o PDF gerado use os dados mockados, mesmo se a URL não tiver ID
-        if (parsed.show || parsed.qtdLavagem > 0 || parsed.qtdRoletes > 0) {
+        if (parsed.show) {
            setShowMockControls(true)
         }
       }
@@ -129,12 +108,10 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     if (typeof window === "undefined") return
     const state = {
       qtdFrotas: mockQtdFrotas,
-      qtdLavagem: mockQtdLavagemRows,
-      qtdRoletes: mockQtdRoletesRows,
       show: showMockControls
     }
     localStorage.setItem("mockControlsState", JSON.stringify(state))
-  }, [mockQtdFrotas, mockQtdLavagemRows, mockQtdRoletesRows, showMockControls])
+  }, [mockQtdFrotas, showMockControls])
 
   React.useEffect(() => {
     // Tenta carregar dados do localStorage se houver
@@ -172,13 +149,8 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     motor_ocioso, 
     uso_gps, 
     media_velocidade, 
-    producao,
-    producao_total,
-    producao_por_frota,
     manobras_frotas,
     horas_elevador,
-    lavagem,
-    roletes,
     intervalos_operacao
   } = data
   
@@ -279,8 +251,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   const MAX_MOCK_TABLE_ROWS = 100
 
   const totalFrotasBase = (Array.isArray(eficiencia_energetica) ? eficiencia_energetica.filter((d: any) => d?.nome) : []).length
-  const totalLavagemBase = Array.isArray(lavagem) ? lavagem.length : 0
-  const totalRoletesBase = Array.isArray(roletes) ? roletes.length : 0
 
   const buildRows = React.useCallback(<T,>(baseRows: T[], count: number, makeFallback: (idx: number) => T): T[] => {
     const safeCount = clampInt(count, 0, MAX_MOCK_TABLE_ROWS)
@@ -358,8 +328,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
           localStorage: localStorageData,
           mockState: {
             qtdFrotas: mockQtdFrotas,
-            qtdLavagem: mockQtdLavagemRows,
-            qtdRoletes: mockQtdRoletesRows,
             show: showMockControls
           }
         }
@@ -376,7 +344,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     } finally {
       setIsGenerating(false)
     }
-  }, [isGenerating, tituloRelatorio, nomeDataArquivo, toast, mockQtdFrotas, mockQtdLavagemRows, mockQtdRoletesRows, showMockControls])
+  }, [isGenerating, tituloRelatorio, nomeDataArquivo, toast, mockQtdFrotas, showMockControls])
 
   const computePageMetrics = React.useCallback(() => {
     const pagesRoot = reportRef.current
@@ -456,7 +424,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       cancelAnimationFrame(rafId)
       observer.disconnect()
     }
-  }, [computePageMetrics, zoomPercent, isPdfMode, showMockControls, mockQtdFrotas, mockQtdLavagemRows, mockQtdRoletesRows, period])
+  }, [computePageMetrics, zoomPercent, isPdfMode, showMockControls, mockQtdFrotas, period])
 
   React.useEffect(() => {
     // Mantém o painel de utilitários como overlay, "encaixando" à direita do relatório sem ocupar espaço do corpo.
@@ -699,24 +667,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   const alturaHorasPerc = 100 - alturaEficPerc
   const headerReservedPx = isManyFrotas ? 36 : 50
 
-  // Página 2 - Toneladas por Frota
-  const producaoTotalValor = typeof producao_total?.[0]?.valor === 'number' ? producao_total[0].valor : (typeof producao === 'number' ? producao : 0)
-  const somaHorasElevador = dadosValidos.reduce((acc, curr) => acc + (typeof curr.horasElevador === 'number' ? curr.horasElevador : 0), 0)
-  const dadosToneladas = somaHorasElevador > 0
-    ? dadosValidos.map(d => ({
-        id: d.id,
-        nome: d.nome,
-        producao: producaoTotalValor * ((d.horasElevador || 0) / somaHorasElevador)
-      }))
-    : dadosValidos.map(d => ({
-        id: d.id,
-        nome: d.nome,
-        producao: 0
-      }))
-  const itensComProducao = dadosToneladas.filter(d => d.producao > 0)
-  const mediaProducaoEquip = itensComProducao.reduce((acc, curr) => acc + curr.producao, 0) / (itensComProducao.length || 1)
-  const tphDia = producaoTotalValor / 24
-
   // Página 2 - Uso GPS
   const metaUsoGPS = metas.usoGPS
   const dadosUsoGPSNaoZero = dadosUsoGPS.filter(d => (d.porcentagem || 0) > 0)
@@ -780,112 +730,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     return { valor: seconds }
   })
 
-  const lavagemForTable = React.useMemo(() => {
-    const base = Array.isArray(lavagem) ? lavagem : []
-    if (!showMockControls) return base
-    return buildRows<any>(
-      base,
-      mockQtdLavagemRows,
-      (idx) => ({
-        Data: endStr,
-        Equipamento: 8000 + idx,
-        Intervalo: "Lavagem",
-        "Início": "00:00:00",
-        "Fim": "00:00:00",
-        "Duração (horas)": 0,
-        "Tempo Total do Dia": 0,
-      })
-    )
-  }, [lavagem, showMockControls, buildRows, mockQtdLavagemRows, endStr])
-
-  const roletesForTable = React.useMemo(() => {
-    const base = Array.isArray(roletes) ? roletes : []
-    if (!showMockControls) return base
-    return buildRows<any>(
-      base,
-      mockQtdRoletesRows,
-      (idx) => ({
-        Data: endStr,
-        Equipamento: 9000 + idx,
-        Intervalo: "Aferição",
-        "Início": "00:00:00",
-        "Fim": "00:00:00",
-        "Duração (horas)": 0,
-        "Tempo Total do Dia": 0,
-      })
-    )
-  }, [roletes, showMockControls, buildRows, mockQtdRoletesRows, endStr])
-
-  // Lógica de Paginação Dinâmica para Pág 6 (Lavagem/Roletes/Motor)
-  // Requisito:
-  // - Motor Ocioso deve ser prioridade para mover.
-  // - Limite seguro inicial: (lavagem > 10 OU roletes > 2 OU motorOcioso > 7) -> Mover Motor.
-  // - Se Motor moveu, verificar se Lavagem + Roletes cabem juntos na Pág 6.
-  
-  const qtdMotorOcioso = motorOciosoFiltrado ? motorOciosoFiltrado.length : 0
-  const qtdLavagem = lavagemForTable.length
-  const qtdRoletes = roletesForTable.length
-  
-  // Se a Tabela de Roletes for muito grande, precisamos paginá-la internamente
-  const roletesPaginated = React.useMemo(() => {
-    if (roletesForTable.length <= 28) return { page1: roletesForTable, page2: [] }
-    
-    // Se for maior que 28, a página 7 (onde ela começa se SPLIT_TABLES) fica com 28 itens
-    // O restante vai para a página 8 (ou próxima)
-    return {
-      page1: roletesForTable.slice(0, 28),
-      page2: roletesForTable.slice(28)
-    }
-  }, [roletesForTable])
-
-  const layoutMode = React.useMemo(() => {
-    // 1. Verificação Primária: Tudo cabe na Página 6?
-    // Limites conservadores para garantir que tudo caiba confortavelmente se estiverem juntos
-    const deveMoverMotor = qtdMotorOcioso > 7 || qtdLavagem > 10 || qtdRoletes > 2
-    
-    if (!deveMoverMotor) {
-       // Se não precisa mover motor, tenta manter tudo na mesma página
-       // Mas faz uma verificação de segurança total de linhas também (ex: soma total > 18)
-       const totalLines = qtdLavagem + qtdRoletes + qtdMotorOcioso
-       if (totalLines <= 18) return 'SINGLE_PAGE'
-    }
-    
-    // Se chegou aqui, Motor Ocioso VAI para a próxima página (SPLIT_MOTOR ou além)
-    // Agora decidimos se Lavagem e Roletes podem ficar juntos na página 6
-    
-    // Página 6 terá apenas Lavagem e Roletes.
-    const somaTabelas = qtdLavagem + qtdRoletes
-    
-    // Se a soma das tabelas for muito grande (> 26), PRECISAMOS separar Lavagem e Roletes
-    if (somaTabelas > 26) {
-      // Roletes vai para a Página 7.
-      // Precisamos verificar se ele precisa ser paginado (max 28 itens por página cheia)
-      const roletesResto = Math.max(0, qtdRoletes - 28)
-      
-      // Caso 1: Roletes cabe todo na Página 7 (<= 28 itens)
-      if (roletesResto === 0) {
-         // Motor cabe junto na P7? (Soma <= 21)
-         if (qtdRoletes + qtdMotorOcioso <= 21) {
-            return 'SPLIT_TABLES_COMBINED' // P6: Lav, P7: Rol + Mot
-         }
-         return 'SPLIT_TABLES_SEPARATED' // P6: Lav, P7: Rol, P8: Mot
-      }
-      
-      // Caso 2: Roletes precisa de paginação (tem resto para P8)
-      // Pág 7 fica cheia com Roletes Parte 1 (28 itens).
-      // Pág 8 recebe Roletes Parte 2.
-      // Motor cabe na P8 junto com o resto? (Soma <= 21)
-      if (roletesResto + qtdMotorOcioso <= 21) {
-         return 'SPLIT_PAGINATED_COMBINED' // P6: Lav, P7: Rol1, P8: Rol2 + Mot
-      }
-      
-      return 'SPLIT_PAGINATED_SEPARATED' // P6: Lav, P7: Rol1, P8: Rol2, P9: Mot
-    }
-    
-    // Se a soma for ok (<= 26), Roletes fica na página 6 junto com Lavagem
-    // E o Motor Ocioso vai para a 7 (pois já passou pelo check 'deveMoverMotor' lá em cima)
-    return 'SPLIT_MOTOR' // P6: Lav + Rol, P7: Mot
-  }, [qtdMotorOcioso, qtdLavagem, qtdRoletes])
 
   return (
     <div className="relative bg-gray-100 p-1">
@@ -1114,7 +958,27 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
         </div>
       </div>
 
-      {/* PÁGINA 8 - Disponibilidade Mecânica */}
+      {/* PÁGINA 8 - Top 5 Ofensores */}
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col h-full">
+              <SectionTitle title="Top 5 Ofensores" />
+              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col">
+                <div className="text-xs text-gray-700 mb-2">
+                  Os 5 equipamentos com maior percentual de tempo em condições críticas (ofensores).
+                </div>
+                <div className="flex-1 overflow-hidden flex items-stretch justify-center">
+                  <GraficoTop5Ofensores dados={dadosOfensores} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PÁGINA 9 - Disponibilidade Mecânica */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -1203,6 +1067,20 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                 meta={metas.eficienciaEnergetica}
                 unidade="%"
                 dados={dadosResumo.map(d => ({ valor: d.eficiencia }))}
+                tipo="asc"
+              />
+              <CardIndicador 
+                titulo="Eficiência Operacional"
+                meta={metas.eficienciaOperacional || 60}
+                unidade="%"
+                dados={dadosResumo.map(d => ({ valor: d.eficienciaOperacional }))}
+                tipo="asc"
+              />
+              <CardIndicador 
+                titulo="Horas Elevador"
+                meta={metas.horaElevador}
+                unidade=" h"
+                dados={dadosResumo.map(d => ({ valor: d.horasElevador }))}
                 tipo="asc"
               />
               

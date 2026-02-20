@@ -2,14 +2,28 @@ import os
 import json
 import re
 import zipfile
-import geopandas as gpd
+
+try:
+    import geopandas as gpd
+except ImportError:
+    gpd = None
+
 import pandas as pd
 import numpy as np
-import folium
+
+try:
+    from sklearn.cluster import DBSCAN
+except ImportError:
+    DBSCAN = None
+
+try:
+    import folium
+    from folium import plugins
+except ImportError:
+    folium = None
+    plugins = None
 from pathlib import Path
 from datetime import datetime, timedelta
-from folium import plugins
-from sklearn.cluster import DBSCAN
 
 # ============================================================================
 # CONFIGURAÇÕES (AJUSTE AQUI)
@@ -20,6 +34,9 @@ ETL_DIR = Path(__file__).parent.parent
 PASTA_JSONS = ETL_DIR / "dados" / "separados" / "json" / "colhedora" / "frotas" / "diario"
 PASTA_ZIPS = ETL_DIR / "dados"
 PASTA_SAIDA = ETL_DIR / "mapas"
+#INSERIR MAPAS DE TRATORES A PARTIR DAS COORDENADAS DO TRATAMENTO CASE
+
+
 
 # --- VISUALIZAÇÃO ---
 # Cores para diferenciar frotas no mapa
@@ -311,25 +328,39 @@ def criar_mapeamento_frotas(frotas_json, frotas_shapes):
     ids_json = set(frotas_json.keys())
     ids_shapes = set(frotas_shapes.keys())
     
-    # Match direto
-    ids_comuns = ids_json & ids_shapes
-    for frota_id in ids_comuns:
+    # Match flexível (Prioridade: Shapefile)
+    ids_processar = ids_shapes | ids_json # União
+    
+    for frota_id in ids_processar:
+        dados_json = frotas_json.get(frota_id)
+        gdf = frotas_shapes.get(frota_id)
+        
+        if gdf is None:
+            # Tem JSON mas não tem Shape -> Não serve para mapa
+            continue
+            
+        # Se não tem JSON, vamos tentar extrair as datas do Shapefile para manter compatibilidade
+        if dados_json is None:
+            # Cria estrutura dummy de JSON baseada nas datas do Shapefile
+            if 'timestamp' in gdf.columns:
+                datas_shape = gdf['timestamp'].dt.date.unique()
+                # Simula a estrutura do JSON: {data: {eventos...}} -> aqui vazio
+                dados_json = {d: [] for d in datas_shape}
+            else:
+                dados_json = {}
+
         mapeamento[frota_id] = {
-            'json': frotas_json[frota_id],
-            'shape': frotas_shapes[frota_id]
+            'json': dados_json,
+            'shape': gdf
         }
     
-    print(f"  ✅ {len(mapeamento)} frotas com dados completos (JSON + Shape)")
+    print(f"  ✅ {len(mapeamento)} frotas prontas para processamento (Shapefile presente)")
     
-    # Frotas sem correspondência
-    sem_shape = ids_json - ids_shapes
+    # Diagnóstico
     sem_json = ids_shapes - ids_json
-    
-    if sem_shape:
-        print(f"  ⚠️ Frotas com JSON mas sem Shape: {sorted(sem_shape)}")
     if sem_json:
-        print(f"  ⚠️ Frotas com Shape mas sem JSON: {sorted(sem_json)}")
-    
+        print(f"  ℹ️  Frotas usando apenas Shapefile (sem JSON): {sorted(sem_json)}")
+
     return mapeamento
 
 
@@ -614,118 +645,122 @@ def gerar_mapas_padronizados(mapeamento_solinftec, dados_case, pasta_saida, filt
         print("  ❌ Nenhuma data disponível para gerar mapas.")
         return []
 
-    # 2. Mapas Diários (Iterar Dias -> Areas)
-    # Obs: Clustering por área simplicado: Vamos agrupar tudo que for do dia por enquanto,
-    # ou usar a lógica de clustering se tiver muitos pontos distantes.
-    # Para simplificar e atender o "implemente logo", vamos gerar 1 MAPA POR DIA (Visão Geral)
-    # Se precisar de áreas especificas (clustering), mantemos a logica antiga, mas agora misturando fontes.
+    # 2. Mapas Diários (Iterar Dias -> Fonte -> Areas)
+    # Refatorado para gerar mapas SEPARADOS por fonte (OPC_... e case_...)
     
+    fontes_config = [
+        {'nome': 'Solinftec', 'prefixo': 'OPC_'},
+        {'nome': 'Case IH',   'prefixo': 'case_'}
+    ]
+
     for dia_alvo in sorted(todas_datas):
         str_dia = dia_alvo.strftime('%d-%m-%Y')
         print(f"\n  📅 Processando dia: {str_dia}")
         
-        # Coletar dados do dia de AMBAS as fontes
-        dados_dia = [] # Lista de {'frota_id', 'gdf', 'fonte'}
-        
-        # Solinftec
-        for frota_id, dados in mapeamento_solinftec.items():
-            # Verifica JSON (se operou no dia)
-            if dia_alvo in dados['json']:
-                # Recorta Shape
-                gdf_dia = filtrar_coordenadas_por_data(dados['shape'], dia_alvo)
-                if len(gdf_dia) > 0:
-                    dados_dia.append({'frota_id': frota_id, 'gdf': gdf_dia, 'fonte': 'Solinftec'})
-        
-        # Case
-        for frota_id, gdf_total in dados_case.items():
-            # Filtra dia no gdf total
-            # (Assumindo timestamp datetime)
-            if 'timestamp' not in gdf_total.columns: continue
+        # Itera sobre cada fonte para gerar mapas independentes
+        for config in fontes_config:
+            nome_fonte = config['nome']
+            prefixo = config['prefixo']
             
-            gdf_dia = gdf_total[gdf_total['timestamp'].dt.date == dia_alvo].copy()
-            if len(gdf_dia) > 0:
-                dados_dia.append({'frota_id': frota_id, 'gdf': gdf_dia, 'fonte': 'Case IH'})
-                
-        if not dados_dia:
-            continue
+            dados_dia_fonte = []
             
-        # Clustering do dia (para ver quantas áreas gera)
-        # Montar dict temporario para usar a funcao separar_por_clusters existente?
-        # A funcao espera {frota: gdf}. Vamos adaptar.
-        dict_para_cluster = {f"{item['frota_id']}_{i}": item['gdf'] for i, item in enumerate(dados_dia)}
-        areas = separar_por_clusters(dict_para_cluster)
-        
-        for area in areas:
-            # Filtrar dados que caem nesta área
-            dados_area = []
-            bounds = area['bounds']
-            min_lat, min_lon = bounds[0]
-            max_lat, max_lon = bounds[1]
-            margem = 0.02
+            if nome_fonte == 'Solinftec':
+                # Coleta Solinftec
+                for frota_id, dados in mapeamento_solinftec.items():
+                    if dia_alvo in dados['json']:
+                        gdf_dia = filtrar_coordenadas_por_data(dados['shape'], dia_alvo)
+                        if len(gdf_dia) > 0:
+                            dados_dia_fonte.append({'frota_id': frota_id, 'gdf': gdf_dia, 'fonte': 'Solinftec'})
             
-            for item in dados_dia:
-                gdf = item['gdf']
-                # Clip rápido (bounding box)
-                mask = (
-                    (gdf.geometry.y >= min_lat - margem) & (gdf.geometry.y <= max_lat + margem) &
-                    (gdf.geometry.x >= min_lon - margem) & (gdf.geometry.x <= max_lon + margem)
-                )
-                gdf_cut = gdf[mask]
-                if len(gdf_cut) > 0:
-                    dados_area.append({'frota_id': item['frota_id'], 'gdf': gdf_cut, 'fonte': item['fonte']})
+            elif nome_fonte == 'Case IH':
+                # Coleta Case
+                for frota_id, gdf_total in dados_case.items():
+                    if 'timestamp' not in gdf_total.columns: continue
+                    gdf_dia = gdf_total[gdf_total['timestamp'].dt.date == dia_alvo].copy()
+                    if len(gdf_dia) > 0:
+                        dados_dia_fonte.append({'frota_id': frota_id, 'gdf': gdf_dia, 'fonte': 'Case IH'})
             
-            if not dados_area: continue
-            
-            nome_arq = f"mapa_{str_dia}_{area['nome'].replace(' ', '')}.html"
-            path = criar_mapa_padrao(dados_area, f"{str_dia} - {area['nome']}", nome_arq, pasta_saida, cores_persistentes)
-            
-            if path:
-                mapas_gerados.append({
-                    'arquivo': nome_arq,
-                    'data': str_dia,
-                    'tipo': 'DIARIO',
-                    'area': area['nome'],
-                    'frotas': [d['frota_id'] for d in dados_area]
-                })
+            if not dados_dia_fonte:
+                continue
 
-    # 3. Mapas de Período Completo (Por Frota? Por Área?)
-    # O usuário pediu "periodo completo". Geralmente é melhor por Frota individual ou Visão Geral da Safra.
-    # Vamos gerar um "Geralzao" de todo o período por Área.
+            # Clustering Específico desta fonte
+            dict_para_cluster = {f"{item['frota_id']}_{i}": item['gdf'] for i, item in enumerate(dados_dia_fonte)}
+            areas = separar_por_clusters(dict_para_cluster)
+            
+            for area in areas:
+                dados_area = []
+                bounds = area['bounds']
+                min_lat, min_lon = bounds[0]
+                max_lat, max_lon = bounds[1]
+                margem = 0.02
+                
+                for item in dados_dia_fonte:
+                    gdf = item['gdf']
+                    mask = (
+                        (gdf.geometry.y >= min_lat - margem) & (gdf.geometry.y <= max_lat + margem) &
+                        (gdf.geometry.x >= min_lon - margem) & (gdf.geometry.x <= max_lon + margem)
+                    )
+                    gdf_cut = gdf[mask]
+                    if len(gdf_cut) > 0:
+                        dados_area.append(item)
+                
+                if not dados_area: continue
+                
+                # Nome do arquivo com prefixo
+                nome_arq = f"{prefixo}mapa_{str_dia}_{area['nome'].replace(' ', '')}.html"
+                titulo_mapa = f"{prefixo.replace('_', '')} {str_dia} - {area['nome']}"
+                
+                path = criar_mapa_padrao(dados_area, titulo_mapa, nome_arq, pasta_saida, cores_persistentes)
+                
+                if path:
+                    mapas_gerados.append({
+                        'arquivo': nome_arq,
+                        'data': str_dia,
+                        'tipo': 'DIARIO',
+                        'area': area['nome'],
+                        'fonte_grupo': nome_fonte,
+                        'frotas': [d['frota_id'] for d in dados_area]
+                    })
+
+    # 3. Mapas de Período Completo (Separados por Fonte)
     print(f"\n  🌎 Gerando mapas de Período Completo...")
     
-    # Coletar TODO o dado de uma vez
-    dados_periodo = []
-    
-    # Solinftec (Filtrar só dias do periodo se filtro ativo)
-    for frota_id, dados in mapeamento_solinftec.items():
-        # Pega shape total, filtra datas
-        gdf = dados['shape']
-        if filtro_datas:
-             gdf = gdf[gdf['timestamp'].dt.date.isin(filtro_datas)]
-        if len(gdf) > 0:
-            dados_periodo.append({'frota_id': frota_id, 'gdf': gdf, 'fonte': 'Solinftec'})
-            
-    # Case
-    for frota_id, gdf in dados_case.items():
-        if filtro_datas:
-             gdf = gdf[gdf['timestamp'].dt.date.isin(filtro_datas)]
-        if len(gdf) > 0:
-            dados_periodo.append({'frota_id': frota_id, 'gdf': gdf, 'fonte': 'Case IH'})
+    for config in fontes_config:
+        nome_fonte = config['nome']
+        prefixo = config['prefixo']
+        
+        dados_periodo_fonte = []
+        
+        if nome_fonte == 'Solinftec':
+            for frota_id, dados in mapeamento_solinftec.items():
+                gdf = dados['shape']
+                if filtro_datas:
+                     gdf = gdf[gdf['timestamp'].dt.date.isin(filtro_datas)]
+                if len(gdf) > 0:
+                    dados_periodo_fonte.append({'frota_id': frota_id, 'gdf': gdf, 'fonte': 'Solinftec'})
+                    
+        elif nome_fonte == 'Case IH':
+            for frota_id, gdf in dados_case.items():
+                if filtro_datas:
+                     gdf = gdf[gdf['timestamp'].dt.date.isin(filtro_datas)]
+                if len(gdf) > 0:
+                    dados_periodo_fonte.append({'frota_id': frota_id, 'gdf': gdf, 'fonte': 'Case IH'})
 
-    if dados_periodo:
-        # Clustering Global
-        dict_para_cluster_global = {f"{item['frota_id']}_{i}": item['gdf'] for i, item in enumerate(dados_periodo)}
+        if not dados_periodo_fonte:
+            continue
+
+        # Clustering Global da Fonte
+        dict_para_cluster_global = {f"{item['frota_id']}_{i}": item['gdf'] for i, item in enumerate(dados_periodo_fonte)}
         areas_globais = separar_por_clusters(dict_para_cluster_global)
         
         for area in areas_globais:
-            # Filtrar dados
             dados_area_global = []
             bounds = area['bounds']
             min_lat, min_lon = bounds[0]
             max_lat, max_lon = bounds[1]
             margem = 0.05
             
-            for item in dados_periodo:
+            for item in dados_periodo_fonte:
                  gdf = item['gdf']
                  mask = (
                     (gdf.geometry.y >= min_lat - margem) & (gdf.geometry.y <= max_lat + margem) &
@@ -737,8 +772,10 @@ def gerar_mapas_padronizados(mapeamento_solinftec, dados_case, pasta_saida, filt
             
             if not dados_area_global: continue
             
-            nome_arq = f"mapa_PERIODO_COMPLETO_{area['nome'].replace(' ', '')}.html"
-            path = criar_mapa_padrao(dados_area_global, f"PERIODO COMPLETO - {area['nome']}", nome_arq, pasta_saida, cores_persistentes)
+            nome_arq = f"{prefixo}mapa_PERIODO_COMPLETO_{area['nome'].replace(' ', '')}.html"
+            titulo_mapa = f"{prefixo.replace('_', '')} PERIODO - {area['nome']}"
+            
+            path = criar_mapa_padrao(dados_area_global, titulo_mapa, nome_arq, pasta_saida, cores_persistentes)
              
             if path:
                 mapas_gerados.append({
@@ -746,6 +783,7 @@ def gerar_mapas_padronizados(mapeamento_solinftec, dados_case, pasta_saida, filt
                     'data': 'PERIODO',
                     'tipo': 'PERIODO',
                     'area': area['nome'],
+                    'fonte_grupo': nome_fonte,
                     'frotas': [d['frota_id'] for d in dados_area_global]
                 })
 
@@ -770,10 +808,22 @@ def main():
     print("🚜 GERADOR DE MAPAS DE FROTAS (DIÁRIO)")
     print("=" * 80)
     
+    # Validação do geopandas
+    if gpd is None:
+        print("\n❌ ERRO CRÍTICO: geopandas não está instalado no Python que você está usando.")
+        print("   Instale com (no mesmo Python):")
+        print("     python -m pip install geopandas shapely fiona pyproj")
+        return
+    
+    # Validação do folium
+    if folium is None:
+        print("\n❌ ERRO CRÍTICO: folium não está instalado no Python que você está usando.")
+        print("   Instale com (no mesmo Python):")
+        print("     python -m pip install folium")
+        return
+    
     # Validação do sklearn
-    try:
-        from sklearn.cluster import DBSCAN
-    except ImportError:
+    if DBSCAN is None:
         print("\n❌ ERRO CRÍTICO: scikit-learn não instalado.")
         print("   Por favor execute: pip install scikit-learn")
         return
@@ -840,14 +890,32 @@ def main():
     # 3. Criar mapeamento (Solinftec only)
     # Case não precisa de match JSON+Shape
     mapeamento_solinftec = {}
-    if frotas_json and frotas_shapes:
+    
+    # AGORA PERMITE APENAS SHAPES (sem JSON obrigatório)
+    if frotas_shapes:
         mapeamento_solinftec = criar_mapeamento_frotas(frotas_json, frotas_shapes)
     else:
-        print("\n⚠️ Pulos mapeamento Solinftec (falta JSON ou Shape). focando em Case se houver.")
+        print("\n⚠️ Pulo mapeamento Solinftec (falta Shapes). Focando em Case se houver.")
         
     if not mapeamento_solinftec and not dados_case:
-        print("\n❌ Nenhuma frota com dados completos para gerar mapa!")
+        print("\n❌ Nenhuma frota com dados (Solinftec ou Case) para gerar mapa!")
         return
+    
+    # VERIFICAÇÃO DE DATAS DISPONÍVEIS VS FILTRO
+    datas_disponiveis = set()
+    for dados in mapeamento_solinftec.values():
+        datas_disponiveis.update(dados['json'].keys())
+    for gdf in dados_case.values():
+        if 'timestamp' in gdf.columns:
+            datas_disponiveis.update(gdf['timestamp'].dt.date.unique())
+            
+    if filtro_datas:
+        datas_filtradas = {d for d in datas_disponiveis if d in filtro_datas}
+        if not datas_filtradas:
+            print(f"\n⚠️ AVISO: Nenhuma data encontrada para o filtro selecionado (Ex: {list(filtro_datas)[:1]}...).")
+            print(f"   Datas disponíveis nos arquivos: {[d.strftime('%d/%m/%Y') for d in sorted(datas_disponiveis)[:5]]} ...")
+            print("   >> PROCESSANDO TODAS AS DATAS DISPONÍVEIS AUTOMATICAMENTE.")
+            filtro_datas = None # Remove filtro para processar tudo
     
     # 4. Gerar mapas padronizados
     arquivos = gerar_mapas_padronizados(mapeamento_solinftec, dados_case, PASTA_SAIDA, filtro_datas=filtro_datas)

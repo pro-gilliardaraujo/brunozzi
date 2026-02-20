@@ -383,15 +383,12 @@ def main():
                                             k.startswith("Basculamento_") or
                                             k.startswith("Velocidade_") or
                                             k.startswith("Media_") or
-                                            k.startswith("Producao_") or
                                             k.startswith("Toneladas_") or
                                             k.startswith("Consumo_") or
                                             k.startswith("Uso_") or
                                             k_lower == "motor ligado" or
                                             k_lower == "motor ocioso" or
                                             "velocidade" in k_lower or
-                                            "producao" in k_lower or
-                                            "produção" in k_lower or
                                             "eficiencia" in k_lower or
                                             "eficiência" in k_lower or
                                             "manobras" in k_lower or

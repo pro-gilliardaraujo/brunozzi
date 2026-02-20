@@ -1,28 +1,29 @@
-import os
-import time
-import json
-from datetime import datetime, timedelta
-import logging
-import traceback
-import sys
-import shutil
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import os #Importa o módulo os para manipulação de caminhos de arquivos
+import time #Importa o módulo time para manipulação de tempo
+import json #Importa o módulo json para manipulação de arquivos JSON
+from datetime import datetime, timedelta # Importa o módulo datetime para manipulação de datas e horas
+import logging # Importa o módulo logging para registro de logs
+import traceback # Importa o módulo traceback para manipulação de exceções
+import sys # Importa o módulo sys para manipulação de argumentos e saída
+import shutil # Importa o módulo shutil para manipulação de arquivos
+from selenium import webdriver 
+from selenium.webdriver.chrome.options import Options # Importa o módulo Options para configuração do ChromeDriver
+from selenium.webdriver.common.by import By # Importa o módulo By para localização de elementos
+from selenium.webdriver.support.ui import WebDriverWait # Importa o módulo WebDriverWait para espera explícita
+from selenium.webdriver.support import expected_conditions as EC # Importa o módulo expected_conditions para condições de espera
 from selenium.common.exceptions import (
     TimeoutException,
     WebDriverException,
     SessionNotCreatedException,
-)
+) # Importa as exceções necessárias do Selenium
 
-from selenium.webdriver.common.keys import Keys
-
+# Importa o módulo Keys para manipulação de teclas
+from selenium.webdriver.common.keys import Keys 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 logs_dir = os.path.join(base_dir, "logs")
 os.makedirs(logs_dir, exist_ok=True)
 
+# Configuração básica de logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -35,7 +36,7 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout),
     ],
 )
-
+# Configuração de constantes
 XPATHS = {
     "login": {
         "username": "/html/body/div[1]/div/div/div/div/form/fieldset/section[1]/label[2]/input",
@@ -48,14 +49,14 @@ XPATHS = {
         "menu_gerador_relatorios": "//*[@id='left-panel']/div/nav/ul/li[5]/ul/li[3]/a",
     },
     "assistente_geracao": {
-        "tipo_relatorio": "//*[@id='filter-dropdown-button-1']",
+        "tipo_relatorio": "/html/body/div[1]/div/div/div[2]/div[1]/form/div/div/div[1]/div/div[1]/div[1]/div/div/div/filter-dropdown/div/div/div[1]/button",
         "opcao_tipo_relatorio": "//*[@id='reportTypeField']/div/div/div[1]/ul/li[10]",
-        "relatorio": "//*[@id='filter-dropdown-button-2']",
+        "relatorio": "/html/body/div[1]/div/div/div[2]/div[1]/form/div/div/div[1]/div/div[1]/div[2]/div/div/div/filter-dropdown/div/div/div[1]/button",
         "opcao_relatorio": "//*[@id='reportInfoField']/div/div/div[1]/ul/li[2]",
         "botao_proximo": "//*[@id='tabsReport']/div/div[1]/div/div[2]/button",
     },
     "selecao_equipamentos": {
-        "botao_selecionar_inicio": '//*[@id="tabsReport"]/div/div[2]/div/div[1]/div/div/span/button',
+        "botao_selecionar_inicio": "/html/body/div[1]/div/div/div[2]/div[1]/form/div/div/div[2]/div/div[1]/div/div/span/button",
         "botao_selecionar_tudo_unidade": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[1]/multi-select/div/div[1]/div/label',  
         "botao_selecionar_tudo_frente": '/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[2]/multi-select/div/div[1]/div/label',  
         "lista_frente": "/html/body/div[1]/div/div/div[2]/div[1]/div[3]/div[2]/multi-select/div/div[2]",
@@ -73,14 +74,14 @@ XPATHS = {
         "botao_gerar": "/html/body/div[1]/div/div/div[2]/div[1]/form/div/div/div[5]/div/div[3]/button[2]"
     }
 }
-
+# Função para normalizar o nome da pasta de download
 def normalizar_pasta_download(nome_pasta):
     valor = str(nome_pasta or "").strip().replace("\\", "/")
     if not valor or "/" in valor or "scripts" in valor.lower():
         return "dados"
     return valor
 
-
+# Função para preparar o perfil do Selenium
 def preparar_perfil_selenium():
     if sys.platform.startswith("win"):
         local_appdata = os.environ.get("LOCALAPPDATA", "")
@@ -130,7 +131,7 @@ def preparar_perfil_selenium():
 
     return destino
 
-
+# Função para carregar configurações do arquivo JSON
 def carregar_configuracoes():
     try:
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -352,18 +353,30 @@ def ir_para_tela_de_relatorios(driver):
 
 def preencher_assistente_geracao(driver):
     dados_assistente = XPATHS["assistente_geracao"]
-    espera = WebDriverWait(driver, 10)
+    espera = WebDriverWait(driver, 20)
 
     logging.info("--- Iniciando preenchimento do Assistente de Geração ---")
+
+    def clicar(xpath):
+        try:
+            WebDriverWait(driver, 30).until(
+                EC.invisibility_of_element_located((By.CSS_SELECTOR, ".router-animation-loader"))
+            )
+        except TimeoutException:
+            pass
+        espera.until(EC.visibility_of_element_located((By.XPATH, xpath)))
+        el = espera.until(EC.element_to_be_clickable((By.XPATH, xpath)))
+        driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", el
+        )
+        time.sleep(0.5)
+        el.click()
+        time.sleep(1)
 
     try:
         # 1. Selecionar Tipo de Relatório
         logging.info("Abrindo dropdown 'Tipo de Relatório'...")
-        dropdown_tipo = espera.until(
-            EC.element_to_be_clickable((By.XPATH, dados_assistente["tipo_relatorio"]))
-        )
-        dropdown_tipo.click()
-        time.sleep(1)
+        clicar(dados_assistente["tipo_relatorio"])
 
         logging.info("Selecionando opção de Tipo de Relatório...")
         opcao_tipo = espera.until(
@@ -377,11 +390,7 @@ def preencher_assistente_geracao(driver):
 
         # 2. Selecionar Relatório
         logging.info("Abrindo dropdown 'Relatório'...")
-        dropdown_relatorio = espera.until(
-            EC.element_to_be_clickable((By.XPATH, dados_assistente["relatorio"]))
-        )
-        dropdown_relatorio.click()
-        time.sleep(1)
+        clicar(dados_assistente["relatorio"])
 
         logging.info("Selecionando opção de Relatório...")
         opcao_relatorio = espera.until(
@@ -393,10 +402,7 @@ def preencher_assistente_geracao(driver):
 
         # 3. Clicar em Próximo
         logging.info("Clicando em 'Próximo'...")
-        botao_prox = espera.until(
-            EC.element_to_be_clickable((By.XPATH, dados_assistente["botao_proximo"]))
-        )
-        botao_prox.click()
+        clicar(dados_assistente["botao_proximo"])
         logging.info("Botão 'Próximo' clicado.")
         time.sleep(3)
 
@@ -1037,11 +1043,11 @@ def main():
 
         driver = abrir_navegador_com_perfil_padrao(config)
 
-        fazer_login(driver, config)
-        ir_para_tela_de_relatorios(driver)
-        preencher_assistente_geracao(driver)
-        selecionar_equipamentos(driver, config)
-        gerar_relatorio(driver, config)
+        fazer_login(driver, config) # Faz login na Solinftec
+        ir_para_tela_de_relatorios(driver) # Acessa a tela de relatórios
+        preencher_assistente_geracao(driver) # Preenche o assistente de geração de relatório
+        selecionar_equipamentos(driver, config) # Seleciona os equipamentos
+        gerar_relatorio(driver, config) # Gera o relatório
 
         logging.info(">>> Automação concluída <<<")
 

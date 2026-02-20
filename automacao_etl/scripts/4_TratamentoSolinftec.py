@@ -4,7 +4,7 @@ import shutil
 import warnings
 import unicodedata
 import zipfile
-import re
+import re 
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -67,11 +67,12 @@ def obter_arquivos_zip(diretorio):
     arquivos = [
         os.path.join(diretorio, f)
         for f in os.listdir(diretorio)
-        if f.lower().endswith(".zip") and not f.startswith("~$") and "linha_do_tempo" in f.lower()
+        if f.lower().endswith(".zip") and not f.startswith("~$") and "regional" in f.lower()
     ]
     return arquivos
 
 def extrair_zips(diretorio, arquivos_zip):
+    arquivos_extraidos = []
     for arquivo_zip in arquivos_zip:
         try:
             with zipfile.ZipFile(arquivo_zip, "r") as zf:
@@ -81,9 +82,11 @@ def extrair_zips(diretorio, arquivos_zip):
                 ]
                 for membro in membros:
                     zf.extract(membro, diretorio)
+                    arquivos_extraidos.append(os.path.join(diretorio, membro))
             print(f"ZIP extraído: {os.path.basename(arquivo_zip)}")
         except Exception as e:
             print(f"ERRO ao extrair ZIP {os.path.basename(arquivo_zip)}: {e}")
+    return arquivos_extraidos
 
 def ajustar_largura_colunas(worksheet):
     """
@@ -1116,16 +1119,20 @@ def main():
     if not validar_diretorio(DIRETORIO_ENTRADA):
         sys.exit(1)
         
-    arquivos = obter_arquivos_xlsx(DIRETORIO_ENTRADA)
+    # Prioridade: ZIP com "Regional" no nome
+    arquivos_zip = obter_arquivos_zip(DIRETORIO_ENTRADA)
+    arquivos = []
+
+    if arquivos_zip:
+        print(f"Encontrado(s) {len(arquivos_zip)} arquivo(s) ZIP com 'Regional'. Extraindo...")
+        arquivos = extrair_zips(DIRETORIO_ENTRADA, arquivos_zip)
+    else:
+        # Se não houver ZIP Regional, busca XLSX existentes (comportamento legado/fallback)
+        print("Nenhum ZIP 'Regional' encontrado. Verificando arquivos XLSX existentes...")
+        arquivos = obter_arquivos_xlsx(DIRETORIO_ENTRADA)
 
     if not arquivos:
-        arquivos_zip = obter_arquivos_zip(DIRETORIO_ENTRADA)
-        if arquivos_zip:
-            extrair_zips(DIRETORIO_ENTRADA, arquivos_zip)
-            arquivos = obter_arquivos_xlsx(DIRETORIO_ENTRADA)
-
-    if not arquivos:
-        print("Nenhum arquivo .xlsx encontrado na pasta dados.")
+        print("Nenhum arquivo .xlsx encontrado (nem extraído, nem existente) na pasta dados.")
         sys.exit(0)
         
     print(f"Encontrados {len(arquivos)} arquivos para processar.")
