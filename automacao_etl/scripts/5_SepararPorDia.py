@@ -191,6 +191,27 @@ def main():
                  # O usuário quer remover dias fora. Se todos estão fora, gera vazio.
             
             datas_unicas = datas_filtradas
+        
+        cfg_path = os.path.join(BASE_DIR, "utils", "config_automacao.json")
+        if os.path.exists(cfg_path):
+            try:
+                with open(cfg_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                params = cfg.get("automacao", {}).get("parametros", {})
+                str_ini = params.get("data_inicial") or params.get("data_inicio")
+                str_fim = params.get("data_final") or params.get("data_fim")
+                if str_ini and str_fim:
+                    dt_ini_cfg = datetime.strptime(str_ini, "%d/%m/%Y").date()
+                    dt_fim_cfg = datetime.strptime(str_fim, "%d/%m/%Y").date()
+                    print(f"  Filtrando dias pelo intervalo de config: {dt_ini_cfg} a {dt_fim_cfg}")
+                    datas_filtradas_cfg = []
+                    for d in datas_unicas:
+                        d_dt = pd.to_datetime(d).date()
+                        if dt_ini_cfg <= d_dt <= dt_fim_cfg:
+                            datas_filtradas_cfg.append(d)
+                    datas_unicas = datas_filtradas_cfg
+            except Exception as e:
+                print(f"  AVISO: Erro ao aplicar filtro de datas do config_automacao.json: {e}")
             
         print(f"Encontrados {len(datas_unicas)} dias únicos: {[pd.to_datetime(d).strftime('%d/%m') for d in datas_unicas]}")
 
@@ -489,7 +510,8 @@ def main():
                                             dados_frota_agrupados["Geral"][categoria] = []
                                         dados_frota_agrupados["Geral"][categoria].append(item)
 
-                            nome_arquivo_frota = f"{tipo_frota}_frota_{data_str}.json"
+                            # Salva o JSON da frota com sufixo _raw para evitar conflito com consolidação
+                            nome_arquivo_frota = f"{tipo_frota}_frota_{data_str}_raw.json"
                             caminho_frota = os.path.join(dir_frota, nome_arquivo_frota)
                             try:
                                 with open(caminho_frota, 'w', encoding='utf-8') as f:
