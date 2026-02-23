@@ -177,7 +177,6 @@ def load_case_data() -> dict:
                             "velocidadeMedia": safe_float(d.get("Velocidade Média")),
                         }
 
-        # Aba "Resumo Diário" contém dados por frota POR DIA
         if "Resumo Diário" in wb.sheetnames:
             ws = wb["Resumo Diário"]
             rows = list(ws.iter_rows(values_only=True))
@@ -188,7 +187,6 @@ def load_case_data() -> dict:
                     frota = str(d.get("Frota", "")).strip()
                     data_val = d.get("Data", "")
                     
-                    # Normalizar data
                     if isinstance(data_val, datetime):
                         data_key = data_val.strftime("%d/%m/%Y")
                     elif isinstance(data_val, str):
@@ -197,12 +195,34 @@ def load_case_data() -> dict:
                         continue
 
                     if frota and data_key:
+                        horas_motor = safe_float(d.get("Total Horas Motor (Diferença)"))
+                        rpm = safe_float(d.get("RPM"))
+                        temp_arref = safe_float(d.get("Média Temperatura líquido de arrefecimento do motor"))
+                        temp_trans = safe_float(d.get("Média Temperatura do óleo da transmissão"))
+                        vel_media = safe_float(d.get("Velocidade Média"))
+
+                        tempo_gps_ligado = safe_float(d.get("Tempo GPS Ligado"))
+                        tempo_gps_desligado = safe_float(d.get("Tempo GPS Desligado"))
+                        perc_gps_ligado = safe_float(d.get("% GPS Ligado"))
+                        perc_gps_desligado = safe_float(d.get("% GPS Desligado"))
+
                         case_data[data_key][frota] = {
-                            "horasMotor": safe_float(d.get("Total Horas Motor (Diferença)")),
-                            "rpm": safe_float(d.get("RPM")),
-                            "temperaturaArrefecimento": safe_float(d.get("Média Temperatura líquido de arrefecimento do motor")),
-                            "temperaturaTransmissao": safe_float(d.get("Média Temperatura do óleo da transmissão")),
-                            "velocidadeMedia": safe_float(d.get("Velocidade Média")),
+                            "horasMotor": horas_motor,
+                            "rpm": rpm,
+                            "temperaturaArrefecimento": temp_arref,
+                            "temperaturaTransmissao": temp_trans,
+                            "velocidadeMedia": vel_media,
+                            "Extras": {
+                                "eficienciaEnergetica": safe_float(d.get("Eficiencia_Energetica")),
+                                "eficienciaOperacional": safe_float(d.get("Eficiencia_Operacional")),
+                                "usoGPS": perc_gps_ligado,
+                                "horasMotor": horas_motor,
+                                "velocidadeMedia": vel_media,
+                                "tempoGPSLigado": tempo_gps_ligado,
+                                "tempoGPSDesligado": tempo_gps_desligado,
+                                "percGPSLigado": perc_gps_ligado,
+                                "percGPSDesligado": perc_gps_desligado,
+                            },
                         }
 
         # Aba "Dados" contém intervalos detalhados com coordenadas
@@ -752,17 +772,19 @@ def consolidar_tratores_case(
         val_ee = safe_float(resumo.get("Eficiencia_Energetica"))
         if not val_ee and case_info:
             val_ee = safe_float(case_extra.get("eficienciaEnergetica", 0))
-            
+        val_ee_pct = round(val_ee * 100, 2) if val_ee <= 1 else round(val_ee, 2)
+        
         horas_motor = safe_float(resumo.get("Horas_Motor_Ligado"))
         if not horas_motor and case_info:
              horas_motor = safe_float(case_info.get("Horas Motor", 0))
 
-        horas_elev = safe_float(resumo.get("Horas_Elevador", 0)) # Geralmente 0 para tratores
+        horas_produtivas = safe_float(resumo.get("Horas_Produtivas", 0))
+        horas_elev = horas_produtivas
         
         eficiencia_energetica.append({
             "id": idx,
             "nome": frota_id,
-            "eficiencia": round(val_ee, 4),
+            "eficiencia": val_ee_pct,
             "horasMotor": round(horas_motor, 4),
             "horasElevador": round(horas_elev, 4),
             "fonte": fonte_atual,

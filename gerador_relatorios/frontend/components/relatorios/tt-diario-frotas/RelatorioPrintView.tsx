@@ -1,17 +1,14 @@
 "use client"
 import React from "react"
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic"
 import { Card, CardContent } from "@/components/ui/card"
-// import { ColhedoraFrotaData } from "@/lib/types"
 import { CabecalhoMeta } from "../cd-diario-frotas/componentes/CabecalhoMeta"
-import { GraficoEficiencia } from "../cd-diario-frotas/componentes/GraficoEficiencia"
 import { GraficoHorasElevador } from "../cd-diario-frotas/componentes/GraficoHorasElevador"
 import { GraficoUsoGPS } from "../cd-diario-frotas/componentes/GraficoUsoGPS"
 import { GraficoMediaVelocidade } from "../cd-diario-frotas/componentes/GraficoMediaVelocidade"
 import { GraficoManobras } from "../cd-diario-frotas/componentes/GraficoManobras"
 import { GraficoMotorOcioso } from "../cd-diario-frotas/componentes/GraficoMotorOcioso"
 import { GraficoTop5Ofensores } from "../cd-diario-frotas/componentes/GraficoTop5Ofensores"
-import { GraficoEficienciaOperacional } from "../cd-diario-frotas/componentes/GraficoEficienciaOperacional"
 import { GraficoDisponibilidadeMecanica } from "../cd-diario-frotas/componentes/GraficoDisponibilidadeMecanica"
 import { GraficoIntervalos, Intervalo } from "../cd-diario-frotas/componentes/GraficoIntervalos"
 import { CardIndicador } from "../cd-diario-frotas/componentes/CardIndicador"
@@ -23,8 +20,10 @@ import { ChevronLeft, ChevronRight, Download, Minus, Plus } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { generateRelatorioPdfFromUrl } from "@/config/pdf-server"
 import { downloadPdfBuffer } from "@/lib/pdf-utils"
-
-import { MapaIframe } from '../cd-diario-frotas/componentes/MapaIframe'
+import { GraficoEficienciaTrator } from "./GraficoEficienciaTrator"
+import { GraficoEficienciaOperacionalTrator } from "./GraficoEficienciaOperacionalTrator"
+import { MapaIframe } from "../cd-diario-frotas/componentes/MapaIframe"
+import { GraficoTemperaturaCase } from "../../trator/GraficoTemperaturaCase"
 
 const LOGO_URL = "/logo.png"
 
@@ -162,6 +161,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     manobras: metas?.manobras ?? 60,
     motorOcioso: metas?.motorOcioso ?? 0,
     disponibilidadeMecanica: metas?.disponibilidadeMecanica ?? 90,
+    temperaturaTransmissao: metas?.temperaturaTransmissao ?? 85,
   }
   
   // Agrupar intervalos por equipamento
@@ -220,7 +220,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
   const MAP_FRENTES: Record<string, string> = { 'frente5': 'Frente BP Ituiutaba' }
   const frenteNome = frenteNomeStorage || MAP_FRENTES[frenteCodigo] || (frenteCodigo?.startsWith('Frente') ? frenteCodigo : (frenteCodigo ? `Frente ${frenteCodigo}` : 'Frente Desconhecida'))
   const periodoLabel = period === "semanal" ? "Semanal" : "Diário"
-  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Colhedoras`
+  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Tratores`
   const nomeDataArquivo =
     period === "semanal"
       ? `${startStr.replace(/\//g, "_")}-${endStr.replace(/\//g, "_")}`
@@ -433,7 +433,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
       cancelAnimationFrame(rafId)
       observer.disconnect()
     }
-  }, [computePageMetrics, zoomPercent, isPdfMode, showMockControls, mockQtdFrotas, period])
+  }, [computePageMetrics])
 
   React.useEffect(() => {
     // Mantém o painel de utilitários como overlay, "encaixando" à direita do relatório sem ocupar espaço do corpo.
@@ -590,6 +590,11 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     )
   }, [buildNamedSeries, dadosValidosBase, qtdFrotasEfetivo])
 
+  const dadosEficienciaGrafico = React.useMemo(
+    () => dadosValidos.filter(d => (d.eficiencia || 0) > 0),
+    [dadosValidos]
+  )
+
   const mediaVelocidadeFiltrada = React.useMemo(() => {
     const base = Array.isArray(media_velocidade) ? media_velocidade : []
     return buildNamedSeries(
@@ -599,6 +604,11 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
       (name, idx) => ({ id: `vel-${idx + 1}`, nome: name, velocidade: 0 })
     )
   }, [buildNamedSeries, media_velocidade, qtdFrotasEfetivo])
+
+  const mediaVelocidadeGrafico = React.useMemo(
+    () => mediaVelocidadeFiltrada.filter(d => (d.velocidade || 0) > 0),
+    [mediaVelocidadeFiltrada]
+  )
 
   const manobrasFiltradas = React.useMemo(() => {
     const base = Array.isArray(manobras_frotas) ? manobras_frotas : []
@@ -610,6 +620,11 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     )
   }, [buildNamedSeries, manobras_frotas, qtdFrotasEfetivo])
 
+  const manobrasGrafico = React.useMemo(
+    () => manobrasFiltradas.filter(d => (d["Tempo Total"] || 0) > 0),
+    [manobrasFiltradas]
+  )
+
   const motorOciosoFiltrado = React.useMemo(() => {
     const base = Array.isArray(motor_ocioso) ? motor_ocioso : []
     return buildNamedSeries(
@@ -619,6 +634,11 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
       (name, idx) => ({ id: `oc-${idx + 1}`, nome: name, percentual: 0, tempoLigado: 0, tempoOcioso: 0 })
     )
   }, [buildNamedSeries, motor_ocioso, qtdFrotasEfetivo])
+
+  const motorOciosoGrafico = React.useMemo(
+    () => motorOciosoFiltrado.filter(d => (d.percentual || 0) > 0),
+    [motorOciosoFiltrado]
+  )
 
   const disponibilidadeFiltrada = React.useMemo(() => {
     const base = Array.isArray(disponibilidade_mecanica) ? disponibilidade_mecanica : []
@@ -630,10 +650,15 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     )
   }, [buildNamedSeries, disponibilidade_mecanica, qtdFrotasEfetivo])
 
-  const dadosUsoGPS = React.useMemo(() => {
-    const base = Array.isArray(uso_gps) ? uso_gps.filter((d: any) => d?.nome) : []
-    return buildNamedSeries(base, qtdFrotasEfetivo, "nome", (name, idx) => ({ id: `gps-${idx + 1}`, nome: name, porcentagem: 0 }))
-  }, [buildNamedSeries, uso_gps, qtdFrotasEfetivo])
+  const disponibilidadeGrafico = React.useMemo(
+    () => disponibilidadeFiltrada.filter(d => (d.disponibilidade || 0) > 0),
+    [disponibilidadeFiltrada]
+  )
+
+  const dadosUsoGPSCase = React.useMemo(() => {
+    const base = Array.isArray(uso_gps) ? uso_gps.filter((d: any) => d?.nome && d?.fonte === 'case') : []
+    return buildNamedSeries(base, base.length, "nome", (name, idx) => ({ id: `gps-${idx + 1}`, nome: name, porcentagem: 0 }))
+  }, [buildNamedSeries, uso_gps])
 
   // Cálculos para Eficiência Energética
   const metaEficiencia = metasSafe.eficienciaEnergetica
@@ -655,34 +680,24 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     )
   }, [buildNamedSeries, dadosOperacionalBase, qtdFrotasEfetivo])
 
+  const dadosOperacionalGrafico = React.useMemo(
+    () => dadosValidosOperacional.filter(d => (d.eficiencia || 0) > 0),
+    [dadosValidosOperacional]
+  )
+
   const metaEficienciaOperacional = metasSafe.eficienciaOperacional
   const dadosEficienciaOperacionalNaoZero = dadosValidosOperacional.filter(d => d.eficiencia > 0)
   const mediaEficienciaOperacional = dadosEficienciaOperacionalNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaOperacionalNaoZero.length || 1)
 
-  // Cálculos para Horas Elevador
-  // Usando os mesmos dados de eficiência energética para consistência
-  const metaHorasElevador = metasSafe.horaElevador
-  const dadosHorasElevadorNaoZero = dadosValidos.filter(d => d.horasElevador > 0)
-  const mediaHorasElevador = dadosHorasElevadorNaoZero.reduce((acc, curr) => acc + curr.horasElevador, 0) / (dadosHorasElevadorNaoZero.length || 1)
-
-  // Preparar dados para o gráfico de horas elevador
-  const dadosGraficoHoras = dadosValidos.map(d => ({
-    id: d.id,
-    nome: d.nome,
-    horas: d.horasElevador
-  }))
-  const isManyFrotas = qtdFrotasEfetivo > 4
-  const alturaEficPerc = isManyFrotas ? 50 : 50
-  const alturaHorasPerc = 100 - alturaEficPerc
-  const headerReservedPx = isManyFrotas ? 36 : 50
+  // Removido: página de Horas Elevador para tratores (gráfico não será exibido)
 
   // Página 2 - Uso GPS
   const metaUsoGPS = metasSafe.usoGPS
-  const dadosUsoGPSNaoZero = dadosUsoGPS.filter(d => (d.porcentagem || 0) > 0)
-  const mediaUsoGPS = dadosUsoGPSNaoZero.reduce((acc, curr) => acc + curr.porcentagem, 0) / (dadosUsoGPSNaoZero.length || 1)
+  const dadosUsoGPSNaoZeroCase = dadosUsoGPSCase.filter(d => (d.porcentagem || 0) > 0)
+  const mediaUsoGPSCase = dadosUsoGPSNaoZeroCase.reduce((acc, curr) => acc + curr.porcentagem, 0) / (dadosUsoGPSNaoZeroCase.length || 1)
 
   // Página 7 - Ofensores e Disponibilidade
-  const dadosOfensores = (ofensores || []).map(item => {
+  const dadosOfensores = (ofensores || []).map((item: any) => {
     // Tenta extrair o nome após o código (ex: "8040 - MANUTENCAO" -> "MANUTENCAO")
     const rawNome = ((item as any)?.nome ?? (item as any)?.operacao ?? '') as string
     const parts = typeof rawNome === 'string' ? rawNome.split(' - ') : []
@@ -767,7 +782,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 className="inline-flex flex-col items-start gap-4 report-zoom"
                 style={{ ...(isPdfMode ? {} : ({ zoom } as any)) }}
               >
-      {/* PÁGINA 2 - Eficiência Energética */}
+      {/* PÁGINA 2 - Eficiência Energética (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -782,8 +797,8 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                   compact={false}
                 />
                 <div className="flex-1 overflow-hidden mt-1">
-                  <GraficoEficiencia 
-                    dados={dadosValidos} 
+                  <GraficoEficienciaTrator 
+                    dados={dadosEficienciaGrafico} 
                     meta={metaEficiencia} 
                     compact={false}
                   />
@@ -794,7 +809,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         </div>
       </div>
 
-      {/* PÁGINA 3 - Eficiência Operacional */}
+      {/* PÁGINA 3 - Eficiência Operacional (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -809,8 +824,8 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                   compact={false}
                 />
                 <div className="flex-1 overflow-hidden mt-1">
-                  <GraficoEficienciaOperacional 
-                    dados={dadosValidosOperacional} 
+                  <GraficoEficienciaOperacionalTrator 
+                    dados={dadosOperacionalGrafico} 
                     meta={metaEficienciaOperacional} 
                     compact={false}
                   />
@@ -821,99 +836,11 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         </div>
       </div>
 
-      {/* PÁGINA 3 - Horas Elevador */}
-      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-          <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col h-full">
-              <SectionTitle title={`Horas Elevador${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
-              <div className="border border-black rounded-lg p-3 flex-1">
-                <CabecalhoMeta 
-                  meta={metaHorasElevador} 
-                  media={mediaHorasElevador} 
-                  tipo="horas"
-                  sufixoMedia="Média calculada excluindo valores 0 h"
-                  compact={false}
-                />
-                <div className="overflow-hidden mt-1" style={{ height: `calc(100% - ${headerReservedPx}px)` }}>
-                  <GraficoHorasElevador dados={dadosGraficoHoras} meta={metaHorasElevador} compact={false} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Removido: Página de Horas Elevador (não aplicável para tratores) */}
 
-
-      {/* PÁGINA - Uso GPS (NUNCA mostrar para Solinftec - não tem dados reais de GPS) */}
-      {fontePrimaria !== 'solinftec' && dadosUsoGPS.some(d => d.porcentagem > 0) && (
-      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-          <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col flex-1">
-              <SectionTitle title={`Uso GPS${fontePrimaria ? ` - ${fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
-              <div className="border border-black rounded-lg p-3 flex-1">
-                <CabecalhoMeta 
-                  meta={metaUsoGPS} 
-                  media={mediaUsoGPS} 
-                  tipo="porcentagem" 
-                  sufixoMedia="Média calculada excluindo valores 0%"
-                />
-                <div className="h-[calc(100%-50px)] overflow-hidden mt-1">
-                  <GraficoUsoGPS dados={dadosUsoGPS} meta={metaUsoGPS} compact={false} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      )}
-
-      {/* PÁGINAS DE MAPAS - Carrega HTMLs do index_mapas.json */}
-      {period === "diario" && (() => {
-        // Converter data do relatório para formato DD-MM-YYYY
-        const dataMapas = metadata.date ? (() => {
-          // Parsear direto da string ISO YYYY-MM-DD para DD-MM-YYYY sem new Date()
-          const parts = metadata.date.split('-') // [YYYY, MM, DD]
-          if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`
-          return null
-        })() : null
-
-        if (!dataMapas) return null
-
-        // Filtrar mapas do index que correspondem à data do relatório
-        const mapasDoDia = mapasDisponiveis.filter(m => m.data === dataMapas && m.tipo === 'DIARIO')
-        
-        if (mapasDoDia.length === 0) return null
-
-        return mapasDoDia.map((mapa, idx) => (
-          <div 
-            key={`mapa-${mapa.arquivo}`}
-            data-pdf-page 
-            className="bg-white shadow-lg print:shadow-none" 
-            style={{ width: "210mm", height: "297mm" }}
-          >
-            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-              <div className="flex-1 flex flex-col min-h-0">
-                <SectionTitle title={`Área Trabalhada - ${mapa.area} (${mapa.frotas.join(', ')}) - Solinftec`} />
-                <div className="border border-black rounded-lg p-0 flex-1 overflow-hidden min-h-0 relative">
-                  <iframe 
-                    src={`/mapas/${mapa.arquivo}`}
-                    className="w-full h-full border-0"
-                    title={`${mapa.area} - ${dataMapas}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))
-      })()}
 
       {/* PÁGINA 5 - Velocidade e Manobras */}
-      {/* PÁGINA 5 - Média de Velocidade */}
+      {/* PÁGINA 5 - Média de Velocidade (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -921,14 +848,14 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
             <div className="flex flex-col h-full">
               <SectionTitle title={`Média de Velocidade${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                 <GraficoMediaVelocidade dados={mediaVelocidadeFiltrada} meta={metasSafe.mediaVelocidade} />
+                 <GraficoMediaVelocidade dados={mediaVelocidadeGrafico} meta={metasSafe.mediaVelocidade} />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* PÁGINA 6 - Manobras */}
+      {/* PÁGINA 6 - Manobras (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -937,7 +864,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
               <SectionTitle title={`Manobras${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
                  <GraficoManobras 
-                    dados={manobrasFiltradas} 
+                    dados={manobrasGrafico} 
                     meta={metasSafe.manobras} 
                     compact={false}
                  />
@@ -948,7 +875,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
       </div>
 
 
-      {/* PÁGINA 7 - Motor Ocioso */}
+      {/* PÁGINA 7 - Motor Ocioso (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -957,7 +884,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
               <SectionTitle title={`Motor Ocioso${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
                  <GraficoMotorOcioso 
-                    dados={motorOciosoFiltrado} 
+                    dados={motorOciosoGrafico} 
                     meta={metasSafe.motorOcioso} 
                     compact={false}
                  />
@@ -984,7 +911,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         </div>
       </div>
 
-      {/* PÁGINA 9 - Disponibilidade Mecânica */}
+      {/* PÁGINA 9 - Disponibilidade Mecânica (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
@@ -995,7 +922,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 <CabecalhoMeta 
                   meta={metasSafe.disponibilidadeMecanica} 
                   media={(() => {
-                    const vals = (disponibilidadeFiltrada || []).map((d: any) => d.disponibilidade).filter((v: number) => v > 0)
+                      const vals = (disponibilidadeGrafico || []).map((d: any) => d.disponibilidade).filter((v: number) => v > 0)
                     return vals.length > 0 ? vals.reduce((a: number, b: number) => a + b, 0) / vals.length : 0
                   })()}
                   tipo="porcentagem"
@@ -1003,7 +930,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 />
                 <div className="flex-1 overflow-hidden mt-1">
                   <GraficoDisponibilidadeMecanica 
-                    dados={disponibilidadeFiltrada || []} 
+                    dados={disponibilidadeGrafico || []} 
                     meta={metasSafe.disponibilidadeMecanica} 
                     compact={false}
                   />
@@ -1060,26 +987,29 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
           })
         })()}
 
-      {/* PÁGINA RESUMO - Resumo do Relatório de Colheita Diário */}
+      {/* PÁGINA RESUMO - Resumo do Relatório de Tratores */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
           <div className="flex-1 flex flex-col gap-4 overflow-hidden pt-2">
-            <h2 className="text-center font-bold text-base">Resumo do Relatório de Colheita {periodoLabel}</h2>
+            <h2 className="text-center font-bold text-base">Resumo do Relatório de Tratores {periodoLabel}</h2>
+            <p className="text-center text-[10px] text-slate-600">
+              Até esta página, os indicadores apresentados utilizam dados da fonte Solinftec.
+            </p>
             
             <div className="grid grid-cols-2 gap-4">
               <CardIndicador 
                 titulo="Eficiência Energética"
                 meta={metasSafe.eficienciaEnergetica}
                 unidade="%"
-                dados={dadosResumo.map(d => ({ valor: d.eficiencia }))}
+                dados={dadosResumo.filter(d => (d.eficiencia || 0) > 0).map(d => ({ valor: d.eficiencia }))}
                 tipo="asc"
               />
               <CardIndicador 
                 titulo="Eficiência Operacional"
                 meta={metasSafe.eficienciaOperacional}
                 unidade="%"
-                dados={dadosResumo.map(d => ({ valor: d.eficienciaOperacional }))}
+                dados={dadosResumo.filter(d => (d.eficienciaOperacional || 0) > 0).map(d => ({ valor: d.eficienciaOperacional }))}
                 tipo="asc"
               />
               <CardIndicador 
@@ -1090,12 +1020,12 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 tipo="asc"
               />
               
-              {fontePrimaria !== 'solinftec' && dadosUsoGPS.some(d => d.porcentagem > 0) && (
+              {dadosUsoGPSCase.some(d => d.porcentagem > 0) && (
                 <CardIndicador 
                   titulo="Uso GPS"
                   meta={metasSafe.usoGPS}
                   unidade="%"
-                  dados={dadosUsoGPS.map(d => ({ valor: d.porcentagem }))}
+                  dados={dadosUsoGPSCase.map(d => ({ valor: d.porcentagem }))}
                   tipo="asc"
                 />
               )}
@@ -1103,14 +1033,14 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 titulo="Média Velocidade"
                 meta={metasSafe.mediaVelocidade}
                 unidade=" km/h"
-                dados={dadosResumo.map(d => ({ valor: d.velocidade }))}
+                dados={dadosResumo.filter(d => (d.velocidade || 0) > 0).map(d => ({ valor: d.velocidade }))}
                 tipo="desc"
               />
               <CardIndicador 
                 titulo="Manobras"
                 meta={metasSafe.manobras}
                 unidade=""
-                dados={dadosCardManobras}
+                dados={dadosCardManobras.filter(d => (d.valor || 0) > 0)}
                 tipo="desc"
                 formatarValor={(v) => formatMmSsFromSeconds(v)}
               />
@@ -1118,14 +1048,14 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 titulo="Motor Ocioso"
                 meta={metasSafe.motorOcioso}
                 unidade="%"
-                dados={dadosResumo.map(d => ({ valor: d.ocioso }))}
+                dados={dadosResumo.filter(d => (d.ocioso || 0) > 0).map(d => ({ valor: d.ocioso }))}
                 tipo="desc"
               />
               <CardIndicador 
                 titulo="Disponibilidade Mecânica"
                 meta={metasSafe.disponibilidadeMecanica}
                 unidade="%"
-                dados={dadosResumo.map(d => ({ valor: d.disponibilidade }))}
+                dados={dadosResumo.filter(d => (d.disponibilidade || 0) > 0).map(d => ({ valor: d.disponibilidade }))}
                 tipo="asc"
               />
               </div>
@@ -1137,6 +1067,137 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
           </div>
         </div>
       </div>
+
+      {/* SEÇÃO CASE - GPS, MAPAS E TEMPERATURAS */}
+
+      {/* PÁGINA - Uso GPS (apenas Case IH) */}
+      {dadosUsoGPSNaoZeroCase.length > 0 && (
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col flex-1">
+              <SectionTitle title="Uso GPS - Case IH" />
+              <div className="border border-black rounded-lg p-3 flex-1">
+                <CabecalhoMeta 
+                  meta={metaUsoGPS} 
+                  media={mediaUsoGPSCase} 
+                  tipo="porcentagem" 
+                  sufixoMedia="Média calculada excluindo valores 0%"
+                />
+                <div className="h-[calc(100%-50px)] overflow-hidden mt-1">
+                  <GraficoUsoGPS dados={dadosUsoGPSCase} meta={metaUsoGPS} compact={false} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
+
+      {/* PÁGINAS DE MAPAS - Carrega HTMLs do index_mapas.json (apenas mapas de tratores CASE) */}
+      {period === "diario" && (() => {
+        const dataMapas = metadata?.date ? (() => {
+          const parts = String(metadata.date).split('-')
+          if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`
+          return null
+        })() : null
+
+        if (!dataMapas) return null
+
+        const mapasDoDia = mapasDisponiveis.filter(m => 
+          m.data === dataMapas && 
+          m.tipo === 'DIARIO' && 
+          Array.isArray(m.frotas) && 
+          m.frotas.some((f: string) => ['560', '469', '547'].includes(String(f)))
+        )
+        
+        if (mapasDoDia.length === 0) return null
+
+        return mapasDoDia.map((mapa, idx) => (
+          <div 
+            key={`mapa-${mapa.arquivo}`}
+            data-pdf-page 
+            className="bg-white shadow-lg print:shadow-none" 
+            style={{ width: "210mm", height: "297mm" }}
+          >
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col min-h-0">
+                <SectionTitle title={`Área Trabalhada - ${mapa.area} (${mapa.frotas.join(', ')}) - Case IH`} />
+                <div className="border border-black rounded-lg p-0 flex-1 overflow-hidden min-h-0 relative">
+                  <iframe 
+                    src={`/mapas/${mapa.arquivo}`}
+                    className="w-full h-full border-0"
+                    title={`${mapa.area} - ${dataMapas}`}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      })()}
+
+      {(() => {
+        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
+        const lista = Object.entries(dadosCaseObj).map(([frota, stats]) => ({
+          Frota: frota,
+          temperaturaTransmissao: Number(stats?.temperaturaTransmissao || 0),
+          temperaturaArrefecimento: Number(stats?.temperaturaArrefecimento || 0),
+        }))
+        const dadosTemperaturaCase = lista.filter(
+          it => (it.temperaturaTransmissao || 0) > 0 || (it.temperaturaArrefecimento || 0) > 0
+        )
+        if (dadosTemperaturaCase.length === 0) return null
+        const mediaTemperaturaTransmissao =
+          dadosTemperaturaCase.reduce((acc, curr) => acc + (curr.temperaturaTransmissao || 0), 0) /
+          dadosTemperaturaCase.length
+        const maxFrotasPorPagina = 3
+        const totalPages = Math.ceil(dadosTemperaturaCase.length / maxFrotasPorPagina)
+        return Array.from({ length: totalPages }).map((_, pageIndex) => {
+          const startIndex = pageIndex * maxFrotasPorPagina
+          const pageItems = dadosTemperaturaCase.slice(startIndex, startIndex + maxFrotasPorPagina)
+          return (
+            <div
+              key={`case-temp-${pageIndex}`}
+              data-pdf-page
+              className="bg-white shadow-lg print:shadow-none"
+              style={{ width: "210mm", height: "297mm" }}
+            >
+              <div
+                className="flex flex-col border border-black m-2 p-2 rounded-sm"
+                style={{ height: "calc(297mm - 16px)" }}
+              >
+                <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+                <div className="flex-1 flex flex-col gap-2">
+                  <div className="flex flex-col h-full">
+                    <SectionTitle
+                      title={`Temperaturas - Case IH${
+                        totalPages > 1 ? ` - página ${pageIndex + 1}` : ""
+                      }`}
+                    />
+                    <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
+                      <CabecalhoMeta
+                        meta={metasSafe.temperaturaTransmissao}
+                        media={mediaTemperaturaTransmissao}
+                        tipo="temperatura"
+                        compact={false}
+                      />
+                      <div className="flex-1 overflow-hidden mt-1">
+                        <GraficoTemperaturaCase
+                          dados={pageItems}
+                          meta={metasSafe.temperaturaTransmissao}
+                          compact={false}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })
+      })()}
               </div>
             </div>
           </div>

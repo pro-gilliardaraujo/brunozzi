@@ -3,7 +3,7 @@
     "date": "2025-10-06",
     "type": "tt_diario_novo",
     "frente": "frente5",
-    "generated_at": "2026-02-22T10:03:06.321124",
+    "generated_at": "2026-02-22T19:03:40.356755",
     "fontes": [
       "case",
       "solinftec"
@@ -31,49 +31,49 @@
     {
       "id": 2,
       "nome": "153",
-      "eficiencia": 0.0187,
+      "eficiencia": 1.87,
       "horasMotor": 16.3206,
-      "horasElevador": 0.0,
+      "horasElevador": 0.3056,
       "fonte": "solinftec"
     },
     {
       "id": 3,
       "nome": "163",
-      "eficiencia": 1.2908,
+      "eficiencia": 100.0,
       "horasMotor": 13.5442,
-      "horasElevador": 0.0,
+      "horasElevador": 13.5442,
       "fonte": "solinftec"
     },
     {
       "id": 4,
       "nome": "202",
-      "eficiencia": 0.9715,
+      "eficiencia": 97.15,
       "horasMotor": 16.515,
-      "horasElevador": 0.0,
+      "horasElevador": 16.0447,
       "fonte": "solinftec"
     },
     {
       "id": 5,
       "nome": "317",
-      "eficiencia": 0.7782,
+      "eficiencia": 77.38,
       "horasMotor": 15.1561,
-      "horasElevador": 0.0,
+      "horasElevador": 11.7272,
       "fonte": "solinftec"
     },
     {
       "id": 6,
       "nome": "371",
-      "eficiencia": 0.6252,
+      "eficiencia": 62.45,
       "horasMotor": 13.2075,
-      "horasElevador": 0.0,
+      "horasElevador": 8.2483,
       "fonte": "solinftec"
     },
     {
       "id": 7,
       "nome": "372",
-      "eficiencia": 0.6692,
+      "eficiencia": 66.45,
       "horasMotor": 10.7136,
-      "horasElevador": 0.0,
+      "horasElevador": 7.1194,
       "fonte": "solinftec"
     },
     {
@@ -95,17 +95,17 @@
     {
       "id": 10,
       "nome": "421",
-      "eficiencia": 0.6686,
+      "eficiencia": 66.85,
       "horasMotor": 12.8756,
-      "horasElevador": 0.0,
+      "horasElevador": 8.6067,
       "fonte": "solinftec"
     },
     {
       "id": 11,
       "nome": "422",
-      "eficiencia": 0.7662,
+      "eficiencia": 75.76,
       "horasMotor": 12.2997,
-      "horasElevador": 0.0,
+      "horasElevador": 9.3183,
       "fonte": "solinftec"
     },
     {
@@ -119,17 +119,17 @@
     {
       "id": 13,
       "nome": "507",
-      "eficiencia": 0.604,
+      "eficiencia": 60.39,
       "horasMotor": 16.6458,
-      "horasElevador": 0.0,
+      "horasElevador": 10.0531,
       "fonte": "solinftec"
     },
     {
       "id": 14,
       "nome": "508",
-      "eficiencia": 0.7705,
+      "eficiencia": 76.92,
       "horasMotor": 12.8175,
-      "horasElevador": 0.0,
+      "horasElevador": 9.8592,
       "fonte": "solinftec"
     },
     {
@@ -155,15 +155,15 @@
       "nome": "153",
       "eficiencia": 1.27,
       "horasMotor": 16.3206,
-      "horasElevador": 0.0,
+      "horasElevador": 0.3056,
       "fonte": "solinftec"
     },
     {
       "id": 3,
       "nome": "163",
-      "eficiencia": 72.84,
+      "eficiencia": 56.43,
       "horasMotor": 13.5442,
-      "horasElevador": 0.0,
+      "horasElevador": 13.5442,
       "fonte": "solinftec"
     },
     {
@@ -171,31 +171,31 @@
       "nome": "202",
       "eficiencia": 66.85,
       "horasMotor": 16.515,
-      "horasElevador": 0.0,
+      "horasElevador": 16.0447,
       "fonte": "solinftec"
     },
     {
       "id": 5,
       "nome": "317",
-      "eficiencia": 49.14,
+      "eficiencia": 48.86,
       "horasMotor": 15.1561,
-      "horasElevador": 0.0,
+      "horasElevador": 11.7272,
       "fonte": "solinftec"
     },
     {
       "id": 6,
       "nome": "371",
-      "eficiencia": 34.41,
+      "eficiencia": 34.37,
       "horasMotor": 13.2075,
-      "horasElevador": 0.0,
+      "horasElevador": 8.2483,
       "fonte": "solinftec"
     },
     {
       "id": 7,
       "nome": "372",
-      "eficiencia": 29.87,
+      "eficiencia": 29.66,
       "horasMotor": 10.7136,
-      "horasElevador": 0.0,
+      "horasElevador": 7.1194,
       "fonte": "solinftec"
     },
     {
@@ -217,17 +217,17 @@
     {
       "id": 10,
       "nome": "421",
-      "eficiencia": 35.87,
+      "eficiencia": 35.86,
       "horasMotor": 12.8756,
-      "horasElevador": 0.0,
+      "horasElevador": 8.6067,
       "fonte": "solinftec"
     },
     {
       "id": 11,
       "nome": "422",
-      "eficiencia": 39.27,
+      "eficiencia": 38.83,
       "horasMotor": 12.2997,
-      "horasElevador": 0.0,
+      "horasElevador": 9.3183,
       "fonte": "solinftec"
     },
     {
@@ -243,15 +243,15 @@
       "nome": "507",
       "eficiencia": 41.89,
       "horasMotor": 16.6458,
-      "horasElevador": 0.0,
+      "horasElevador": 10.0531,
       "fonte": "solinftec"
     },
     {
       "id": 14,
       "nome": "508",
-      "eficiencia": 41.15,
+      "eficiencia": 41.08,
       "horasMotor": 12.8175,
-      "horasElevador": 0.0,
+      "horasElevador": 9.8592,
       "fonte": "solinftec"
     },
     {
@@ -273,37 +273,37 @@
     {
       "id": 2,
       "nome": "153",
-      "valor": 0.0,
+      "valor": 0.3056,
       "fonte": "solinftec"
     },
     {
       "id": 3,
       "nome": "163",
-      "valor": 0.0,
+      "valor": 13.5442,
       "fonte": "solinftec"
     },
     {
       "id": 4,
       "nome": "202",
-      "valor": 0.0,
+      "valor": 16.0447,
       "fonte": "solinftec"
     },
     {
       "id": 5,
       "nome": "317",
-      "valor": 0.0,
+      "valor": 11.7272,
       "fonte": "solinftec"
     },
     {
       "id": 6,
       "nome": "371",
-      "valor": 0.0,
+      "valor": 8.2483,
       "fonte": "solinftec"
     },
     {
       "id": 7,
       "nome": "372",
-      "valor": 0.0,
+      "valor": 7.1194,
       "fonte": "solinftec"
     },
     {
@@ -321,13 +321,13 @@
     {
       "id": 10,
       "nome": "421",
-      "valor": 0.0,
+      "valor": 8.6067,
       "fonte": "solinftec"
     },
     {
       "id": 11,
       "nome": "422",
-      "valor": 0.0,
+      "valor": 9.3183,
       "fonte": "solinftec"
     },
     {
@@ -339,13 +339,13 @@
     {
       "id": 13,
       "nome": "507",
-      "valor": 0.0,
+      "valor": 10.0531,
       "fonte": "solinftec"
     },
     {
       "id": 14,
       "nome": "508",
-      "valor": 0.0,
+      "valor": 9.8592,
       "fonte": "solinftec"
     },
     {
@@ -407,7 +407,7 @@
     {
       "id": 9,
       "nome": "417",
-      "porcentagem": 0.0,
+      "porcentagem": 16.34,
       "fonte": "case"
     },
     {
@@ -463,7 +463,7 @@
     {
       "id": 3,
       "nome": "163",
-      "velocidade": 7.28,
+      "velocidade": 7.3,
       "fonte": "solinftec"
     },
     {
@@ -475,31 +475,31 @@
     {
       "id": 5,
       "nome": "317",
-      "velocidade": 4.58,
+      "velocidade": 4.6,
       "fonte": "solinftec"
     },
     {
       "id": 6,
       "nome": "371",
-      "velocidade": 5.45,
+      "velocidade": 5.46,
       "fonte": "solinftec"
     },
     {
       "id": 7,
       "nome": "372",
-      "velocidade": 6.5,
+      "velocidade": 6.54,
       "fonte": "solinftec"
     },
     {
       "id": 8,
       "nome": "379",
-      "velocidade": 0.0,
+      "velocidade": 4.35,
       "fonte": "case"
     },
     {
       "id": 9,
       "nome": "417",
-      "velocidade": 0.0,
+      "velocidade": 5.03,
       "fonte": "case"
     },
     {
@@ -511,7 +511,7 @@
     {
       "id": 11,
       "nome": "422",
-      "velocidade": 5.72,
+      "velocidade": 5.79,
       "fonte": "solinftec"
     },
     {
@@ -21819,14 +21819,36 @@
       "rpm": 0.0,
       "temperaturaArrefecimento": 0.0,
       "temperaturaTransmissao": 78.79893033946252,
-      "velocidadeMedia": 5.032542913732394
+      "velocidadeMedia": 5.032542913732394,
+      "Extras": {
+        "eficienciaEnergetica": 0.0,
+        "eficienciaOperacional": 0.0,
+        "usoGPS": 16.34140359482849,
+        "horasMotor": 0.0,
+        "velocidadeMedia": 5.032542913732394,
+        "tempoGPSLigado": 2.591111111111111,
+        "tempoGPSDesligado": 13.265,
+        "percGPSLigado": 16.34140359482849,
+        "percGPSDesligado": 83.65859640517151
+      }
     },
     "379": {
       "horasMotor": 0.0,
       "rpm": 0.0,
       "temperaturaArrefecimento": 0.0,
       "temperaturaTransmissao": 76.72315512048193,
-      "velocidadeMedia": 4.351076555023924
+      "velocidadeMedia": 4.351076555023924,
+      "Extras": {
+        "eficienciaEnergetica": 0.0,
+        "eficienciaOperacional": 0.0,
+        "usoGPS": 0.0,
+        "horasMotor": 0.0,
+        "velocidadeMedia": 4.351076555023924,
+        "tempoGPSLigado": 0.0,
+        "tempoGPSDesligado": 16.21666666666667,
+        "percGPSLigado": 0.0,
+        "percGPSDesligado": 100.0
+      }
     }
   }
 }

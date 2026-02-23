@@ -97,7 +97,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 19.0941666667,
+        "Horas_Produtivas": 14.8786111111,
         "Horas_Improdutivas": 4.9055555556,
         "Horas_Auxiliar": 0.0,
         "Horas_Climático": 0.0,
@@ -108,12 +108,12 @@
         "Horas_Motor_Ocioso": 2.6891666667,
         "Porcentagem_Motor_Ocioso": 11.2049907985,
         "Porcentagem_Sem_Apontamento": 20.4400513895,
-        "Eficiencia_Energetica": 1.2833299106,
-        "Eficiencia_Operacional": 0.7955994861,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.619949305,
         "Tempo_Total_Manobras_h": 2.3819444444,
         "Quantidade_Manobras": 145,
         "Tempo_Medio_Manobras_min": 0.9856321839,
-        "Velocidade_Media": 7.347038508
+        "Velocidade_Media": 7.3976194173
       }
     ],
     "Intervalos": [
@@ -5123,7 +5123,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 17.5772222222,
+        "Horas_Produtivas": 16.3086111111,
         "Horas_Improdutivas": 5.7575,
         "Horas_Auxiliar": 0.665,
         "Horas_Climático": 0.0,
@@ -5134,12 +5134,12 @@
         "Horas_Motor_Ocioso": 4.3397222222,
         "Porcentagem_Motor_Ocioso": 18.0823852128,
         "Porcentagem_Sem_Apontamento": 1.5347399854,
-        "Eficiencia_Energetica": 1.0777878081,
-        "Eficiencia_Operacional": 0.732392736,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.6795333279,
         "Tempo_Total_Manobras_h": 2.2558333333,
         "Quantidade_Manobras": 91,
         "Tempo_Medio_Manobras_min": 1.4873626374,
-        "Velocidade_Media": 6.0253871804
+        "Velocidade_Media": 6.025768088
       }
     ],
     "Intervalos": [
@@ -7387,7 +7387,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 15.3055555556,
+        "Horas_Produtivas": 9.7005555556,
         "Horas_Improdutivas": 7.8455555556,
         "Horas_Auxiliar": 0.8486111111,
         "Horas_Climático": 0.0,
@@ -7398,12 +7398,12 @@
         "Horas_Motor_Ocioso": 3.7391666667,
         "Porcentagem_Motor_Ocioso": 15.5800414357,
         "Porcentagem_Sem_Apontamento": 0.3576430283,
-        "Eficiencia_Energetica": 1.5778019587,
-        "Eficiencia_Operacional": 0.6377388627,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.404194493,
         "Tempo_Total_Manobras_h": 2.9769444444,
         "Quantidade_Manobras": 117,
         "Tempo_Medio_Manobras_min": 1.5266381766,
-        "Velocidade_Media": 5.7686384755
+        "Velocidade_Media": 5.7829120879
       }
     ],
     "Intervalos": [
@@ -11327,7 +11327,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 12.7852777778,
+        "Horas_Produtivas": 9.3158333333,
         "Horas_Improdutivas": 10.1747222222,
         "Horas_Auxiliar": 1.0397222222,
         "Horas_Climático": 0.0,
@@ -11338,12 +11338,12 @@
         "Horas_Motor_Ocioso": 3.2886111111,
         "Porcentagem_Motor_Ocioso": 13.7027048924,
         "Porcentagem_Sem_Apontamento": 8.7072767046,
-        "Eficiencia_Energetica": 1.3724244864,
-        "Eficiencia_Operacional": 0.5327260732,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.3881642149,
         "Tempo_Total_Manobras_h": 1.8816666667,
         "Quantidade_Manobras": 101,
         "Tempo_Medio_Manobras_min": 1.1178217822,
-        "Velocidade_Media": 5.9799450323
+        "Velocidade_Media": 5.994792978
       }
     ],
     "Intervalos": [
@@ -13663,7 +13663,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 13.1461111111,
+        "Horas_Produtivas": 13.0936111111,
         "Horas_Improdutivas": 9.7661111111,
         "Horas_Auxiliar": 1.0875,
         "Horas_Climático": 0.0,
@@ -13674,12 +13674,12 @@
         "Horas_Motor_Ocioso": 4.2702777778,
         "Porcentagem_Motor_Ocioso": 17.7930300119,
         "Porcentagem_Sem_Apontamento": 0.4502366926,
-        "Eficiencia_Energetica": 0.9305517323,
-        "Eficiencia_Operacional": 0.5477609695,
+        "Eficiencia_Energetica": 0.9268355028,
+        "Eficiencia_Operacional": 0.5455734441,
         "Tempo_Total_Manobras_h": 1.7622222222,
         "Quantidade_Manobras": 91,
         "Tempo_Medio_Manobras_min": 1.1619047619,
-        "Velocidade_Media": 5.9538456662
+        "Velocidade_Media": 5.9777181407
       }
     ],
     "Intervalos": [
@@ -15989,7 +15989,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 13.8425,
+        "Horas_Produtivas": 13.8422222222,
         "Horas_Improdutivas": 6.0113888889,
         "Horas_Auxiliar": 1.1397222222,
         "Horas_Climático": 0.0,
@@ -16000,12 +16000,12 @@
         "Horas_Motor_Ocioso": 2.4816666667,
         "Porcentagem_Motor_Ocioso": 10.3403974583,
         "Porcentagem_Sem_Apontamento": 1.3125151911,
-        "Eficiencia_Energetica": 0.7774986738,
-        "Eficiencia_Operacional": 0.576777509,
+        "Eficiencia_Energetica": 0.7774830717,
+        "Eficiencia_Operacional": 0.5767659348,
         "Tempo_Total_Manobras_h": 1.7733333333,
         "Quantidade_Manobras": 83,
         "Tempo_Medio_Manobras_min": 1.2819277108,
-        "Velocidade_Media": 5.6707093693
+        "Velocidade_Media": 5.6708231658
       }
     ],
     "Intervalos": [
@@ -18079,7 +18079,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 23.9997222222,
-        "Horas_Produtivas": 15.6261111111,
+        "Horas_Produtivas": 15.5605555556,
         "Horas_Improdutivas": 8.3736111111,
         "Horas_Auxiliar": 0.0,
         "Horas_Climático": 0.0,
@@ -18090,12 +18090,12 @@
         "Horas_Motor_Ocioso": 3.5347222222,
         "Porcentagem_Motor_Ocioso": 14.7281797243,
         "Porcentagem_Sem_Apontamento": 0.0,
-        "Eficiencia_Energetica": 0.8826787592,
-        "Eficiencia_Operacional": 0.6510954988,
+        "Eficiencia_Energetica": 0.8789756947,
+        "Eficiencia_Operacional": 0.6483639857,
         "Tempo_Total_Manobras_h": 1.4213888889,
         "Quantidade_Manobras": 61,
         "Tempo_Medio_Manobras_min": 1.3980874317,
-        "Velocidade_Media": 6.2059570875
+        "Velocidade_Media": 6.23210236
       }
     ],
     "Intervalos": [

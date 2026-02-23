@@ -67,7 +67,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 12.9516666667,
+        "Horas_Produtivas": 11.0180555556,
         "Horas_Improdutivas": 5.0480555556,
         "Horas_Auxiliar": 0.0,
         "Horas_Climático": 0.0,
@@ -78,12 +78,12 @@
         "Horas_Motor_Ocioso": 1.6475,
         "Porcentagem_Motor_Ocioso": 9.1529190265,
         "Porcentagem_Sem_Apontamento": 28.0451858825,
-        "Eficiencia_Energetica": 1.1754947687,
-        "Eficiencia_Operacional": 0.7195481412,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.6121236439,
         "Tempo_Total_Manobras_h": 1.3830555556,
         "Quantidade_Manobras": 57,
         "Tempo_Medio_Manobras_min": 1.4558479532,
-        "Velocidade_Media": 7.378731609
+        "Velocidade_Media": 7.4880996844
       }
     ],
     "Intervalos": [
@@ -2259,7 +2259,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 13.9186111111,
+        "Horas_Produtivas": 11.3513888889,
         "Horas_Improdutivas": 3.9194444444,
         "Horas_Auxiliar": 0.1616666667,
         "Horas_Climático": 0.0,
@@ -2270,12 +2270,12 @@
         "Horas_Motor_Ocioso": 2.0822222222,
         "Porcentagem_Motor_Ocioso": 11.5680797543,
         "Porcentagem_Sem_Apontamento": 10.612818099,
-        "Eficiencia_Energetica": 1.226159305,
-        "Eficiencia_Operacional": 0.773268106,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.6306424482,
         "Tempo_Total_Manobras_h": 2.8311111111,
         "Quantidade_Manobras": 134,
         "Tempo_Medio_Manobras_min": 1.2676616915,
-        "Velocidade_Media": 6.3442193705
+        "Velocidade_Media": 6.3443459865
       }
     ],
     "Intervalos": [
@@ -5863,7 +5863,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 10.7433333333,
+        "Horas_Produtivas": 8.0175,
         "Horas_Improdutivas": 6.5141666667,
         "Horas_Auxiliar": 0.6208333333,
         "Horas_Climático": 0.0,
@@ -5874,12 +5874,12 @@
         "Horas_Motor_Ocioso": 1.6963888889,
         "Porcentagem_Motor_Ocioso": 9.4245281563,
         "Porcentagem_Sem_Apontamento": 0.1188289943,
-        "Eficiencia_Energetica": 1.3399854485,
-        "Eficiencia_Operacional": 0.5968610627,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.4454235405,
         "Tempo_Total_Manobras_h": 1.6508333333,
         "Quantidade_Manobras": 78,
         "Tempo_Medio_Manobras_min": 1.2698717949,
-        "Velocidade_Media": 6.1944627159
+        "Velocidade_Media": 6.2224570152
       }
     ],
     "Intervalos": [
@@ -7635,7 +7635,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 10.3511111111,
+        "Horas_Produtivas": 10.26,
         "Horas_Improdutivas": 7.3027777778,
         "Horas_Auxiliar": 0.3458333333,
         "Horas_Climático": 0.0,
@@ -7646,12 +7646,12 @@
         "Horas_Motor_Ocioso": 4.325,
         "Porcentagem_Motor_Ocioso": 24.0281485825,
         "Porcentagem_Sem_Apontamento": 6.5602864242,
-        "Eficiencia_Energetica": 0.9968167349,
-        "Eficiencia_Operacional": 0.5750706029,
+        "Eficiencia_Energetica": 0.9880426932,
+        "Eficiencia_Operacional": 0.5700087964,
         "Tempo_Total_Manobras_h": 1.29,
         "Quantidade_Manobras": 65,
         "Tempo_Medio_Manobras_min": 1.1907692308,
-        "Velocidade_Media": 5.5410557106
+        "Velocidade_Media": 5.5902615335
       }
     ],
     "Intervalos": [
@@ -9323,7 +9323,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 9.3269444444,
+        "Horas_Produtivas": 8.8022222222,
         "Horas_Improdutivas": 8.1327777778,
         "Horas_Auxiliar": 0.4408333333,
         "Horas_Climático": 0.0,
@@ -9334,12 +9334,12 @@
         "Horas_Motor_Ocioso": 3.8872222222,
         "Porcentagem_Motor_Ocioso": 21.5960122841,
         "Porcentagem_Sem_Apontamento": 7.0757264773,
-        "Eficiencia_Energetica": 1.0596124716,
-        "Eficiencia_Operacional": 0.5181715767,
+        "Eficiencia_Energetica": 1.0,
+        "Eficiencia_Operacional": 0.4890198923,
         "Tempo_Total_Manobras_h": 1.3227777778,
         "Quantidade_Manobras": 65,
         "Tempo_Medio_Manobras_min": 1.221025641,
-        "Velocidade_Media": 5.595116002
+        "Velocidade_Media": 5.5982838667
       }
     ],
     "Intervalos": [
@@ -11017,7 +11017,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 9.2930555556,
+        "Horas_Produtivas": 9.2891666667,
         "Horas_Improdutivas": 7.7094444444,
         "Horas_Auxiliar": 0.5408333333,
         "Horas_Climático": 0.0,
@@ -11028,12 +11028,12 @@
         "Horas_Motor_Ocioso": 4.0861111111,
         "Porcentagem_Motor_Ocioso": 22.7009676075,
         "Porcentagem_Sem_Apontamento": 0.5277859226,
-        "Eficiencia_Energetica": 0.9188409778,
-        "Eficiencia_Operacional": 0.5162888316,
+        "Eficiencia_Energetica": 0.918456468,
+        "Eficiencia_Operacional": 0.5160727789,
         "Tempo_Total_Manobras_h": 1.1633333333,
         "Quantidade_Manobras": 57,
         "Tempo_Medio_Manobras_min": 1.2245614035,
-        "Velocidade_Media": 4.9058520401
+        "Velocidade_Media": 4.9079058641
       }
     ],
     "Intervalos": [
@@ -12599,7 +12599,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 12.2369444444,
+        "Horas_Produtivas": 12.1341666667,
         "Horas_Improdutivas": 4.6777777778,
         "Horas_Auxiliar": 0.9819444444,
         "Horas_Climático": 0.0,
@@ -12610,12 +12610,12 @@
         "Horas_Motor_Ocioso": 2.1405555556,
         "Porcentagem_Motor_Ocioso": 11.8921588296,
         "Porcentagem_Sem_Apontamento": 0.9182240467,
-        "Eficiencia_Energetica": 0.9020414849,
-        "Eficiencia_Operacional": 0.6798407383,
+        "Eficiencia_Energetica": 0.894465262,
+        "Eficiencia_Operacional": 0.6741307736,
         "Tempo_Total_Manobras_h": 1.5011111111,
         "Quantidade_Manobras": 67,
         "Tempo_Medio_Manobras_min": 1.344278607,
-        "Velocidade_Media": 5.6649531246
+        "Velocidade_Media": 5.7129359247
       }
     ],
     "Intervalos": [
@@ -14257,7 +14257,7 @@
     "Resumo_Dia": [
       {
         "Horas_Registradas": 17.9997222222,
-        "Horas_Produtivas": 11.4355555556,
+        "Horas_Produtivas": 11.4025,
         "Horas_Improdutivas": 6.5072222222,
         "Horas_Auxiliar": 0.0569444444,
         "Horas_Climático": 0.0,
@@ -14268,12 +14268,12 @@
         "Horas_Motor_Ocioso": 2.5763888889,
         "Porcentagem_Motor_Ocioso": 14.3134924922,
         "Porcentagem_Sem_Apontamento": 0.3734625534,
-        "Eficiencia_Energetica": 0.9171270718,
-        "Eficiencia_Operacional": 0.6353184463,
+        "Eficiencia_Energetica": 0.9144760292,
+        "Eficiencia_Operacional": 0.6334819982,
         "Tempo_Total_Manobras_h": 1.3386111111,
         "Quantidade_Manobras": 76,
         "Tempo_Medio_Manobras_min": 1.0567982456,
-        "Velocidade_Media": 5.5052356199
+        "Velocidade_Media": 5.521195157
       }
     ],
     "Intervalos": [

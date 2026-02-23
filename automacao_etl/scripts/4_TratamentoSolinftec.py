@@ -280,10 +280,22 @@ def tratar_arquivo(caminho_arquivo):
         grupo_col = "Descrição do Grupo da Operação"
         op_col = "Descrição da Operação"
 
+        vm_series = df_calc.get("Velocidade Média")
+        vm = normalizar_numero_serie(vm_series) if vm_series is not None else pd.Series(0, index=df_calc.index)
+
         df_calc["dur_total"] = df_calc["Duracao_min"]
         grupo_series = df_calc[grupo_col] if grupo_col in df_calc.columns else pd.Series("", index=df_calc.index)
         grupo_norm = grupo_series.astype(str).str.strip().str.upper()
-        df_calc["dur_prod"] = np.where(grupo_norm == "PRODUTIVA", df_calc["Duracao_min"], 0)
+        equip_series = (
+            df_calc["Descrição do Equipamento"]
+            if "Descrição do Equipamento" in df_calc.columns
+            else pd.Series("", index=df_calc.index)
+        )
+        equip_norm = equip_series.astype(str).str.strip().str.upper()
+        mask_trator = equip_norm.str.contains("TRATOR", na=False)
+        mask_prod = grupo_norm == "PRODUTIVA"
+        cond_prod = mask_prod & (~mask_trator | (vm > 0))
+        df_calc["dur_prod"] = np.where(cond_prod, df_calc["Duracao_min"], 0)
         df_calc["dur_improd"] = np.where(grupo_norm == "IMPRODUTIVA", df_calc["Duracao_min"], 0)
         grupos_extra = sorted([g for g in grupo_norm.dropna().unique() if g and g not in ["PRODUTIVA", "IMPRODUTIVA"]])
         dur_grupo_cols = []
@@ -305,9 +317,6 @@ def tratar_arquivo(caminho_arquivo):
         )
         df_calc["dur_vazio"] = np.where(df_calc.get(op_col, "") == "DESL VAZIO", df_calc["Duracao_min"], 0)
         df_calc["dur_carregado"] = np.where(df_calc.get(op_col, "") == "DESL CARREGADO", df_calc["Duracao_min"], 0)
-
-        vm_series = df_calc.get("Velocidade Média")
-        vm = normalizar_numero_serie(vm_series) if vm_series is not None else pd.Series(0, index=df_calc.index)
 
         colunas_normalizadas = {col: normalizar_texto(col) for col in df_calc.columns}
         horimetro_inicial_col = next(
@@ -418,6 +427,9 @@ def tratar_arquivo(caminho_arquivo):
             df_dia_frota["Horas_Improdutivas"] = df_dia_frota["dur_improd_min"] / 60
             df_dia_frota["Horas_Motor_Ocioso"] = df_dia_frota["dur_motor_ocioso_min"] / 60
             df_dia_frota["Horas_Motor_Ligado"] = df_dia_frota["dur_motor_ligado_min"] / 60
+            df_dia_frota["Horas_Produtivas"] = np.minimum(
+                df_dia_frota["Horas_Produtivas"], df_dia_frota["Horas_Motor_Ligado"]
+            )
             for col_dur, col_horas in zip(dur_grupo_cols, horas_grupo_cols):
                 df_dia_frota[col_horas] = df_dia_frota[col_dur] / 60
             df_dia_frota["Tempo_Sem_Apontamento_h"] = df_dia_frota["dur_sem_apont_min"] / 60
@@ -589,6 +601,9 @@ def tratar_arquivo(caminho_arquivo):
             df_dia_operador["Horas_Improdutivas"] = df_dia_operador["dur_improd_min"] / 60
             df_dia_operador["Horas_Motor_Ocioso"] = df_dia_operador["dur_motor_ocioso_min"] / 60
             df_dia_operador["Horas_Motor_Ligado"] = df_dia_operador["dur_motor_ligado_min"] / 60
+            df_dia_operador["Horas_Produtivas"] = np.minimum(
+                df_dia_operador["Horas_Produtivas"], df_dia_operador["Horas_Motor_Ligado"]
+            )
             for col_dur, col_horas in zip(dur_grupo_cols, horas_grupo_cols):
                 df_dia_operador[col_horas] = df_dia_operador[col_dur] / 60
             df_dia_operador["Tempo_Sem_Apontamento_h"] = df_dia_operador["dur_sem_apont_min"] / 60
@@ -726,6 +741,9 @@ def tratar_arquivo(caminho_arquivo):
                 }
                 agg_periodo["Dias_com_dados"] = (col_data, "nunique")
                 df_periodo_frota = df_dia_frota.groupby(group_cols).agg(**agg_periodo).reset_index()
+                df_periodo_frota["Horas_Produtivas_total"] = np.minimum(
+                    df_periodo_frota["Horas_Produtivas_total"], df_periodo_frota["Horas_Motor_Ligado_total"]
+                )
                 df_periodo_frota["Horas_media_por_dia"] = np.where(
                     df_periodo_frota["Dias_com_dados"] > 0,
                     df_periodo_frota["Horas_Registradas_total"] / df_periodo_frota["Dias_com_dados"],
@@ -817,6 +835,9 @@ def tratar_arquivo(caminho_arquivo):
             }
             agg_periodo["Dias_com_dados"] = (col_data, "nunique")
             df_periodo_operador = df_dia_operador.groupby(group_cols).agg(**agg_periodo).reset_index()
+            df_periodo_operador["Horas_Produtivas_total"] = np.minimum(
+                df_periodo_operador["Horas_Produtivas_total"], df_periodo_operador["Horas_Motor_Ligado_total"]
+            )
             df_periodo_operador["Horas_media_por_dia"] = np.where(
                 df_periodo_operador["Dias_com_dados"] > 0,
                 df_periodo_operador["Horas_Registradas_total"] / df_periodo_operador["Dias_com_dados"],

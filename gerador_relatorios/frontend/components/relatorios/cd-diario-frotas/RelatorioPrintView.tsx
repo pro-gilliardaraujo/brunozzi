@@ -153,6 +153,16 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     horas_elevador,
     intervalos_operacao
   } = data
+  const metasSafe = {
+    eficienciaEnergetica: metas?.eficienciaEnergetica ?? 0,
+    eficienciaOperacional: metas?.eficienciaOperacional ?? 60,
+    horaElevador: metas?.horaElevador ?? 0,
+    usoGPS: metas?.usoGPS ?? 0,
+    mediaVelocidade: metas?.mediaVelocidade ?? 0,
+    manobras: metas?.manobras ?? 60,
+    motorOcioso: metas?.motorOcioso ?? 0,
+    disponibilidadeMecanica: metas?.disponibilidadeMecanica ?? 90,
+  }
   
   // Agrupar intervalos por equipamento
   const intervalosAgrupados = React.useMemo(() => {
@@ -177,8 +187,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     })).sort((a, b) => a.equipamento.localeCompare(b.equipamento))
   }, [intervalos_operacao])
 
-  // Usar T12:00:00 para evitar problema de timezone (UTC meia-noite vira dia anterior no fuso -3)
-  const endDate = new Date(metadata.date + 'T12:00:00')
+  const endDate = metadata?.date ? new Date(metadata.date) : new Date()
   
   // Detectar fonte primária dos dados
   const fontePrimaria = React.useMemo(() => {
@@ -627,7 +636,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   }, [buildNamedSeries, uso_gps, qtdFrotasEfetivo])
 
   // Cálculos para Eficiência Energética
-  const metaEficiencia = metas.eficienciaEnergetica
+  const metaEficiencia = metasSafe.eficienciaEnergetica
   const dadosEficienciaNaoZero = dadosValidos.filter(d => d.eficiencia > 0)
   const mediaEficiencia = dadosEficienciaNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaNaoZero.length || 1)
 
@@ -646,13 +655,13 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     )
   }, [buildNamedSeries, dadosOperacionalBase, qtdFrotasEfetivo])
 
-  const metaEficienciaOperacional = metas.eficienciaOperacional || 60
+  const metaEficienciaOperacional = metasSafe.eficienciaOperacional
   const dadosEficienciaOperacionalNaoZero = dadosValidosOperacional.filter(d => d.eficiencia > 0)
   const mediaEficienciaOperacional = dadosEficienciaOperacionalNaoZero.reduce((acc, curr) => acc + curr.eficiencia, 0) / (dadosEficienciaOperacionalNaoZero.length || 1)
 
   // Cálculos para Horas Elevador
   // Usando os mesmos dados de eficiência energética para consistência
-  const metaHorasElevador = metas.horaElevador // ex: 5
+  const metaHorasElevador = metasSafe.horaElevador
   const dadosHorasElevadorNaoZero = dadosValidos.filter(d => d.horasElevador > 0)
   const mediaHorasElevador = dadosHorasElevadorNaoZero.reduce((acc, curr) => acc + curr.horasElevador, 0) / (dadosHorasElevadorNaoZero.length || 1)
 
@@ -668,7 +677,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   const headerReservedPx = isManyFrotas ? 36 : 50
 
   // Página 2 - Uso GPS
-  const metaUsoGPS = metas.usoGPS
+  const metaUsoGPS = metasSafe.usoGPS
   const dadosUsoGPSNaoZero = dadosUsoGPS.filter(d => (d.porcentagem || 0) > 0)
   const mediaUsoGPS = dadosUsoGPSNaoZero.reduce((acc, curr) => acc + curr.porcentagem, 0) / (dadosUsoGPSNaoZero.length || 1)
 
@@ -912,7 +921,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
             <div className="flex flex-col h-full">
               <SectionTitle title={`Média de Velocidade${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                 <GraficoMediaVelocidade dados={mediaVelocidadeFiltrada} meta={metas.mediaVelocidade} />
+                 <GraficoMediaVelocidade dados={mediaVelocidadeFiltrada} meta={metasSafe.mediaVelocidade} />
               </div>
             </div>
           </div>
@@ -929,7 +938,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
                  <GraficoManobras 
                     dados={manobrasFiltradas} 
-                    meta={metas.manobras || 60} 
+                    meta={metasSafe.manobras} 
                     compact={false}
                  />
               </div>
@@ -949,7 +958,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
                  <GraficoMotorOcioso 
                     dados={motorOciosoFiltrado} 
-                    meta={metas.motorOcioso || 5} 
+                    meta={metasSafe.motorOcioso} 
                     compact={false}
                  />
               </div>
@@ -965,11 +974,8 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
           <div className="flex-1 flex flex-col gap-2">
             <div className="flex flex-col h-full">
               <SectionTitle title="Top 5 Ofensores" />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col">
-                <div className="text-xs text-gray-700 mb-2">
-                  Os 5 equipamentos com maior percentual de tempo em condições críticas (ofensores).
-                </div>
-                <div className="flex-1 overflow-hidden flex items-stretch justify-center">
+              <div className="border border-black rounded-lg p-3 overflow-hidden flex flex-col" style={{ height: "50%" }}>
+                <div className="flex-1 overflow-hidden flex items-stretch justify-start">
                   <GraficoTop5Ofensores dados={dadosOfensores} />
                 </div>
               </div>
@@ -987,7 +993,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               <SectionTitle title={`Disponibilidade Mecânica${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col">
                 <CabecalhoMeta 
-                  meta={metas.disponibilidadeMecanica || 90} 
+                  meta={metasSafe.disponibilidadeMecanica} 
                   media={(() => {
                     const vals = (disponibilidadeFiltrada || []).map((d: any) => d.disponibilidade).filter((v: number) => v > 0)
                     return vals.length > 0 ? vals.reduce((a: number, b: number) => a + b, 0) / vals.length : 0
@@ -998,7 +1004,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                 <div className="flex-1 overflow-hidden mt-1">
                   <GraficoDisponibilidadeMecanica 
                     dados={disponibilidadeFiltrada || []} 
-                    meta={metas.disponibilidadeMecanica || 90} 
+                    meta={metasSafe.disponibilidadeMecanica} 
                     compact={false}
                   />
                 </div>
@@ -1064,21 +1070,21 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
             <div className="grid grid-cols-2 gap-4">
               <CardIndicador 
                 titulo="Eficiência Energética"
-                meta={metas.eficienciaEnergetica}
+                meta={metasSafe.eficienciaEnergetica}
                 unidade="%"
                 dados={dadosResumo.map(d => ({ valor: d.eficiencia }))}
                 tipo="asc"
               />
               <CardIndicador 
                 titulo="Eficiência Operacional"
-                meta={metas.eficienciaOperacional || 60}
+                meta={metasSafe.eficienciaOperacional}
                 unidade="%"
                 dados={dadosResumo.map(d => ({ valor: d.eficienciaOperacional }))}
                 tipo="asc"
               />
               <CardIndicador 
                 titulo="Horas Elevador"
-                meta={metas.horaElevador}
+                meta={metasSafe.horaElevador}
                 unidade=" h"
                 dados={dadosResumo.map(d => ({ valor: d.horasElevador }))}
                 tipo="asc"
@@ -1087,7 +1093,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               {fontePrimaria !== 'solinftec' && dadosUsoGPS.some(d => d.porcentagem > 0) && (
                 <CardIndicador 
                   titulo="Uso GPS"
-                  meta={metas.usoGPS}
+                  meta={metasSafe.usoGPS}
                   unidade="%"
                   dados={dadosUsoGPS.map(d => ({ valor: d.porcentagem }))}
                   tipo="asc"
@@ -1095,14 +1101,14 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               )}
               <CardIndicador 
                 titulo="Média Velocidade"
-                meta={metas.mediaVelocidade}
+                meta={metasSafe.mediaVelocidade}
                 unidade=" km/h"
                 dados={dadosResumo.map(d => ({ valor: d.velocidade }))}
                 tipo="desc"
               />
               <CardIndicador 
                 titulo="Manobras"
-                meta={metas.manobras || 60}
+                meta={metasSafe.manobras}
                 unidade=""
                 dados={dadosCardManobras}
                 tipo="desc"
@@ -1110,14 +1116,14 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               />
               <CardIndicador 
                 titulo="Motor Ocioso"
-                meta={metas.motorOcioso}
+                meta={metasSafe.motorOcioso}
                 unidade="%"
                 dados={dadosResumo.map(d => ({ valor: d.ocioso }))}
                 tipo="desc"
               />
               <CardIndicador 
                 titulo="Disponibilidade Mecânica"
-                meta={metas.disponibilidadeMecanica}
+                meta={metasSafe.disponibilidadeMecanica}
                 unidade="%"
                 dados={dadosResumo.map(d => ({ valor: d.disponibilidade }))}
                 tipo="asc"
@@ -1125,7 +1131,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               </div>
 
             <div className="mt-4">
-               <TabelaResumo dados={dadosResumo} metas={metas} />
+               <TabelaResumo dados={dadosResumo} metas={metasSafe} />
             </div>
 
           </div>

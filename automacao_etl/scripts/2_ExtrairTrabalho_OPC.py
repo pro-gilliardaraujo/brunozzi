@@ -275,8 +275,19 @@ def clicar_voltar_lista(page):
     """Clica para fechar painel ou voltar à lista."""
     try:
         print("\n🔙 Voltando para lista de equipamentos...")
-        
-        # 1. Tentativa baseada na gravação do usuário (Seletor CSS específico)
+
+        # 1. Tentativa usando breadcrumb específico informado (XPath absoluto)
+        try:
+            breadcrumb_xpath = page.locator("xpath=/html/body/main/div/div/div/div[1]/div/div[1]/div[1]/div/nav/ol/li[3]/div")
+            if breadcrumb_xpath.is_visible():
+                breadcrumb_xpath.click()
+                print("✅ Voltou usando breadcrumb (XPath absoluto).")
+                page.wait_for_timeout(2000)
+                return True
+        except:
+            pass
+
+        # 2. Tentativa baseada na gravação do usuário (Seletor CSS específico)
         try:
             # page.locator(".MuiStack-root.css-48cx6a > div > div").first.click()
             btn_voltar_user = page.locator(".MuiStack-root.css-48cx6a > div > div").first
@@ -288,7 +299,7 @@ def clicar_voltar_lista(page):
         except:
              pass
 
-        # 2. Tenta fechar o painel lateral (X ou botão de fechar)
+        # 3. Tenta fechar o painel lateral (X ou botão de fechar)
         try:
             fechar_btn = page.locator("button[aria-label='Fechar'], button[title='Fechar']")
             if fechar_btn.is_visible():
@@ -299,7 +310,7 @@ def clicar_voltar_lista(page):
         except:
              pass
 
-        # 3. Tenta breadcrumb como fallback
+        # 4. Tenta breadcrumb como fallback genérico
         breadcrumb = page.locator('[data-testid="drill-in-breadcrumb"]')
         if breadcrumb.count() > 0 and breadcrumb.first.is_visible():
             breadcrumb.first.click()
@@ -517,7 +528,8 @@ def configurar_filtros_e_exportar(page, tipo_operacao, dt_inicial, dt_final, ope
                 nome_frota_limpo = re.sub(r'[^a-zA-Z0-9]', '', nome_completo.split()[0])
 
             tipo_frota = identificar_tipo_frota(nome_completo, nome_frota_limpo)
-            nome_arquivo = f"{tipo_frota}_{nome_frota_limpo}"
+            timestamp = datetime.now().strftime("%d%m%Y_%H%M")
+            nome_arquivo = f"{tipo_frota}_{nome_frota_limpo}_{timestamp}"
             
             # Realiza export
             sucesso = realizar_export(page, nome_arquivo)
@@ -626,10 +638,9 @@ def run():
                 arquivos_capturados.extend(estado["arquivos_esperados"])
 
             # --- PROCESSAMENTO SEQUENCIAL ---
-            
-            for operacao in ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"]:
+            # Fase de depuração: executar SOMENTE "Colheita"
+            for operacao in ["Colheita"]:
                 if operacao in tipos_operacao:
-                    
                     lista_arquivos = configurar_filtros_e_exportar(page, operacao, dt_inicial, dt_final, operacao_anterior)
                     operacao_anterior = operacao
                     
@@ -643,6 +654,9 @@ def run():
                     print("Aguardando 5s antes da próxima operação...")
                     time.sleep(5)
 
+            # Para restaurar o comportamento anterior (todas as operações), trocar o loop por:
+            # for operacao in ["Colheita", "Semeadura", "Aplicação", "Preparo do Solo"]:
+
             print(f"Arquivos gerados/esperados TOTAL: {arquivos_capturados}")
             
             # Chama monitoramento
@@ -651,7 +665,6 @@ def run():
             
         except Exception as e:
             print(f"Erro Geral: {e}")
-            page.pause()
         finally:
             browser.close()
 

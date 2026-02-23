@@ -4,7 +4,7 @@ import { corPorMeta } from './cores'
 interface CabecalhoMetaProps {
   meta: number
   media: number
-  tipo: 'porcentagem' | 'horas'
+  tipo: 'porcentagem' | 'horas' | 'temperatura'
   sufixoMedia?: string
   compact?: boolean
 }
@@ -12,6 +12,7 @@ interface CabecalhoMetaProps {
 export function CabecalhoMeta({ meta, media, tipo, sufixoMedia = 'Média calculada excluindo valores 0%', compact = false }: CabecalhoMetaProps) {
   const formatarValor = (val: number) => {
     if (tipo === 'porcentagem') return `${val.toFixed(2)}%`
+    if (tipo === 'temperatura') return `${val.toFixed(1)} °C`
     // Para horas, assume que o valor vem em decimal (ex: 4.91 horas -> 4h55)
     const horas = Math.floor(val)
     const minutos = Math.round((val - horas) * 60)
