@@ -97,44 +97,34 @@ def load_solinftec(date_str: str, base_dir: str = SOLINFTEC_JSON_DIR) -> dict | 
     """Carrega JSON Solinftec bruto para a data (DD-MM-YYYY).
        Procura primeiro por arquivos _raw.json (novo padrão), depois por .json padrão.
     """
-    # Tenta padrão _raw primeiro
-    pattern_raw = os.path.join(base_dir, f"*{date_str}*_raw.json")
-    files_raw = glob.glob(pattern_raw)
-    
-    # Se não encontrar _raw, tenta padrão antigo (mas cuidado com loop de consolidação)
-    pattern_legacy = os.path.join(base_dir, f"*{date_str}*.json")
-    files_legacy = glob.glob(pattern_legacy)
-    
-    # Prioriza _raw
-    if files_raw:
-        files = files_raw
-    else:
-        files = files_legacy
+    pattern = os.path.join(base_dir, f"*{date_str}*.json")
+    files = glob.glob(pattern)
 
     if not files:
         return None
     
-    # Pega o primeiro encontrado (ou o mais recente)
-    latest = sorted(files, key=os.path.getmtime, reverse=True)[0]
-    
-    print(f"     ℹ️ Usando fonte Solinftec: {os.path.basename(latest)}")
-
-    try:
-        with open(latest, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            # Verificação de segurança: se tiver "metadata", é um arquivo já consolidado
-            # e não deve ser usado como fonte "raw", a menos que seja _raw (o que seria estranho).
-            if "metadata" in data or "eficiencia_energetica" in data:
-                # Se for _raw, confia (mas avisa se tiver metadata). Se for legacy, ignora.
-                if "_raw" in latest:
-                     print(f"  ⚠️ Arquivo _raw contém metadados? {latest}")
-                else:
-                     print(f"  ⚠️ Ignorando arquivo já consolidado encontrado como fonte (legacy): {latest}")
-                     return None
-            return data
-    except Exception as e:
-        print(f"  ❌ Erro ao ler JSON Solinftec ({latest}): {e}")
-        return None
+    # Ordena do mais recente para o mais antigo e tenta carregar o primeiro válido
+    for latest in sorted(files, key=os.path.getmtime, reverse=True):
+        try:
+            with open(latest, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                
+                # Se for um arquivo já consolidado (tem metadata ou coleções consolidadas), ignora e tenta o próximo
+                if "metadata" in data or "eficiencia_energetica" in data:
+                    print(f"  ⚠️ Ignorando arquivo já consolidado encontrado como fonte: {os.path.basename(latest)}")
+                    continue
+                
+                print(f"     ℹ️ Usando fonte Solinftec: {os.path.basename(latest)}")
+                return data
+                
+        except Exception as e:
+            print(f"  ⚠️ Erro ao ler JSON Solinftec ({os.path.basename(latest)}): {e}")
+            continue
+            
+    # Se testou todos e nenhum serviu
+    # Pode ocorrer se a pasta só tiver json consolidados e nenhum "cru"
+    print(f"  ❌ Nenhum arquivo Solinftec válido ou não-consolidado encontrado para {date_str}.")
+    return None
 
 
 # ─── Case IH ───────────────────────────────────────────────────────────────────
@@ -195,23 +185,36 @@ def load_case_data() -> dict:
                         continue
 
                     if frota and data_key:
-                        horas_motor = safe_float(d.get("Total Horas Motor (Diferença)"))
-                        rpm = safe_float(d.get("RPM"))
-                        temp_arref = safe_float(d.get("Média Temperatura líquido de arrefecimento do motor"))
-                        temp_trans = safe_float(d.get("Média Temperatura do óleo da transmissão"))
+                        horas_motor = safe_float(d.get("Total Horas Motor (Dif)"), safe_float(d.get("Total Horas Motor (Diferença)")))
+                        rpm = safe_float(d.get("RPM Médio", d.get("RPM")))
+                        temp_arref = safe_float(d.get("Média Temp. Líquido Arrefecimento", d.get("Média Temperatura líquido de arrefecimento do motor")))
+                        temp_trans = safe_float(d.get("Média Temp. Óleo Hidráulico", d.get("Média Temperatura do óleo da transmissão")))
+                        temp_ar = safe_float(d.get("Média Temp. Ar Coletor Admissão"))
                         vel_media = safe_float(d.get("Velocidade Média"))
-
                         tempo_gps_ligado = safe_float(d.get("Tempo GPS Ligado"))
                         tempo_gps_desligado = safe_float(d.get("Tempo GPS Desligado"))
                         perc_gps_ligado = safe_float(d.get("% GPS Ligado"))
                         perc_gps_desligado = safe_float(d.get("% GPS Desligado"))
-
+                        
+                        # Tempos detalhados do Motor
+                        motor_ocioso = safe_float(d.get("Motor Ocioso"))
+                        motor_desligado = safe_float(d.get("Motor Desligado"))
+                        horas_produtivas = safe_float(d.get("Horas Produtivas"))
+                        tempo_registrado = safe_float(d.get("Tempo Registrado (Total)"))
+                        
                         case_data[data_key][frota] = {
-                            "horasMotor": horas_motor,
+                            "Hora Motor Inicial": d.get("Hora Motor Inicial"),
+                            "Hora Motor Final": d.get("Hora Motor Final"),
+                            "Horas Motor": horas_motor,
                             "rpm": rpm,
                             "temperaturaArrefecimento": temp_arref,
                             "temperaturaTransmissao": temp_trans,
+                            "temperaturaArAdmissao": temp_ar,
                             "velocidadeMedia": vel_media,
+                            "motorOcioso": motor_ocioso,
+                            "motorDesligado": motor_desligado,
+                            "horasProdutivas": horas_produtivas,
+                            "tempoRegistrado": tempo_registrado,
                             "Extras": {
                                 "eficienciaEnergetica": safe_float(d.get("Eficiencia_Energetica")),
                                 "eficienciaOperacional": safe_float(d.get("Eficiencia_Operacional")),
@@ -735,7 +738,6 @@ def consolidar_tratores_case(
     
     eficiencia_energetica = []
     eficiencia_operacional = []
-    horas_elevador = []
     uso_gps = []
     media_velocidade = []
     manobras_frotas = []
@@ -743,7 +745,16 @@ def consolidar_tratores_case(
     disponibilidade_mecanica = []
     horas_por_frota = []
     intervalos_operacao = []
-    
+    falta_apontamento = []
+    temperaturas = []
+    detalhes_motor_case = []
+    detalhes_gps_case = []
+    transbordo = []
+    velocidades_detalhadas = []
+    horas_improdutivas = []
+    horas_auxiliar = []
+    horas_climatico = []
+    ofensores_list = []
     operation_stats = defaultdict(float)
     
     idx = 0
@@ -765,6 +776,8 @@ def consolidar_tratores_case(
         
         # Prioridade Solinftec > Case
         fonte_atual = "solinftec" if sol_data else ("case" if case_info else "none")
+        has_solinftec = bool(sol_data)
+        has_case = bool(case_info)
 
         # --- Métricas ---
         
@@ -779,14 +792,12 @@ def consolidar_tratores_case(
              horas_motor = safe_float(case_info.get("Horas Motor", 0))
 
         horas_produtivas = safe_float(resumo.get("Horas_Produtivas", 0))
-        horas_elev = horas_produtivas
         
         eficiencia_energetica.append({
             "id": idx,
             "nome": frota_id,
             "eficiencia": val_ee_pct,
             "horasMotor": round(horas_motor, 4),
-            "horasElevador": round(horas_elev, 4),
             "fonte": fonte_atual,
         })
         
@@ -795,17 +806,8 @@ def consolidar_tratores_case(
         eficiencia_operacional.append({
             "id": idx,
             "nome": frota_id,
-            "eficiencia": round(val_eo * 100, 2) if val_eo <= 1 else round(val_eo, 2), # Se vier 0.15 virar 15%? Solinftec geralmente manda 0.15
+            "eficiencia": round(val_eo * 100, 2) if val_eo <= 1 else round(val_eo, 2), # Se vier 0.15 virar 15%?
             "horasMotor": round(horas_motor, 4),
-            "horasElevador": round(horas_elev, 4),
-            "fonte": fonte_atual,
-        })
-        
-        # Horas Elevador
-        horas_elevador.append({
-            "id": idx,
-            "nome": frota_id,
-            "valor": round(horas_elev, 4),
             "fonte": fonte_atual,
         })
         
@@ -855,7 +857,13 @@ def consolidar_tratores_case(
         })
         
         # Horas Totais (Registradas)
-        horas_total = safe_float(resumo.get("Horas_Registradas"))
+        if has_solinftec:
+            horas_total = safe_float(resumo.get("Horas_Registradas"))
+        elif has_case:
+            horas_total = safe_float(case_info.get("Horas Motor", case_info.get("horasMotor", 0)))
+        else:
+            horas_total = 0
+            
         horas_por_frota.append({
             "id": idx,
             "nome": frota_id,
@@ -865,9 +873,9 @@ def consolidar_tratores_case(
         })
         
         # Manobras
-        qtd_manobras = safe_float(resumo.get("Quantidade_Manobras"))
-        tempo_manobras_h = safe_float(resumo.get("Tempo_Total_Manobras_h"))
-        tempo_medio_man_min = safe_float(resumo.get("Tempo_Medio_Manobras_min"))
+        qtd_manobras = safe_float(resumo.get("Quantidade_Manobras", 0)) if has_solinftec else 0
+        tempo_manobras_h = safe_float(resumo.get("Tempo_Total_Manobras_h", 0)) if has_solinftec else 0
+        tempo_medio_man_min = safe_float(resumo.get("Tempo_Medio_Manobras_min", 0)) if has_solinftec else 0
         
         # Converter tempo total para hh:mm:ss
         total_sec = int(tempo_manobras_h * 3600)
@@ -883,16 +891,113 @@ def consolidar_tratores_case(
         mss = med_sec % 60
         tempo_med_str = f"{mhh:02}:{mmm:02}:{mss:02}"
 
-        manobras_frotas.append({
-            "Frota": frota_id,
-            "Tempo Total": round(tempo_manobras_h, 4),
-            "Tempo Médio": round(tempo_medio_man_min, 4),
-            "Intervalos Válidos": int(qtd_manobras),
-            "Tempo Total (hh:mm)": tempo_total_str,
-            "Tempo Médio (hh:mm)": tempo_med_str,
-            "fonte": fonte_atual,
-        })
+        if qtd_manobras > 0 or has_solinftec:
+            manobras_frotas.append({
+                "Frota": frota_id,
+                "Tempo Total": round(tempo_manobras_h, 4),
+                "Tempo Médio": round(tempo_medio_man_min, 4),
+                "Intervalos Válidos": int(qtd_manobras),
+                "Tempo Total (hh:mm)": tempo_total_str,
+                "Tempo Médio (hh:mm)": tempo_med_str,
+                "fonte": fonte_atual,
+            })
 
+        # Falta de Apontamento (Sem Apontamento)
+        if has_solinftec:
+            pct_sem = safe_float(resumo.get("Porcentagem_Sem_Apontamento", 0))
+            hrs_sem = safe_float(resumo.get("Tempo_Sem_Apontamento_h", 0))
+            falta_apontamento.append({
+                "id": idx,
+                "nome": frota_id,
+                "percentual": round(pct_sem, 2),
+                "horasSemApontar": round(hrs_sem, 4),
+                "tempoLigado": round(horas_motor, 4),
+                "tempoOcioso": round(hrs_sem, 4), # Frontend usa isso pra barra
+                "fonte": "solinftec"
+            })
+            
+        # Transbordo
+        if has_solinftec:
+            qtd_transb = safe_float(resumo.get("Quantidade_Transbordos", 0))
+            tempo_transb = safe_float(resumo.get("Tempo_Total_Transbordo_h", 0))
+            if qtd_transb > 0 or tempo_transb > 0:
+                transbordo.append({
+                    "id": idx,
+                    "nome": frota_id,
+                    "quantidade": int(qtd_transb),
+                    "tempoTotal": round(tempo_transb, 4),
+                    "fonte": "solinftec"
+                })
+
+        # Velocidades Detalhadas (Tratores)
+        if has_solinftec:
+            vel_colheita = safe_float(resumo.get("Vel_Colheita_media", 0))
+            vel_vazio = safe_float(resumo.get("Vel_Desl_Vazio_media", 0))
+            vel_carregado = safe_float(resumo.get("Vel_Desl_Carregado_media", 0))
+            
+            if vel_colheita > 0 or vel_vazio > 0 or vel_carregado > 0:
+                velocidades_detalhadas.append({
+                    "id": idx,
+                    "nome": frota_id,
+                    "colheita": round(vel_colheita, 2),
+                    "vazio": round(vel_vazio, 2),
+                    "carregado": round(vel_carregado, 2),
+                    "fonte": "solinftec"
+                })
+
+        # Outras horas (Improdutivas, Auxiliares, Climático)
+        if has_solinftec:
+            h_impro = safe_float(resumo.get("Horas_Improdutivas", 0))
+            h_aux = safe_float(resumo.get("Horas_Auxiliar", 0))
+            h_clim = safe_float(resumo.get("Horas_Climático", 0))
+            
+            if h_impro > 0:
+                horas_improdutivas.append({
+                    "id": idx, "nome": frota_id, "horas": round(h_impro, 4), "fonte": "solinftec"
+                })
+            if h_aux > 0:
+                horas_auxiliar.append({
+                    "id": idx, "nome": frota_id, "horas": round(h_aux, 4), "fonte": "solinftec"
+                })
+            if h_clim > 0:
+                horas_climatico.append({
+                    "id": idx, "nome": frota_id, "horas": round(h_clim, 4), "fonte": "solinftec"
+                })
+
+        # ----------------------------------------------------
+        # NOVAS MÉTRICAS ESPECÍFICAS DA CASE IH
+        # ----------------------------------------------------
+        if case_info:
+            temperaturas.append({
+                "id": idx,
+                "nome": frota_id,
+                "arrefecimento": safe_float(case_info.get("temperaturaArrefecimento", 0)),
+                "oleoHidraulico": safe_float(case_info.get("temperaturaTransmissao", 0)),
+                "arAdmissao": safe_float(case_info.get("temperaturaArAdmissao", 0)),
+                "fonte": "case"
+            })
+            
+            detalhes_motor_case.append({
+                "id": idx,
+                "nome": frota_id,
+                "motorOcioso": safe_float(case_info.get("motorOcioso", 0)),
+                "motorDesligado": safe_float(case_info.get("motorDesligado", 0)),
+                "horasProdutivas": safe_float(case_info.get("horasProdutivas", 0)),
+                "tempoRegistrado": safe_float(case_info.get("tempoRegistrado", 0)),
+                "horasMotor": safe_float(case_info.get("Horas Motor", case_info.get("horasMotor", 0))),
+                "fonte": "case"
+            })
+            
+            det_extras = case_info.get("Extras", {})
+            detalhes_gps_case.append({
+                "id": idx,
+                "nome": frota_id,
+                "tempoLigado": safe_float(det_extras.get("tempoGPSLigado", 0)),
+                "tempoDesligado": safe_float(det_extras.get("tempoGPSDesligado", 0)),
+                "percLigado": safe_float(det_extras.get("percGPSLigado", 0)),
+                "percDesligado": safe_float(det_extras.get("percGPSDesligado", 0)),
+                "fonte": "case"
+            })
         # --- Intervalos ---
         # Solinftec Intervalos
         intervalos = sol_data.get("Intervalos", [])
@@ -987,7 +1092,6 @@ def consolidar_tratores_case(
         "metas": METAS_DEFAULT,
         "eficiencia_energetica": eficiencia_energetica,
         "eficiencia_operacional": eficiencia_operacional,
-        "horas_elevador": horas_elevador,
         "uso_gps": uso_gps,
         "media_velocidade": media_velocidade,
         "manobras_frotas": manobras_frotas,
@@ -995,6 +1099,15 @@ def consolidar_tratores_case(
         "disponibilidade_mecanica": disponibilidade_mecanica,
         "horas_por_frota": horas_por_frota,
         "intervalos_operacao": intervalos_operacao,
+        "falta_apontamento": falta_apontamento,
+        "temperaturas": temperaturas,
+        "detalhes_motor_case": detalhes_motor_case,
+        "detalhes_gps_case": detalhes_gps_case,
+        "transbordo": transbordo,
+        "velocidades_detalhadas": velocidades_detalhadas,
+        "horas_improdutivas": horas_improdutivas,
+        "horas_auxiliar": horas_auxiliar,
+        "horas_climatico": horas_climatico,
         "ofensores": ofensores_list,
         "imagens": {
             "mapaGPS": "",
@@ -1014,12 +1127,18 @@ def main():
     print("=" * 60)
 
     # 1. Listar datas disponíveis (dos JSONs Solinftec existentes)
-    solinftec_files = sorted(glob.glob(os.path.join(SOLINFTEC_JSON_DIR, "*.json")))
+    base_json_dir = os.path.join(ETL_ROOT, "dados", "separados", "json")
+    solinftec_files = sorted(glob.glob(os.path.join(base_json_dir, "**", "*.json"), recursive=True))
+    
+    date_to_dir = {}
     dates = []
     for sf in solinftec_files:
         d = parse_date_from_filename(os.path.basename(sf))
         if d:
-            dates.append(d)
+            if d not in dates:
+                dates.append(d)
+            # Guarda a pasta base de onde achou esse arquivo para usar no load_solinftec
+            date_to_dir[d] = os.path.dirname(sf)
 
     if not dates:
         print("  ❌ Nenhum JSON Solinftec encontrado.")
@@ -1077,10 +1196,21 @@ def main():
         except Exception:
             pass
 
-        # Solinftec
-        solinftec_raw = load_solinftec(date_str)
-        n_frotas_sol = len(solinftec_raw) if solinftec_raw else 0
-        print(f"     Solinftec: {n_frotas_sol} frotas")
+        # Solinftec (Colhedoras)
+        solinftec_colhedora = load_solinftec(date_str, base_dir=SOLINFTEC_JSON_DIR)
+        
+        # Solinftec (Tratores)
+        solinftec_tratores = load_solinftec(date_str, base_dir=TRATORES_JSON_DIR)
+        
+        # Merge de dicts para o Solinftec_raw global desse dia
+        solinftec_raw = {}
+        if solinftec_colhedora:
+            solinftec_raw.update(solinftec_colhedora)
+        if solinftec_tratores:
+            solinftec_raw.update(solinftec_tratores)
+            
+        n_frotas_sol = len(solinftec_raw)
+        print(f"     Solinftec: {n_frotas_sol} frotas (Colhedoras: {len(solinftec_colhedora) if solinftec_colhedora else 0}, Tratores: {len(solinftec_tratores) if solinftec_tratores else 0})")
 
         # Case
         case_date_key = date_str.replace("-", "/")

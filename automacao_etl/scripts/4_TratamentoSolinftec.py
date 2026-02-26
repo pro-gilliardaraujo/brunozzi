@@ -1161,14 +1161,37 @@ def main():
     for arquivo in arquivos:
         try:
             dir_name = os.path.dirname(arquivo)
-            base = os.path.splitext(os.path.basename(arquivo))[0]
+            base_original = os.path.basename(arquivo)
+            
+            # Tentar achar as datas DD-MM-YYYY_DD-MM-YYYY no nome original
+            dt_inicio, dt_fim = extrair_periodo_nome_arquivo(base_original)
+            
+            if dt_inicio and dt_fim:
+                # Formata um nome limpo se achou as datas
+                base = f"Solinftec_Extract_{dt_inicio.strftime('%d-%m-%Y')}_{dt_fim.strftime('%d-%m-%Y')}"
+            else:
+                # Fallback genérico se não achou data 
+                base = "Solinftec_Extract"
+                
             ext = os.path.splitext(arquivo)[1]
             novo_nome = f"{base}_tratado{ext}"
             novo_caminho = os.path.join(dir_name, novo_nome)
+            
             if os.path.exists(novo_caminho):
-                os.remove(novo_caminho)
+                try:
+                    os.remove(novo_caminho)
+                except PermissionError:
+                    print(f"AVISO: Arquivo {novo_nome} aberto na máquina, as informações podem não ser subescritas.")
+            
             shutil.copy2(arquivo, novo_caminho)
-            print(f"Gerada cópia para tratamento: {os.path.basename(novo_caminho)}")
+            
+            # Opcional: remover o arquivo original com nome gigante extraído do zip
+            try:
+                os.remove(arquivo)
+            except:
+                pass
+                
+            print(f"Gerada cópia renomeada para tratamento: {os.path.basename(novo_caminho)}")
             tratar_arquivo(novo_caminho)
         except Exception as e:
             print(f"ERRO ao copiar/tratar arquivo {os.path.basename(arquivo)}: {e}")
