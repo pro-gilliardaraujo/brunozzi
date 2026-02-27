@@ -1376,7 +1376,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 <div className="flex-1 flex flex-col min-h-0">
                   <SectionTitle title="Resumo - Case IH" />
                   <div className="border border-black rounded-lg flex-1 overflow-hidden">
-                    <table className="w-full text-center border-collapse text-[9px]">
+                    <table className="w-full text-center border-collapse text-xs">
                       <thead className="bg-slate-100 font-bold">
                         <tr>
                           <th className="border border-slate-300 p-1">Frota</th>
