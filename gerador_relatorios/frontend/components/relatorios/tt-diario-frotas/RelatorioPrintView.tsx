@@ -1255,7 +1255,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 <SectionTitle title="Horas Motor e RPM - Case IH" />
                 <div className="border border-black rounded-lg p-3 flex-1 flex flex-col gap-3 overflow-hidden">
                   {frotas.map(([frota, stats], idx) => {
-                    const horasMotor = Number(stats?.horasMotor || 0)
+                    const horasMotor = Number(stats?.['Horas Motor'] || 0)
                     const rpm = Number(stats?.rpm || 0)
                     const ocioso = Number(stats?.motorOcioso || 0)
                     const desligado = Number(stats?.motorDesligado || 0)
@@ -1303,7 +1303,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                     const percDesligado = Number(extras.percGPSDesligado || 0)
                     const tempoLigado = Number(extras.tempoGPSLigado || 0)
                     const tempoDesligado = Number(extras.tempoGPSDesligado || 0)
-                    const horasMotor = Number(stats?.horasMotor || 0)
+                    const horasMotor = Number(stats?.['Horas Motor'] || 0)
                     const corGPS = percLigado >= metaUsoGPS ? '#48BB78' : '#E53E3E'
                     return (
                       <div key={frota} className={`${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-3 py-2`}>
@@ -1364,7 +1364,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                       {frotas.map(([frota, stats], idx) => (
                         <tr key={frota} className="hover:bg-slate-50 even:bg-slate-50">
                           <td className="border border-slate-300 p-2 font-bold">{frota}</td>
-                          <td className="border border-slate-300 p-2 font-bold">{formatH(Number(stats?.horasMotor || 0))}</td>
+                          <td className="border border-slate-300 p-2 font-bold">{formatH(Number(stats?.['Horas Motor'] || 0))}</td>
                           <td className="border border-slate-300 p-2 font-bold">{Number(stats?.rpm || 0).toFixed(0)}</td>
                           <td className="border border-slate-300 p-2 font-bold">{Number(stats?.temperaturaArrefecimento || 0).toFixed(1)}°</td>
                           <td className={`border border-slate-300 p-2 font-bold ${Number(stats?.temperaturaTransmissao || 0) > metasSafe.temperaturaTransmissao ? 'text-red-600' : 'text-green-600'}`}>{Number(stats?.temperaturaTransmissao || 0).toFixed(1)}°</td>
