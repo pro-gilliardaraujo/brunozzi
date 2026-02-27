@@ -1241,26 +1241,33 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         )
       })()}
 
-      {/* PÁGINA - Horas Motor Case IH (estilo GraficoMotorOcioso) */}
+      {/* PÁGINA - Horas Motor + RPM + Velocidade Case IH (combinados) */}
       {(() => {
         const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
         const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
         if (frotas.length === 0) return null
         const formatH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh}h${mm.toString().padStart(2, '0')}m` }
-        const maxHoras = Math.max(...frotas.map(([, s]) => Number(s?.tempoRegistrado || 0)), 1)
+        const comRPM = frotas.filter(([, s]) => Number(s?.rpm || 0) > 0)
+        const maxRPM = comRPM.length > 0 ? Math.max(...comRPM.map(([, s]) => Number(s?.rpm || 0)), 1) : 1
+        const mediaRPM = comRPM.length > 0 ? comRPM.reduce((acc, [, s]) => acc + Number(s?.rpm || 0), 0) / comRPM.length : 0
+        const comVel = frotas.filter(([, s]) => Number(s?.velocidadeMedia || 0) > 0)
+        const maxVel = comVel.length > 0 ? Math.max(...comVel.map(([, s]) => Number(s?.velocidadeMedia || 0)), 1) : 1
+        const mediaVel = comVel.length > 0 ? comVel.reduce((acc, [, s]) => acc + Number(s?.velocidadeMedia || 0), 0) / comVel.length : 0
         return (
           <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
             <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
-              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+              <div className="flex-1 flex flex-col gap-1 overflow-hidden">
+
+                {/* Seção 1: Horas Motor */}
                 <SectionTitle title="Horas Motor - Case IH" />
-                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col overflow-hidden">
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg text-center p-2 mb-2">
-                    <div className="text-xs font-bold text-slate-700">
-                      Composição: <span className="text-green-600">Produtivas</span> | <span className="text-orange-500">Ocioso</span> | <span className="text-red-500">Desligado</span>
+                <div className="border border-black rounded-lg p-2 flex flex-col">
+                  <div className="bg-slate-50 border border-slate-200 rounded text-center p-1 mb-1">
+                    <div className="text-[10px] font-bold text-slate-700">
+                      <span className="text-green-600">Produtivas</span> | <span className="text-orange-500">Ocioso</span> | <span className="text-red-500">Desligado</span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 flex-1 overflow-hidden">
+                  <div className="flex flex-col gap-1">
                     {frotas.map(([frota, stats], idx) => {
                       const horasMotor = Number(stats?.['Horas Motor'] || 0)
                       const ocioso = Number(stats?.motorOcioso || 0)
@@ -1271,103 +1278,89 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                       const pctOcioso = registrado > 0 ? (ocioso / registrado) * 100 : 0
                       const pctDeslig = registrado > 0 ? (desligado / registrado) * 100 : 0
                       return (
-                        <div key={frota} className={`flex flex-col ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-1`}>
-                          <div className="font-bold text-xs mb-0.5">{frota}</div>
-                          <div className="flex items-center gap-1.5">
-                            <div className="flex flex-col items-center w-20 min-w-[80px]">
-                              <span className="font-bold text-xs text-orange-500">{formatH(ocioso)}</span>
-                              <span className="text-[9px] font-medium text-slate-600">Ocioso</span>
-                            </div>
-                            <div className="flex-1 h-5 bg-slate-200 rounded-sm relative border border-slate-200 overflow-hidden flex">
-                              <div className="h-full" style={{ width: `${pctProd}%`, backgroundColor: '#48BB78' }} />
-                              <div className="h-full" style={{ width: `${pctOcioso}%`, backgroundColor: '#ED8936' }} />
-                              <div className="h-full" style={{ width: `${pctDeslig}%`, backgroundColor: '#E53E3E' }} />
-                            </div>
-                            <div className="flex flex-col items-center w-20 min-w-[80px]">
-                              <span className="font-bold text-xs text-green-600">{formatH(produtivas)}</span>
-                              <span className="text-[9px] font-medium text-slate-600">Produtivas</span>
-                            </div>
-                            <div className="font-bold text-xs w-20 text-right text-slate-700">
-                              Motor: {formatH(horasMotor)}
-                            </div>
+                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-0.5`}>
+                          <div className="font-bold text-xs w-8 flex-shrink-0">{frota}</div>
+                          <div className="flex flex-col items-center w-16 min-w-[64px]">
+                            <span className="font-bold text-[10px] text-orange-500">{formatH(ocioso)}</span>
+                            <span className="text-[8px] text-slate-500">Ocioso</span>
+                          </div>
+                          <div className="flex-1 h-4 bg-slate-200 rounded-sm relative border border-slate-200 overflow-hidden flex">
+                            <div className="h-full" style={{ width: `${pctProd}%`, backgroundColor: '#48BB78' }} />
+                            <div className="h-full" style={{ width: `${pctOcioso}%`, backgroundColor: '#ED8936' }} />
+                            <div className="h-full" style={{ width: `${pctDeslig}%`, backgroundColor: '#E53E3E' }} />
+                          </div>
+                          <div className="flex flex-col items-center w-16 min-w-[64px]">
+                            <span className="font-bold text-[10px] text-green-600">{formatH(produtivas)}</span>
+                            <span className="text-[8px] text-slate-500">Produtivas</span>
+                          </div>
+                          <div className="font-bold text-[10px] w-16 text-right text-slate-700">
+                            {formatH(horasMotor)}
                           </div>
                         </div>
                       )
                     })}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )
-      })()}
 
-      {/* PÁGINA - RPM Médio Case IH (bar chart) */}
-      {(() => {
-        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
-        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
-        const comRPM = frotas.filter(([, s]) => Number(s?.rpm || 0) > 0)
-        if (comRPM.length === 0) return null
-        const maxRPM = Math.max(...comRPM.map(([, s]) => Number(s?.rpm || 0)), 1)
-        const mediaRPM = comRPM.reduce((acc, [, s]) => acc + Number(s?.rpm || 0), 0) / comRPM.length
-        return (
-          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
-              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+                {/* Seção 2: RPM */}
+                {comRPM.length > 0 && (<>
                 <SectionTitle title="RPM Médio - Case IH" />
-                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col overflow-hidden">
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg text-center p-2 mb-2">
-                    <div className="text-xs font-bold text-slate-700">
-                      Média Geral: <span className="text-blue-600">{mediaRPM.toFixed(0)} RPM</span>
+                <div className="border border-black rounded-lg p-2 flex flex-col">
+                  <div className="bg-slate-50 border border-slate-200 rounded text-center p-1 mb-1">
+                    <div className="text-[10px] font-bold text-slate-700">
+                      Média: <span className="text-blue-600">{mediaRPM.toFixed(0)} RPM</span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3 flex-1 overflow-hidden">
+                  <div className="flex flex-col gap-1">
                     {comRPM.map(([frota, stats], idx) => {
                       const rpm = Number(stats?.rpm || 0)
                       const largura = Math.min((rpm / (maxRPM * 1.1)) * 100, 100)
                       return (
-                        <div key={frota} className={`flex flex-col ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-1`}>
-                          <div className="font-bold text-xs mb-0.5">{frota}</div>
-                          <div className="flex items-center gap-1.5">
-                            <div className="flex-1 h-5 bg-white rounded-sm relative border border-slate-200">
-                              <div className="h-full rounded-l-sm transition-all duration-500" style={{ width: `${largura}%`, backgroundColor: '#3182CE' }} />
-                            </div>
-                            <div className="font-bold text-sm w-20 text-right text-blue-600">
-                              {rpm.toFixed(0)}
-                            </div>
+                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-0.5`}>
+                          <div className="font-bold text-xs w-8 flex-shrink-0">{frota}</div>
+                          <div className="flex-1 h-4 bg-white rounded-sm relative border border-slate-200">
+                            <div className="h-full rounded-l-sm" style={{ width: `${largura}%`, backgroundColor: '#3182CE' }} />
                           </div>
+                          <div className="font-bold text-xs w-16 text-right text-blue-600">{rpm.toFixed(0)}</div>
                         </div>
                       )
                     })}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )
-      })()}
+                </>)}
 
-      {/* PÁGINA - Velocidade Média Case IH (bar chart estilo GraficoMediaVelocidade) */}
-      {(() => {
-        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
-        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
-        const comVel = frotas.filter(([, s]) => Number(s?.velocidadeMedia || 0) > 0)
-        if (comVel.length === 0) return null
-        const dadosVelCase = comVel.map(([frota, stats]) => ({
-          id: frota, nome: frota, velocidade: Number(stats?.velocidadeMedia || 0)
-        }))
-        return (
-          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
-              <div className="flex-1 flex flex-col gap-2">
-                <div className="flex flex-col h-full">
-                  <SectionTitle title="Velocidade Média - Case IH" />
-                  <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                    <GraficoMediaVelocidade dados={dadosVelCase} meta={metasSafe.mediaVelocidade} />
+                {/* Seção 3: Velocidade */}
+                {comVel.length > 0 && (<>
+                <SectionTitle title="Velocidade Média - Case IH" />
+                <div className="border border-black rounded-lg p-2 flex flex-col">
+                  <div className="bg-slate-50 border border-slate-200 rounded text-center p-1 mb-1">
+                    <div className="text-[10px] font-bold text-slate-700">
+                      {metasSafe.mediaVelocidade > 0 ? <>Meta: <span className="text-[#48BB78]">{metasSafe.mediaVelocidade.toFixed(2)} km/h</span> | </> : null}
+                      Média: <span className="text-blue-600">{mediaVel.toFixed(2)} km/h</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    {comVel.map(([frota, stats], idx) => {
+                      const vel = Number(stats?.velocidadeMedia || 0)
+                      const largura = Math.min((vel / (maxVel * 1.2)) * 100, 100)
+                      const cor = metasSafe.mediaVelocidade > 0 ? (vel <= metasSafe.mediaVelocidade ? '#48BB78' : '#E53E3E') : '#3182CE'
+                      return (
+                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-0.5`}>
+                          <div className="font-bold text-xs w-8 flex-shrink-0">{frota}</div>
+                          <div className="flex-1 h-4 bg-white rounded-sm relative border border-slate-200">
+                            <div className="h-full rounded-l-sm" style={{ width: `${largura}%`, backgroundColor: cor }} />
+                            {metasSafe.mediaVelocidade > 0 && (
+                              <div className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10" style={{ left: `${Math.min((metasSafe.mediaVelocidade / (maxVel * 1.2)) * 100, 100)}%` }} />
+                            )}
+                          </div>
+                          <div className="font-bold text-xs w-20 text-right" style={{ color: cor }}>{vel.toFixed(2)} km/h</div>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
+                </>)}
+
               </div>
             </div>
           </div>
