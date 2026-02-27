@@ -1241,41 +1241,132 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         )
       })()}
 
-      {/* PÁGINA - Motor e Horas Case IH */}
+      {/* PÁGINA - Horas Motor Case IH (estilo GraficoMotorOcioso) */}
       {(() => {
         const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
         const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
         if (frotas.length === 0) return null
         const formatH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh}h${mm.toString().padStart(2, '0')}m` }
+        const maxHoras = Math.max(...frotas.map(([, s]) => Number(s?.tempoRegistrado || 0)), 1)
         return (
           <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
             <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
               <div className="flex-1 flex flex-col gap-2 overflow-hidden">
-                <SectionTitle title="Horas Motor e RPM - Case IH" />
-                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col gap-3 overflow-hidden">
-                  {frotas.map(([frota, stats], idx) => {
-                    const horasMotor = Number(stats?.['Horas Motor'] || 0)
-                    const rpm = Number(stats?.rpm || 0)
-                    const ocioso = Number(stats?.motorOcioso || 0)
-                    const desligado = Number(stats?.motorDesligado || 0)
-                    const produtivas = Number(stats?.horasProdutivas || 0)
-                    const registrado = Number(stats?.tempoRegistrado || 0)
-                    return (
-                      <div key={frota} className={`${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-3 py-2`}>
-                        <div className="font-bold text-sm mb-1">Frota {frota}</div>
-                        <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-xs">
-                          <div><span className="text-slate-500">Horas Motor:</span> <span className="font-bold">{formatH(horasMotor)}</span></div>
-                          <div><span className="text-slate-500">RPM Médio:</span> <span className="font-bold">{rpm.toFixed(0)}</span></div>
-                          <div><span className="text-slate-500">Tempo Registrado:</span> <span className="font-bold">{formatH(registrado)}</span></div>
-                          <div><span className="text-slate-500">Horas Produtivas:</span> <span className="font-bold text-green-600">{formatH(produtivas)}</span></div>
-                          <div><span className="text-slate-500">Motor Ocioso:</span> <span className="font-bold text-orange-500">{formatH(ocioso)}</span></div>
-                          <div><span className="text-slate-500">Motor Desligado:</span> <span className="font-bold text-red-500">{formatH(desligado)}</span></div>
-                          <div><span className="text-slate-500">Vel. Média:</span> <span className="font-bold">{Number(stats?.velocidadeMedia || 0).toFixed(2)} km/h</span></div>
+                <SectionTitle title="Horas Motor - Case IH" />
+                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col overflow-hidden">
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg text-center p-2 mb-2">
+                    <div className="text-xs font-bold text-slate-700">
+                      Composição: <span className="text-green-600">Produtivas</span> | <span className="text-orange-500">Ocioso</span> | <span className="text-red-500">Desligado</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3 flex-1 overflow-hidden">
+                    {frotas.map(([frota, stats], idx) => {
+                      const horasMotor = Number(stats?.['Horas Motor'] || 0)
+                      const ocioso = Number(stats?.motorOcioso || 0)
+                      const desligado = Number(stats?.motorDesligado || 0)
+                      const produtivas = Number(stats?.horasProdutivas || 0)
+                      const registrado = Number(stats?.tempoRegistrado || 0)
+                      const pctProd = registrado > 0 ? (produtivas / registrado) * 100 : 0
+                      const pctOcioso = registrado > 0 ? (ocioso / registrado) * 100 : 0
+                      const pctDeslig = registrado > 0 ? (desligado / registrado) * 100 : 0
+                      return (
+                        <div key={frota} className={`flex flex-col ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-1`}>
+                          <div className="font-bold text-xs mb-0.5">{frota}</div>
+                          <div className="flex items-center gap-1.5">
+                            <div className="flex flex-col items-center w-20 min-w-[80px]">
+                              <span className="font-bold text-xs text-orange-500">{formatH(ocioso)}</span>
+                              <span className="text-[9px] font-medium text-slate-600">Ocioso</span>
+                            </div>
+                            <div className="flex-1 h-5 bg-slate-200 rounded-sm relative border border-slate-200 overflow-hidden flex">
+                              <div className="h-full" style={{ width: `${pctProd}%`, backgroundColor: '#48BB78' }} />
+                              <div className="h-full" style={{ width: `${pctOcioso}%`, backgroundColor: '#ED8936' }} />
+                              <div className="h-full" style={{ width: `${pctDeslig}%`, backgroundColor: '#E53E3E' }} />
+                            </div>
+                            <div className="flex flex-col items-center w-20 min-w-[80px]">
+                              <span className="font-bold text-xs text-green-600">{formatH(produtivas)}</span>
+                              <span className="text-[9px] font-medium text-slate-600">Produtivas</span>
+                            </div>
+                            <div className="font-bold text-xs w-20 text-right text-slate-700">
+                              Motor: {formatH(horasMotor)}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* PÁGINA - RPM Médio Case IH (bar chart) */}
+      {(() => {
+        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
+        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
+        const comRPM = frotas.filter(([, s]) => Number(s?.rpm || 0) > 0)
+        if (comRPM.length === 0) return null
+        const maxRPM = Math.max(...comRPM.map(([, s]) => Number(s?.rpm || 0)), 1)
+        const mediaRPM = comRPM.reduce((acc, [, s]) => acc + Number(s?.rpm || 0), 0) / comRPM.length
+        return (
+          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+                <SectionTitle title="RPM Médio - Case IH" />
+                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col overflow-hidden">
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg text-center p-2 mb-2">
+                    <div className="text-xs font-bold text-slate-700">
+                      Média Geral: <span className="text-blue-600">{mediaRPM.toFixed(0)} RPM</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3 flex-1 overflow-hidden">
+                    {comRPM.map(([frota, stats], idx) => {
+                      const rpm = Number(stats?.rpm || 0)
+                      const largura = Math.min((rpm / (maxRPM * 1.1)) * 100, 100)
+                      return (
+                        <div key={frota} className={`flex flex-col ${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-2 py-1`}>
+                          <div className="font-bold text-xs mb-0.5">{frota}</div>
+                          <div className="flex items-center gap-1.5">
+                            <div className="flex-1 h-5 bg-white rounded-sm relative border border-slate-200">
+                              <div className="h-full rounded-l-sm transition-all duration-500" style={{ width: `${largura}%`, backgroundColor: '#3182CE' }} />
+                            </div>
+                            <div className="font-bold text-sm w-20 text-right text-blue-600">
+                              {rpm.toFixed(0)}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* PÁGINA - Velocidade Média Case IH (bar chart estilo GraficoMediaVelocidade) */}
+      {(() => {
+        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
+        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
+        const comVel = frotas.filter(([, s]) => Number(s?.velocidadeMedia || 0) > 0)
+        if (comVel.length === 0) return null
+        const dadosVelCase = comVel.map(([frota, stats]) => ({
+          id: frota, nome: frota, velocidade: Number(stats?.velocidadeMedia || 0)
+        }))
+        return (
+          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="flex flex-col h-full">
+                  <SectionTitle title="Velocidade Média - Case IH" />
+                  <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
+                    <GraficoMediaVelocidade dados={dadosVelCase} meta={metasSafe.mediaVelocidade} />
+                  </div>
                 </div>
               </div>
             </div>

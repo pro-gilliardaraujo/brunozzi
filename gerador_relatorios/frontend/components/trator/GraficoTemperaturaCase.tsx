@@ -30,7 +30,8 @@ export function GraficoTemperaturaCase({
 }: GraficoTemperaturaCaseProps) {
   const dadosValidos = Array.isArray(dados)
     ? dados.filter(d => {
-        if (campo) return (Number((d as any)[campo]) || 0) > 0
+        // Quando campo é especificado, mostra todas as frotas (mesmo zero) para manter layout
+        if (campo) return true
         return (d.temperaturaTransmissao || 0) > 0 || (d.temperaturaArrefecimento || 0) > 0 || (d.temperaturaArAdmissao || 0) > 0
       })
     : []
