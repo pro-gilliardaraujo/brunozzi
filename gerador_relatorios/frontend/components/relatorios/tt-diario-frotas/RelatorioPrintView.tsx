@@ -1213,9 +1213,9 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                           const w = Math.min((val / escala) * 100, 100)
                           const cor = val > metasSafe.temperaturaTransmissao ? '#E53E3E' : '#48BB78'
                           return (
-                            <div key={d.Frota} className={`flex items-center gap-1 ${i % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-0.5`}>
+                            <div key={d.Frota} className={`flex items-center gap-1 ${i % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-1.5`}>
                               <span className="font-bold text-xs w-10">{d.Frota}</span>
-                              <div className="flex-1 h-4 bg-white rounded-sm relative border border-slate-200">
+                              <div className="flex-1 h-7 bg-white rounded-sm relative border border-slate-200">
                                 <div className="h-full rounded-l-sm" style={{ width: `${w}%`, backgroundColor: cor }} />
                                 <div className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10" style={{ left: `${posMeta}%` }} />
                               </div>
@@ -1246,10 +1246,10 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                       const pO = reg > 0 ? (oc / reg) * 100 : 0
                       const pD = reg > 0 ? (ds / reg) * 100 : 0
                       return (
-                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-0.5`}>
+                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-1.5`}>
                           <span className="font-bold text-xs w-10">{frota}</span>
                           <span className="text-[10px] text-orange-500 font-bold w-14 text-center">{formatH(oc)}</span>
-                          <div className="flex-1 h-4 bg-slate-200 rounded-sm overflow-hidden flex">
+                          <div className="flex-1 h-7 bg-slate-200 rounded-sm overflow-hidden flex">
                             <div className="h-full" style={{ width: `${pP}%`, backgroundColor: '#48BB78' }} />
                             <div className="h-full" style={{ width: `${pO}%`, backgroundColor: '#ED8936' }} />
                             <div className="h-full" style={{ width: `${pD}%`, backgroundColor: '#E53E3E' }} />
@@ -1267,20 +1267,19 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         )
       })()}
 
-      {/* PÁGINA 2 Case IH - RPM + Velocidade + GPS */}
+      {/* PÁGINA 2 Case IH - RPM + Velocidade + GPS + Resumo */}
       {(() => {
         const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
         const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
         if (frotas.length === 0) return null
         const formatH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh}h${mm.toString().padStart(2, '0')}m` }
+        const formatHH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}` }
         const comRPM = frotas.filter(([, s]) => Number(s?.rpm || 0) > 0)
         const maxRPM = comRPM.length > 0 ? Math.max(...comRPM.map(([, s]) => Number(s?.rpm || 0)), 1) : 1
         const mediaRPM = comRPM.length > 0 ? comRPM.reduce((a, [, s]) => a + Number(s?.rpm || 0), 0) / comRPM.length : 0
         const comVel = frotas.filter(([, s]) => Number(s?.velocidadeMedia || 0) > 0)
         const maxVel = comVel.length > 0 ? Math.max(...comVel.map(([, s]) => Number(s?.velocidadeMedia || 0)), 1) : 1
         const comGPS = frotas.filter(([, s]) => Number(s?.Extras?.percGPSLigado || 0) > 0)
-        const hasContent = comRPM.length > 0 || comVel.length > 0 || comGPS.length > 0
-        if (!hasContent) return null
         return (
           <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
             <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
@@ -1290,17 +1289,17 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 {comRPM.length > 0 && (
                 <div className="flex-1 flex flex-col min-h-0">
                   <SectionTitle title="RPM Médio - Case IH" />
-                  <div className="border border-black rounded-lg p-2 flex-1 flex flex-col justify-center">
-                    <div className="bg-slate-50 border border-slate-200 rounded text-center p-1 mb-1">
+                  <div className="border border-black rounded-lg p-2 flex-1 flex flex-col justify-center gap-1">
+                    <div className="bg-slate-50 border border-slate-200 rounded text-center p-1">
                       <div className="text-[10px] font-bold text-slate-700">Média: <span className="text-blue-600">{mediaRPM.toFixed(0)} RPM</span></div>
                     </div>
                     {comRPM.map(([frota, stats], idx) => {
                       const rpm = Number(stats?.rpm || 0)
                       const w = Math.min((rpm / (maxRPM * 1.1)) * 100, 100)
                       return (
-                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-0.5`}>
+                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-1.5`}>
                           <span className="font-bold text-xs w-10">{frota}</span>
-                          <div className="flex-1 h-4 bg-white rounded-sm border border-slate-200">
+                          <div className="flex-1 h-7 bg-white rounded-sm border border-slate-200">
                             <div className="h-full rounded-l-sm" style={{ width: `${w}%`, backgroundColor: '#3182CE' }} />
                           </div>
                           <span className="font-bold text-xs w-16 text-right text-blue-600">{rpm.toFixed(0)}</span>
@@ -1314,15 +1313,15 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 {comVel.length > 0 && (
                 <div className="flex-1 flex flex-col min-h-0">
                   <SectionTitle title="Velocidade Média - Case IH" />
-                  <div className="border border-black rounded-lg p-2 flex-1 flex flex-col justify-center">
+                  <div className="border border-black rounded-lg p-2 flex-1 flex flex-col justify-center gap-1">
                     {comVel.map(([frota, stats], idx) => {
                       const vel = Number(stats?.velocidadeMedia || 0)
                       const w = Math.min((vel / (maxVel * 1.2)) * 100, 100)
                       const cor = metasSafe.mediaVelocidade > 0 ? (vel <= metasSafe.mediaVelocidade ? '#48BB78' : '#E53E3E') : '#3182CE'
                       return (
-                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-0.5`}>
+                        <div key={frota} className={`flex items-center gap-1 ${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-1.5`}>
                           <span className="font-bold text-xs w-10">{frota}</span>
-                          <div className="flex-1 h-4 bg-white rounded-sm border border-slate-200 relative">
+                          <div className="flex-1 h-7 bg-white rounded-sm border border-slate-200 relative">
                             <div className="h-full rounded-l-sm" style={{ width: `${w}%`, backgroundColor: cor }} />
                             {metasSafe.mediaVelocidade > 0 && (
                               <div className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10" style={{ left: `${Math.min((metasSafe.mediaVelocidade / (maxVel * 1.2)) * 100, 100)}%` }} />
@@ -1339,8 +1338,8 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 {comGPS.length > 0 && (
                 <div className="flex-1 flex flex-col min-h-0">
                   <SectionTitle title="GPS Detalhado - Case IH" />
-                  <div className="border border-black rounded-lg p-2 flex-1 flex flex-col justify-center">
-                    <div className="bg-slate-50 border border-slate-200 rounded text-center p-1 mb-1">
+                  <div className="border border-black rounded-lg p-2 flex-1 flex flex-col justify-center gap-1">
+                    <div className="bg-slate-50 border border-slate-200 rounded text-center p-1">
                       <div className="text-[10px] font-bold text-slate-700">Meta: <span className="text-[#48BB78]">{metaUsoGPS}%</span></div>
                     </div>
                     {comGPS.map(([frota, stats], idx) => {
@@ -1352,10 +1351,10 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                       const hm = Number(stats?.['Horas Motor'] || 0)
                       const corG = pL >= metaUsoGPS ? '#48BB78' : '#E53E3E'
                       return (
-                        <div key={frota} className={`${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-0.5`}>
+                        <div key={frota} className={`${idx % 2 === 0 ? 'bg-slate-100' : 'bg-white'} rounded-sm px-2 py-1`}>
                           <div className="flex items-center gap-1">
                             <span className="font-bold text-xs w-10">{frota}</span>
-                            <div className="flex-1 h-4 bg-white rounded-sm relative border border-slate-200">
+                            <div className="flex-1 h-7 bg-white rounded-sm relative border border-slate-200">
                               <div className="h-full rounded-l-sm" style={{ width: `${Math.min(pL, 100)}%`, backgroundColor: corG }} />
                               <div className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10" style={{ left: `${metaUsoGPS}%` }} />
                             </div>
@@ -1373,59 +1372,45 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                   </div>
                 </div>
                 )}
-              </div>
-            </div>
-          </div>
-        )
-      })()}
-
-      {/* PÁGINA - Resumo Case IH (tabela separada) */}
-      {(() => {
-        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
-        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
-        if (frotas.length === 0) return null
-        const formatHH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}` }
-        return (
-          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
-              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
-                <SectionTitle title="Resumo Detalhado - Case IH" />
-                <div className="w-full border border-black rounded-lg overflow-hidden text-xs">
-                  <table className="w-full text-center border-collapse">
-                    <thead className="bg-slate-100 font-bold">
-                      <tr>
-                        <th className="border border-slate-300 p-2">Frota</th>
-                        <th className="border border-slate-300 p-2">Horas Motor</th>
-                        <th className="border border-slate-300 p-2">RPM</th>
-                        <th className="border border-slate-300 p-2">T. Arref.</th>
-                        <th className="border border-slate-300 p-2">T. Trans.</th>
-                        <th className="border border-slate-300 p-2">T. Ar Adm.</th>
-                        <th className="border border-slate-300 p-2">Ocioso</th>
-                        <th className="border border-slate-300 p-2">Desligado</th>
-                        <th className="border border-slate-300 p-2">Produtivas</th>
-                        <th className="border border-slate-300 p-2">GPS</th>
-                        <th className="border border-slate-300 p-2">Vel. Média</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {frotas.map(([frota, stats]) => (
-                        <tr key={frota} className="hover:bg-slate-50 even:bg-slate-50">
-                          <td className="border border-slate-300 p-2 font-bold">{frota}</td>
-                          <td className="border border-slate-300 p-2 font-bold">{formatHH(Number(stats?.['Horas Motor'] || 0))}</td>
-                          <td className="border border-slate-300 p-2 font-bold">{Number(stats?.rpm || 0).toFixed(0)}</td>
-                          <td className="border border-slate-300 p-2">{Number(stats?.temperaturaArrefecimento || 0).toFixed(1)}°</td>
-                          <td className={`border border-slate-300 p-2 font-bold ${Number(stats?.temperaturaTransmissao || 0) > metasSafe.temperaturaTransmissao ? 'text-red-600' : 'text-green-600'}`}>{Number(stats?.temperaturaTransmissao || 0).toFixed(1)}°</td>
-                          <td className="border border-slate-300 p-2">{Number(stats?.temperaturaArAdmissao || 0).toFixed(1)}°</td>
-                          <td className="border border-slate-300 p-2 font-bold text-orange-500">{formatHH(Number(stats?.motorOcioso || 0))}</td>
-                          <td className="border border-slate-300 p-2 font-bold text-red-600">{formatHH(Number(stats?.motorDesligado || 0))}</td>
-                          <td className="border border-slate-300 p-2 font-bold text-green-600">{formatHH(Number(stats?.horasProdutivas || 0))}</td>
-                          <td className={`border border-slate-300 p-2 font-bold ${Number(stats?.Extras?.percGPSLigado || 0) >= metaUsoGPS ? 'text-green-600' : 'text-red-600'}`}>{Number(stats?.Extras?.percGPSLigado || 0).toFixed(1)}%</td>
-                          <td className="border border-slate-300 p-2 font-bold">{Number(stats?.velocidadeMedia || 0).toFixed(2)}</td>
+                {/* Resumo tabela */}
+                <div className="flex-1 flex flex-col min-h-0">
+                  <SectionTitle title="Resumo - Case IH" />
+                  <div className="border border-black rounded-lg flex-1 overflow-hidden">
+                    <table className="w-full text-center border-collapse text-[9px]">
+                      <thead className="bg-slate-100 font-bold">
+                        <tr>
+                          <th className="border border-slate-300 p-1">Frota</th>
+                          <th className="border border-slate-300 p-1">H. Motor</th>
+                          <th className="border border-slate-300 p-1">RPM</th>
+                          <th className="border border-slate-300 p-1">T. Arref</th>
+                          <th className="border border-slate-300 p-1">T. Trans</th>
+                          <th className="border border-slate-300 p-1">T. Ar Adm</th>
+                          <th className="border border-slate-300 p-1">Ocioso</th>
+                          <th className="border border-slate-300 p-1">Deslig.</th>
+                          <th className="border border-slate-300 p-1">Produt.</th>
+                          <th className="border border-slate-300 p-1">GPS</th>
+                          <th className="border border-slate-300 p-1">Vel.</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {frotas.map(([frota, stats]) => (
+                          <tr key={frota} className="even:bg-slate-50">
+                            <td className="border border-slate-300 p-1 font-bold">{frota}</td>
+                            <td className="border border-slate-300 p-1 font-bold">{formatHH(Number(stats?.['Horas Motor'] || 0))}</td>
+                            <td className="border border-slate-300 p-1 font-bold">{Number(stats?.rpm || 0).toFixed(0)}</td>
+                            <td className="border border-slate-300 p-1">{Number(stats?.temperaturaArrefecimento || 0).toFixed(1)}°</td>
+                            <td className={`border border-slate-300 p-1 font-bold ${Number(stats?.temperaturaTransmissao || 0) > metasSafe.temperaturaTransmissao ? 'text-red-600' : 'text-green-600'}`}>{Number(stats?.temperaturaTransmissao || 0).toFixed(1)}°</td>
+                            <td className="border border-slate-300 p-1">{Number(stats?.temperaturaArAdmissao || 0).toFixed(1)}°</td>
+                            <td className="border border-slate-300 p-1 font-bold text-orange-500">{formatHH(Number(stats?.motorOcioso || 0))}</td>
+                            <td className="border border-slate-300 p-1 font-bold text-red-600">{formatHH(Number(stats?.motorDesligado || 0))}</td>
+                            <td className="border border-slate-300 p-1 font-bold text-green-600">{formatHH(Number(stats?.horasProdutivas || 0))}</td>
+                            <td className={`border border-slate-300 p-1 font-bold ${Number(stats?.Extras?.percGPSLigado || 0) >= metaUsoGPS ? 'text-green-600' : 'text-red-600'}`}>{Number(stats?.Extras?.percGPSLigado || 0).toFixed(1)}%</td>
+                            <td className="border border-slate-300 p-1 font-bold">{Number(stats?.velocidadeMedia || 0).toFixed(2)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
