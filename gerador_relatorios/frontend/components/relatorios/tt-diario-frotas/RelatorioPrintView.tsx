@@ -1200,7 +1200,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         ))
       })()}
 
-      {/* PÁGINA - Temperaturas Case IH (3 gráficos individuais com labels na mesma página) */}
+      {/* PÁGINAS - Temperaturas Case IH (1 gráfico por tipo, tudo na mesma página) */}
       {(() => {
         const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
         const lista = Object.entries(dadosCaseObj).map(([frota, stats]) => ({
@@ -1209,54 +1209,70 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
           temperaturaArrefecimento: Number(stats?.temperaturaArrefecimento || 0),
           temperaturaArAdmissao: Number(stats?.temperaturaArAdmissao || 0),
         }))
-        const dadosTemperaturaCase = lista.filter(
-          it => (it.temperaturaTransmissao || 0) > 0 || (it.temperaturaArrefecimento || 0) > 0 || (it.temperaturaArAdmissao || 0) > 0
-        )
-        if (dadosTemperaturaCase.length === 0) return null
+        const temAlguma = lista.some(it => (it.temperaturaTransmissao || 0) > 0 || (it.temperaturaArrefecimento || 0) > 0 || (it.temperaturaArAdmissao || 0) > 0)
+        if (!temAlguma) return null
 
         const temps = [
-          { key: 'temperaturaArrefecimento', label: 'Temperatura Arrefecimento' },
-          { key: 'temperaturaTransmissao', label: 'Temperatura Transmissão' },
-          { key: 'temperaturaArAdmissao', label: 'Temperatura Ar Admissão' },
-        ].filter(t => dadosTemperaturaCase.some(d => (d[t.key as keyof typeof d] as number || 0) > 0))
+          { campo: 'temperaturaArrefecimento' as const, label: 'Temperatura Arrefecimento' },
+          { campo: 'temperaturaTransmissao' as const, label: 'Temperatura Transmissão' },
+          { campo: 'temperaturaArAdmissao' as const, label: 'Temperatura Ar Admissão' },
+        ].filter(t => lista.some(d => (Number((d as any)[t.campo]) || 0) > 0))
 
         return (
-          <div
-            data-pdf-page
-            className="bg-white shadow-lg print:shadow-none"
-            style={{ width: "210mm", height: "297mm" }}
-          >
-            <div
-              className="flex flex-col border border-black m-2 p-2 rounded-sm"
-              style={{ height: "calc(297mm - 16px)" }}
-            >
+          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
-              <div className="flex-1 flex flex-col gap-2">
+              <div className="flex-1 flex flex-col gap-1 overflow-hidden">
                 <SectionTitle title="Temperaturas - Case IH" />
-                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col gap-4 overflow-hidden">
-                  {temps.map(t => {
-                    const media = dadosTemperaturaCase.reduce((acc, d) => acc + (d[t.key as keyof typeof d] as number || 0), 0) / dadosTemperaturaCase.length
+                {temps.map(t => (
+                  <div key={t.campo} className="flex-1 border border-black rounded-lg p-2 flex flex-col min-h-0 overflow-hidden">
+                    <GraficoTemperaturaCase
+                      dados={lista}
+                      meta={metasSafe.temperaturaTransmissao}
+                      compact={true}
+                      campo={t.campo}
+                      labelCampo={t.label}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* PÁGINA - Motor e Horas Case IH */}
+      {(() => {
+        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
+        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
+        if (frotas.length === 0) return null
+        const formatH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh}h${mm.toString().padStart(2, '0')}m` }
+        return (
+          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+                <SectionTitle title="Horas Motor e RPM - Case IH" />
+                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col gap-3 overflow-hidden">
+                  {frotas.map(([frota, stats], idx) => {
+                    const horasMotor = Number(stats?.horasMotor || 0)
+                    const rpm = Number(stats?.rpm || 0)
+                    const ocioso = Number(stats?.motorOcioso || 0)
+                    const desligado = Number(stats?.motorDesligado || 0)
+                    const produtivas = Number(stats?.horasProdutivas || 0)
+                    const registrado = Number(stats?.tempoRegistrado || 0)
                     return (
-                      <div key={t.key} className="flex-1 flex flex-col min-h-0">
-                        <div className="text-xs font-bold text-slate-700 mb-1">{t.label}</div>
-                        <div className="flex items-end gap-3 flex-1">
-                          {dadosTemperaturaCase.map(d => {
-                            const val = d[t.key as keyof typeof d] as number || 0
-                            const maxVal = Math.max(...dadosTemperaturaCase.map(x => x[t.key as keyof typeof x] as number || 0), 1)
-                            const pct = (val / (maxVal * 1.2)) * 100
-                            const cor = val > metasSafe.temperaturaTransmissao ? '#E53E3E' : '#48BB78'
-                            return (
-                              <div key={d.Frota} className="flex flex-col items-center flex-1">
-                                <div className="text-[10px] font-bold mb-0.5" style={{ color: cor }}>{val > 0 ? val.toFixed(1) + '°C' : '-'}</div>
-                                <div className="w-full bg-slate-100 rounded-sm relative border border-slate-200" style={{ height: '60px' }}>
-                                  <div className="absolute bottom-0 left-0 right-0 rounded-sm" style={{ height: `${pct}%`, backgroundColor: cor }} />
-                                </div>
-                                <div className="text-[10px] font-bold mt-0.5 text-slate-600">{d.Frota}</div>
-                              </div>
-                            )
-                          })}
+                      <div key={frota} className={`${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-3 py-2`}>
+                        <div className="font-bold text-sm mb-1">Frota {frota}</div>
+                        <div className="grid grid-cols-3 gap-x-6 gap-y-1 text-xs">
+                          <div><span className="text-slate-500">Horas Motor:</span> <span className="font-bold">{formatH(horasMotor)}</span></div>
+                          <div><span className="text-slate-500">RPM Médio:</span> <span className="font-bold">{rpm.toFixed(0)}</span></div>
+                          <div><span className="text-slate-500">Tempo Registrado:</span> <span className="font-bold">{formatH(registrado)}</span></div>
+                          <div><span className="text-slate-500">Horas Produtivas:</span> <span className="font-bold text-green-600">{formatH(produtivas)}</span></div>
+                          <div><span className="text-slate-500">Motor Ocioso:</span> <span className="font-bold text-orange-500">{formatH(ocioso)}</span></div>
+                          <div><span className="text-slate-500">Motor Desligado:</span> <span className="font-bold text-red-500">{formatH(desligado)}</span></div>
+                          <div><span className="text-slate-500">Vel. Média:</span> <span className="font-bold">{Number(stats?.velocidadeMedia || 0).toFixed(2)} km/h</span></div>
                         </div>
-                        <div className="text-[9px] text-slate-500 text-center mt-0.5">Média: {media.toFixed(1)}°C</div>
                       </div>
                     )
                   })}
@@ -1267,48 +1283,97 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         )
       })()}
 
-      {/* PÁGINA - Resumo Detalhado Case IH */}
+      {/* PÁGINA - GPS Detalhado Case IH (com labels tempo ligado/desligado) */}
+      {(() => {
+        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
+        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
+        const comGPS = frotas.filter(([, stats]) => Number(stats?.Extras?.percGPSLigado || 0) > 0)
+        if (comGPS.length === 0) return null
+        const formatH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh}h${mm.toString().padStart(2, '0')}m` }
+        return (
+          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+                <SectionTitle title="Detalhamento GPS - Case IH" />
+                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col gap-3 overflow-hidden">
+                  {comGPS.map(([frota, stats], idx) => {
+                    const extras = stats?.Extras || {}
+                    const percLigado = Number(extras.percGPSLigado || 0)
+                    const percDesligado = Number(extras.percGPSDesligado || 0)
+                    const tempoLigado = Number(extras.tempoGPSLigado || 0)
+                    const tempoDesligado = Number(extras.tempoGPSDesligado || 0)
+                    const horasMotor = Number(stats?.horasMotor || 0)
+                    const corGPS = percLigado >= metaUsoGPS ? '#48BB78' : '#E53E3E'
+                    return (
+                      <div key={frota} className={`${idx % 2 === 0 ? "bg-slate-100" : "bg-white"} rounded-sm px-3 py-2`}>
+                        <div className="font-bold text-sm mb-1">Frota {frota}</div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="flex-1 h-5 bg-white rounded-sm relative border border-slate-200">
+                            <div className="h-full rounded-l-sm" style={{ width: `${Math.min(percLigado, 100)}%`, backgroundColor: corGPS }} />
+                            <div className="absolute top-0 bottom-0 w-[2px] bg-black/60 z-10" style={{ left: `${metaUsoGPS}%` }} />
+                          </div>
+                          <div className="font-bold text-sm w-16 text-right" style={{ color: corGPS }}>{percLigado.toFixed(1)}%</div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-x-4 text-xs">
+                          <div><span className="text-slate-500">Tempo GPS Ligado:</span> <span className="font-bold text-green-600">{formatH(tempoLigado)}</span></div>
+                          <div><span className="text-slate-500">Tempo GPS Desligado:</span> <span className="font-bold text-red-500">{formatH(tempoDesligado)}</span></div>
+                          <div><span className="text-slate-500">Tempo Motor Ligado:</span> <span className="font-bold">{formatH(horasMotor)}</span></div>
+                          <div><span className="text-slate-500">% GPS Desligado:</span> <span className="font-bold text-red-500">{percDesligado.toFixed(1)}%</span></div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* PÁGINA - Resumo Case IH (layout TabelaResumo) */}
       {(() => {
         const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
         const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
         if (frotas.length === 0) return null
+        const formatH = (h: number) => { const hh = Math.floor(h); const mm = Math.round((h - hh) * 60); return `${hh.toString().padStart(2, '0')}:${mm.toString().padStart(2, '0')}` }
         return (
           <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
             <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
               <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
               <div className="flex-1 flex flex-col gap-2 overflow-hidden">
                 <SectionTitle title="Resumo Detalhado - Case IH" />
-                <div className="border border-black rounded-lg p-3 flex-1 overflow-auto">
-                  <table className="w-full text-[10px] border-collapse">
-                    <thead>
-                      <tr className="bg-slate-100">
-                        <th className="border border-slate-300 p-1 text-left">Frota</th>
-                        <th className="border border-slate-300 p-1 text-right">Horas Motor</th>
-                        <th className="border border-slate-300 p-1 text-right">RPM</th>
-                        <th className="border border-slate-300 p-1 text-right">T. Arref.</th>
-                        <th className="border border-slate-300 p-1 text-right">T. Trans.</th>
-                        <th className="border border-slate-300 p-1 text-right">T. Ar Adm.</th>
-                        <th className="border border-slate-300 p-1 text-right">Ocioso (h)</th>
-                        <th className="border border-slate-300 p-1 text-right">Desligado (h)</th>
-                        <th className="border border-slate-300 p-1 text-right">Produtivas (h)</th>
-                        <th className="border border-slate-300 p-1 text-right">GPS (%)</th>
-                        <th className="border border-slate-300 p-1 text-right">Vel. Média</th>
+                <div className="w-full border border-black rounded-lg overflow-hidden text-xs">
+                  <table className="w-full text-center border-collapse">
+                    <thead className="bg-slate-100 font-bold">
+                      <tr>
+                        <th className="border border-slate-300 p-2">Frota</th>
+                        <th className="border border-slate-300 p-2">Horas Motor</th>
+                        <th className="border border-slate-300 p-2">RPM</th>
+                        <th className="border border-slate-300 p-2">T. Arref.</th>
+                        <th className="border border-slate-300 p-2">T. Trans.</th>
+                        <th className="border border-slate-300 p-2">T. Ar Adm.</th>
+                        <th className="border border-slate-300 p-2">Ocioso</th>
+                        <th className="border border-slate-300 p-2">Desligado</th>
+                        <th className="border border-slate-300 p-2">Produtivas</th>
+                        <th className="border border-slate-300 p-2">GPS</th>
+                        <th className="border border-slate-300 p-2">Vel. Média</th>
                       </tr>
                     </thead>
                     <tbody>
                       {frotas.map(([frota, stats], idx) => (
-                        <tr key={frota} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                          <td className="border border-slate-300 p-1 font-bold">{frota}</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.horasMotor || 0).toFixed(1)}</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.rpm || 0).toFixed(0)}</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.temperaturaArrefecimento || 0).toFixed(1)}°</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.temperaturaTransmissao || 0).toFixed(1)}°</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.temperaturaArAdmissao || 0).toFixed(1)}°</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.motorOcioso || 0).toFixed(1)}</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.motorDesligado || 0).toFixed(1)}</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.horasProdutivas || 0).toFixed(1)}</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.Extras?.percGPSLigado || 0).toFixed(1)}%</td>
-                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.velocidadeMedia || 0).toFixed(2)} km/h</td>
+                        <tr key={frota} className="hover:bg-slate-50 even:bg-slate-50">
+                          <td className="border border-slate-300 p-2 font-bold">{frota}</td>
+                          <td className="border border-slate-300 p-2 font-bold">{formatH(Number(stats?.horasMotor || 0))}</td>
+                          <td className="border border-slate-300 p-2 font-bold">{Number(stats?.rpm || 0).toFixed(0)}</td>
+                          <td className="border border-slate-300 p-2 font-bold">{Number(stats?.temperaturaArrefecimento || 0).toFixed(1)}°</td>
+                          <td className={`border border-slate-300 p-2 font-bold ${Number(stats?.temperaturaTransmissao || 0) > metasSafe.temperaturaTransmissao ? 'text-red-600' : 'text-green-600'}`}>{Number(stats?.temperaturaTransmissao || 0).toFixed(1)}°</td>
+                          <td className="border border-slate-300 p-2 font-bold">{Number(stats?.temperaturaArAdmissao || 0).toFixed(1)}°</td>
+                          <td className="border border-slate-300 p-2 font-bold text-orange-500">{formatH(Number(stats?.motorOcioso || 0))}</td>
+                          <td className="border border-slate-300 p-2 font-bold text-red-600">{formatH(Number(stats?.motorDesligado || 0))}</td>
+                          <td className="border border-slate-300 p-2 font-bold text-green-600">{formatH(Number(stats?.horasProdutivas || 0))}</td>
+                          <td className={`border border-slate-300 p-2 font-bold ${Number(stats?.Extras?.percGPSLigado || 0) >= metaUsoGPS ? 'text-green-600' : 'text-red-600'}`}>{Number(stats?.Extras?.percGPSLigado || 0).toFixed(1)}%</td>
+                          <td className="border border-slate-300 p-2 font-bold">{Number(stats?.velocidadeMedia || 0).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
