@@ -95,35 +95,61 @@ def safe_float(val, default=0.0) -> float:
 
 def load_solinftec(date_str: str, base_dir: str = SOLINFTEC_JSON_DIR) -> dict | None:
     """Carrega JSON Solinftec bruto para a data (DD-MM-YYYY).
-       Procura primeiro por arquivos _raw.json (novo padrão), depois por .json padrão.
+       Procura por subpastas ativamente no base_dir para evitar perder arquivos.
     """
-    pattern = os.path.join(base_dir, f"*{date_str}*.json")
-    files = glob.glob(pattern)
+    # Exemplo: busca em cd-diario-op, cd-diario-frotas ou qualquer lugar abaixo de json/
+    # O base_dir idealmente deve ser o mais alto possível para a fonte, 
+    # ou podemos subir um pouco a árvore para encontrar.
+    search_dir = os.path.dirname(os.path.dirname(os.path.dirname(base_dir))) # sobe de "colhedora/frotas/diario" para "json"
+    
+    # Filtro adicional para não cruzar dados de trator e colhedora se não for o desejado
+    # mas o nome do arquivo geralmente tem "COLHEDORA" ou "TRATORES"
+    pattern = os.path.join(search_dir, "**", f"*{date_str}*.json")
+    files = glob.glob(pattern, recursive=True)
 
     if not files:
         return None
     
-    # Ordena do mais recente para o mais antigo e tenta carregar o primeiro válido
-    for latest in sorted(files, key=os.path.getmtime, reverse=True):
+    # Queremos priorizar apenas os da "família" correta (Trator ou Colhedora)
+    # se base_dir apontar para trator, buscaremos 'trator', senão 'colhedora' no path ou no nome
+    is_trator = "trator" in base_dir.lower()
+    
+    valid_files = []
+    for f in files:
+        f_lower = str(f).lower()
+        
+        # NUNCA usar arquivos de operadores como fonte para frotas
+        if "operador" in f_lower:
+            continue
+        # Ignorar arquivos grunner (não são colhedoras nem tratores)
+        if "grunner" in f_lower:
+            continue
+            
+        if is_trator and ("trator" in f_lower or "tt" in f_lower):
+            valid_files.append(f)
+        elif not is_trator and ("colhedora" in f_lower or "cd" in f_lower):
+            valid_files.append(f)
+            
+    if not valid_files:
+        # Fallback: usar apenas arquivos que estejam na pasta frotas
+        valid_files = [f for f in files if "operador" not in str(f).lower() and "frotas" in str(f).lower()]
+    
+    for latest in sorted(valid_files, key=os.path.getmtime, reverse=True):
         try:
             with open(latest, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 
-                # Se for um arquivo já consolidado (tem metadata ou coleções consolidadas), ignora e tenta o próximo
+                # Se for um arquivo já consolidado (tem metadata ou coleções consolidadas), ignora
                 if "metadata" in data or "eficiencia_energetica" in data:
-                    print(f"  ⚠️ Ignorando arquivo já consolidado encontrado como fonte: {os.path.basename(latest)}")
                     continue
                 
                 print(f"     ℹ️ Usando fonte Solinftec: {os.path.basename(latest)}")
                 return data
                 
         except Exception as e:
-            print(f"  ⚠️ Erro ao ler JSON Solinftec ({os.path.basename(latest)}): {e}")
             continue
             
-    # Se testou todos e nenhum serviu
-    # Pode ocorrer se a pasta só tiver json consolidados e nenhum "cru"
-    print(f"  ❌ Nenhum arquivo Solinftec válido ou não-consolidado encontrado para {date_str}.")
+    print(f"  ❌ Nenhum arquivo Solinftec válido ou não-consolidado encontrado para {date_str} em {search_dir}.")
     return None
 
 
@@ -1183,7 +1209,24 @@ def main():
     case_data = load_case_data()
     print(f"     Datas Case disponíveis: {[k for k in case_data.keys() if not k.startswith('_')]}")
 
-    # 3. Processar cada data
+    # 3. FASE 1: Carregar TODOS os dados brutos Solinftec ANTES de escrever qualquer saída
+    #    Isso evita o problema de sobrescrever o arquivo fonte com o consolidado
+    print(f"\n  📥 FASE 1: Carregando dados brutos Solinftec...")
+    raw_data_cache = {}  # { date_str: { 'colhedora': dict|None, 'tratores': dict|None } }
+    
+    for date_str in dates:
+        solinftec_colhedora = load_solinftec(date_str, base_dir=SOLINFTEC_JSON_DIR)
+        solinftec_tratores = load_solinftec(date_str, base_dir=TRATORES_JSON_DIR)
+        raw_data_cache[date_str] = {
+            'colhedora': solinftec_colhedora,
+            'tratores': solinftec_tratores,
+        }
+        n_col = len(solinftec_colhedora) if solinftec_colhedora else 0
+        n_trt = len(solinftec_tratores) if solinftec_tratores else 0
+        print(f"     {date_str}: Colhedoras={n_col} frotas, Tratores={n_trt} frotas")
+
+    # 4. FASE 2: Processar e salvar consolidados
+    print(f"\n  📤 FASE 2: Consolidando e salvando...")
     for date_str in dates:
         print(f"\n  {'─' * 50}")
         print(f"  📅 Processando {date_str}...")
@@ -1196,21 +1239,12 @@ def main():
         except Exception:
             pass
 
-        # Solinftec (Colhedoras)
-        solinftec_colhedora = load_solinftec(date_str, base_dir=SOLINFTEC_JSON_DIR)
-        
-        # Solinftec (Tratores)
-        solinftec_tratores = load_solinftec(date_str, base_dir=TRATORES_JSON_DIR)
-        
-        # Merge de dicts para o Solinftec_raw global desse dia
-        solinftec_raw = {}
-        if solinftec_colhedora:
-            solinftec_raw.update(solinftec_colhedora)
-        if solinftec_tratores:
-            solinftec_raw.update(solinftec_tratores)
+        # Usar dados já carregados do cache (não do disco!)
+        cached = raw_data_cache.get(date_str, {})
+        solinftec_raw = cached.get('colhedora') or {}
             
         n_frotas_sol = len(solinftec_raw)
-        print(f"     Solinftec: {n_frotas_sol} frotas (Colhedoras: {len(solinftec_colhedora) if solinftec_colhedora else 0}, Tratores: {len(solinftec_tratores) if solinftec_tratores else 0})")
+        print(f"     Solinftec (Colhedoras): {n_frotas_sol} frotas")
 
         # Case
         case_date_key = date_str.replace("-", "/")
@@ -1225,7 +1259,7 @@ def main():
         else:
             print(f"     OPC: sem dados")
 
-        # Consolidar
+        # Consolidar Colhedoras
         resultado = consolidar_dia(date_str, solinftec_raw, case_data, opc_data, False)
 
         # Salvar
@@ -1241,8 +1275,8 @@ def main():
         print(f"        {n_total} frotas, {n_intervalos} intervalos, {n_ofensores} ofensores")
         print(f"        Fontes: {resultado['metadata']['fontes']}")
 
-        # Tratores
-        solinftec_tratores = load_solinftec(date_str, TRATORES_JSON_DIR)
+        # Tratores (usando dados do cache)
+        solinftec_tratores = cached.get('tratores')
         resultado_tratores = consolidar_tratores_case(date_str, case_data, solinftec_tratores)
         
         os.makedirs(TRATORES_JSON_DIR, exist_ok=True)
