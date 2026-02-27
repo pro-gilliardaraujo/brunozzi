@@ -403,10 +403,13 @@ def main():
                                             k.startswith("Manobras_") or
                                             k.startswith("Basculamento_") or
                                             k.startswith("Velocidade_") or
+                                            k.startswith("Vel_") or
                                             k.startswith("Media_") or
                                             k.startswith("Toneladas_") or
                                             k.startswith("Consumo_") or
                                             k.startswith("Uso_") or
+                                            k.startswith("Tempo_") or
+                                            k.startswith("Quantidade_") or
                                             k_lower == "motor ligado" or
                                             k_lower == "motor ocioso" or
                                             "velocidade" in k_lower or
@@ -414,6 +417,8 @@ def main():
                                             "eficiência" in k_lower or
                                             "manobras" in k_lower or
                                             "basculamento" in k_lower or
+                                            "transbordo" in k_lower or
+                                            "apontamento" in k_lower or
                                             "gps" in k_lower):
                                             novo_item[k] = v
                                     
@@ -510,8 +515,8 @@ def main():
                                             dados_frota_agrupados["Geral"][categoria] = []
                                         dados_frota_agrupados["Geral"][categoria].append(item)
 
-                            # Salva o JSON da frota com sufixo _raw para evitar conflito com consolidação
-                            nome_arquivo_frota = f"{tipo_frota}_frota_{data_str}_raw.json"
+                            # Salva o JSON da frota com o nome final
+                            nome_arquivo_frota = f"{tipo_frota}_frota_{data_str}.json"
                             caminho_frota = os.path.join(dir_frota, nome_arquivo_frota)
                             try:
                                 with open(caminho_frota, 'w', encoding='utf-8') as f:

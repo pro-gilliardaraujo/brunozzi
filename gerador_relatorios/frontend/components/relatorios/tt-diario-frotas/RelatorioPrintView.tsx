@@ -24,6 +24,7 @@ import { GraficoEficienciaTrator } from "./GraficoEficienciaTrator"
 import { GraficoEficienciaOperacionalTrator } from "./GraficoEficienciaOperacionalTrator"
 import { MapaIframe } from "../cd-diario-frotas/componentes/MapaIframe"
 import { GraficoTemperaturaCase } from "../../trator/GraficoTemperaturaCase"
+import { GraficoTransbordo } from "../../trator/GraficoTransbordo"
 
 const LOGO_URL = "/logo.png"
 
@@ -150,7 +151,10 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     media_velocidade, 
     manobras_frotas,
     horas_elevador,
-    intervalos_operacao
+    intervalos_operacao,
+    velocidades_detalhadas,
+    transbordo,
+    falta_apontamento
   } = data
   const metasSafe = {
     eficienciaEnergetica: metas?.eficienciaEnergetica ?? 0,
@@ -610,6 +614,36 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     [mediaVelocidadeFiltrada]
   )
 
+  // Velocidades Detalhadas: Vazio e Carregado (separados)
+  const velDetalhadas = React.useMemo(() => {
+    const lista = Array.isArray(velocidades_detalhadas) ? velocidades_detalhadas : []
+    return lista.filter((d: any) => d?.nome)
+  }, [velocidades_detalhadas])
+
+  const velVazioGrafico = React.useMemo(
+    () => velDetalhadas.filter((d: any) => (d.vazio || 0) > 0).map((d: any) => ({
+      id: d.id, nome: String(d.nome), velocidade: d.vazio
+    })),
+    [velDetalhadas]
+  )
+
+  const velCarregadoGrafico = React.useMemo(
+    () => velDetalhadas.filter((d: any) => (d.carregado || 0) > 0).map((d: any) => ({
+      id: d.id, nome: String(d.nome), velocidade: d.carregado
+    })),
+    [velDetalhadas]
+  )
+
+  // Transbordo / Basculamento
+  const transbordoGrafico = React.useMemo(() => {
+    const lista = Array.isArray(transbordo) ? transbordo : []
+    return lista.filter((d: any) => (d.quantidade || 0) > 0 || (d.tempoTotal || 0) > 0).map((d: any) => ({
+      nome: String(d.nome || d.id),
+      quantidade: d.quantidade || 0,
+      tempoTotal: d.tempoTotal || 0,
+    }))
+  }, [transbordo])
+
   const manobrasFiltradas = React.useMemo(() => {
     const base = Array.isArray(manobras_frotas) ? manobras_frotas : []
     return buildNamedSeries(
@@ -839,21 +873,39 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
       {/* Removido: Página de Horas Elevador (não aplicável para tratores) */}
 
 
-      {/* PÁGINA 5 - Velocidade e Manobras */}
-      {/* PÁGINA 5 - Média de Velocidade (apenas frotas com valor > 0) */}
+      {/* PÁGINA 5A - Velocidade Deslocamento Vazio */}
+      {velVazioGrafico.length > 0 && (
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
         <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
           <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
           <div className="flex-1 flex flex-col gap-2">
             <div className="flex flex-col h-full">
-              <SectionTitle title={`Média de Velocidade${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
+              <SectionTitle title="Velocidade Deslocamento Vazio - Solinftec" />
               <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
-                 <GraficoMediaVelocidade dados={mediaVelocidadeGrafico} meta={metasSafe.mediaVelocidade} />
+                 <GraficoMediaVelocidade dados={velVazioGrafico} meta={metasSafe.mediaVelocidade} />
               </div>
             </div>
           </div>
         </div>
       </div>
+      )}
+
+      {/* PÁGINA 5B - Velocidade Deslocamento Carregado */}
+      {velCarregadoGrafico.length > 0 && (
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col h-full">
+              <SectionTitle title="Velocidade Deslocamento Carregado - Solinftec" />
+              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden">
+                 <GraficoMediaVelocidade dados={velCarregadoGrafico} meta={metasSafe.mediaVelocidade} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
 
       {/* PÁGINA 6 - Manobras (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
@@ -874,6 +926,22 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         </div>
       </div>
 
+      {/* PÁGINA - Basculamento / Transbordo */}
+      {transbordoGrafico.length > 0 && (
+      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex flex-col h-full">
+              <SectionTitle title="Transbordo / Basculamento - Solinftec" />
+              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col justify-start">
+                 <GraficoTransbordo dados={transbordoGrafico} meta={metasSafe.manobras} compact={false} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
 
       {/* PÁGINA 7 - Motor Ocioso (apenas frotas com valor > 0) */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
@@ -1012,13 +1080,7 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
                 dados={dadosResumo.filter(d => (d.eficienciaOperacional || 0) > 0).map(d => ({ valor: d.eficienciaOperacional }))}
                 tipo="asc"
               />
-              <CardIndicador 
-                titulo="Horas Elevador"
-                meta={metasSafe.horaElevador}
-                unidade=" h"
-                dados={dadosResumo.map(d => ({ valor: d.horasElevador }))}
-                tipo="asc"
-              />
+              {/* Removido: Horas Elevador não se aplica a tratores */}
               
               {dadosUsoGPSCase.some(d => d.porcentagem > 0) && (
                 <CardIndicador 
@@ -1138,65 +1200,124 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
         ))
       })()}
 
+      {/* PÁGINA - Temperaturas Case IH (3 gráficos individuais com labels na mesma página) */}
       {(() => {
         const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
         const lista = Object.entries(dadosCaseObj).map(([frota, stats]) => ({
           Frota: frota,
           temperaturaTransmissao: Number(stats?.temperaturaTransmissao || 0),
           temperaturaArrefecimento: Number(stats?.temperaturaArrefecimento || 0),
+          temperaturaArAdmissao: Number(stats?.temperaturaArAdmissao || 0),
         }))
         const dadosTemperaturaCase = lista.filter(
-          it => (it.temperaturaTransmissao || 0) > 0 || (it.temperaturaArrefecimento || 0) > 0
+          it => (it.temperaturaTransmissao || 0) > 0 || (it.temperaturaArrefecimento || 0) > 0 || (it.temperaturaArAdmissao || 0) > 0
         )
         if (dadosTemperaturaCase.length === 0) return null
-        const mediaTemperaturaTransmissao =
-          dadosTemperaturaCase.reduce((acc, curr) => acc + (curr.temperaturaTransmissao || 0), 0) /
-          dadosTemperaturaCase.length
-        const maxFrotasPorPagina = 3
-        const totalPages = Math.ceil(dadosTemperaturaCase.length / maxFrotasPorPagina)
-        return Array.from({ length: totalPages }).map((_, pageIndex) => {
-          const startIndex = pageIndex * maxFrotasPorPagina
-          const pageItems = dadosTemperaturaCase.slice(startIndex, startIndex + maxFrotasPorPagina)
-          return (
+
+        const temps = [
+          { key: 'temperaturaArrefecimento', label: 'Temperatura Arrefecimento' },
+          { key: 'temperaturaTransmissao', label: 'Temperatura Transmissão' },
+          { key: 'temperaturaArAdmissao', label: 'Temperatura Ar Admissão' },
+        ].filter(t => dadosTemperaturaCase.some(d => (d[t.key as keyof typeof d] as number || 0) > 0))
+
+        return (
+          <div
+            data-pdf-page
+            className="bg-white shadow-lg print:shadow-none"
+            style={{ width: "210mm", height: "297mm" }}
+          >
             <div
-              key={`case-temp-${pageIndex}`}
-              data-pdf-page
-              className="bg-white shadow-lg print:shadow-none"
-              style={{ width: "210mm", height: "297mm" }}
+              className="flex flex-col border border-black m-2 p-2 rounded-sm"
+              style={{ height: "calc(297mm - 16px)" }}
             >
-              <div
-                className="flex flex-col border border-black m-2 p-2 rounded-sm"
-                style={{ height: "calc(297mm - 16px)" }}
-              >
-                <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
-                <div className="flex-1 flex flex-col gap-2">
-                  <div className="flex flex-col h-full">
-                    <SectionTitle
-                      title={`Temperaturas - Case IH${
-                        totalPages > 1 ? ` - página ${pageIndex + 1}` : ""
-                      }`}
-                    />
-                    <div className="border border-black rounded-lg p-3 flex-1 flex flex-col">
-                      <CabecalhoMeta
-                        meta={metasSafe.temperaturaTransmissao}
-                        media={mediaTemperaturaTransmissao}
-                        tipo="temperatura"
-                        compact={false}
-                      />
-                      <div className="flex-1 overflow-hidden mt-1">
-                        <GraficoTemperaturaCase
-                          dados={pageItems}
-                          meta={metasSafe.temperaturaTransmissao}
-                          compact={false}
-                        />
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col gap-2">
+                <SectionTitle title="Temperaturas - Case IH" />
+                <div className="border border-black rounded-lg p-3 flex-1 flex flex-col gap-4 overflow-hidden">
+                  {temps.map(t => {
+                    const media = dadosTemperaturaCase.reduce((acc, d) => acc + (d[t.key as keyof typeof d] as number || 0), 0) / dadosTemperaturaCase.length
+                    return (
+                      <div key={t.key} className="flex-1 flex flex-col min-h-0">
+                        <div className="text-xs font-bold text-slate-700 mb-1">{t.label}</div>
+                        <div className="flex items-end gap-3 flex-1">
+                          {dadosTemperaturaCase.map(d => {
+                            const val = d[t.key as keyof typeof d] as number || 0
+                            const maxVal = Math.max(...dadosTemperaturaCase.map(x => x[t.key as keyof typeof x] as number || 0), 1)
+                            const pct = (val / (maxVal * 1.2)) * 100
+                            const cor = val > metasSafe.temperaturaTransmissao ? '#E53E3E' : '#48BB78'
+                            return (
+                              <div key={d.Frota} className="flex flex-col items-center flex-1">
+                                <div className="text-[10px] font-bold mb-0.5" style={{ color: cor }}>{val > 0 ? val.toFixed(1) + '°C' : '-'}</div>
+                                <div className="w-full bg-slate-100 rounded-sm relative border border-slate-200" style={{ height: '60px' }}>
+                                  <div className="absolute bottom-0 left-0 right-0 rounded-sm" style={{ height: `${pct}%`, backgroundColor: cor }} />
+                                </div>
+                                <div className="text-[10px] font-bold mt-0.5 text-slate-600">{d.Frota}</div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                        <div className="text-[9px] text-slate-500 text-center mt-0.5">Média: {media.toFixed(1)}°C</div>
                       </div>
-                    </div>
-                  </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
-          )
-        })
+          </div>
+        )
+      })()}
+
+      {/* PÁGINA - Resumo Detalhado Case IH */}
+      {(() => {
+        const dadosCaseObj = (data?.dados_case || {}) as Record<string, any>
+        const frotas = Object.entries(dadosCaseObj).filter(([k]) => !k.startsWith('_'))
+        if (frotas.length === 0) return null
+        return (
+          <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
+            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
+              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} fonte="case" />
+              <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+                <SectionTitle title="Resumo Detalhado - Case IH" />
+                <div className="border border-black rounded-lg p-3 flex-1 overflow-auto">
+                  <table className="w-full text-[10px] border-collapse">
+                    <thead>
+                      <tr className="bg-slate-100">
+                        <th className="border border-slate-300 p-1 text-left">Frota</th>
+                        <th className="border border-slate-300 p-1 text-right">Horas Motor</th>
+                        <th className="border border-slate-300 p-1 text-right">RPM</th>
+                        <th className="border border-slate-300 p-1 text-right">T. Arref.</th>
+                        <th className="border border-slate-300 p-1 text-right">T. Trans.</th>
+                        <th className="border border-slate-300 p-1 text-right">T. Ar Adm.</th>
+                        <th className="border border-slate-300 p-1 text-right">Ocioso (h)</th>
+                        <th className="border border-slate-300 p-1 text-right">Desligado (h)</th>
+                        <th className="border border-slate-300 p-1 text-right">Produtivas (h)</th>
+                        <th className="border border-slate-300 p-1 text-right">GPS (%)</th>
+                        <th className="border border-slate-300 p-1 text-right">Vel. Média</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {frotas.map(([frota, stats], idx) => (
+                        <tr key={frota} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
+                          <td className="border border-slate-300 p-1 font-bold">{frota}</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.horasMotor || 0).toFixed(1)}</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.rpm || 0).toFixed(0)}</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.temperaturaArrefecimento || 0).toFixed(1)}°</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.temperaturaTransmissao || 0).toFixed(1)}°</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.temperaturaArAdmissao || 0).toFixed(1)}°</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.motorOcioso || 0).toFixed(1)}</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.motorDesligado || 0).toFixed(1)}</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.horasProdutivas || 0).toFixed(1)}</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.Extras?.percGPSLigado || 0).toFixed(1)}%</td>
+                          <td className="border border-slate-300 p-1 text-right">{Number(stats?.velocidadeMedia || 0).toFixed(2)} km/h</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
       })()}
               </div>
             </div>

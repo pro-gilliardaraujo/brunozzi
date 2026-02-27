@@ -56,7 +56,9 @@ export function GraficoIntervalos({
     // Converte string de hora 'HH:MM:SS' para minutos totais do dia
     function toMin(h: string) {
       if (!h) return 0
-      const parts = h.split(':').map(Number)
+      // Se vier "DD/MM/YYYY HH:MM:SS", pega só a parte da hora
+      const timePart = h.includes(' ') ? h.split(' ').pop()! : h
+      const parts = timePart.split(':').map(Number)
       const H = parts[0] || 0
       const M = parts[1] || 0
       const S = parts[2] || 0
