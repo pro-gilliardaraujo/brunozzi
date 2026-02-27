@@ -191,7 +191,9 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     })).sort((a, b) => a.equipamento.localeCompare(b.equipamento))
   }, [intervalos_operacao])
 
-  const endDate = metadata?.date ? new Date(metadata.date) : new Date()
+  // Date string without time is parsed as UTC midnight. When converted to Brazil (-3), it shifts to the previous day!
+  // Appending T12:00:00Z parses it as noon UTC, ensuring local timezone shift keeps it on the same day.
+  const endDate = metadata?.date ? new Date(`${metadata.date}T12:00:00Z`) : new Date()
   
   // Detectar fonte primária dos dados
   const fontePrimaria = React.useMemo(() => {
