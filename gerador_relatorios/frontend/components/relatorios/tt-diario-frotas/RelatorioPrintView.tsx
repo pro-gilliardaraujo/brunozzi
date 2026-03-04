@@ -381,10 +381,36 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
       const idx = Math.min(pages.length - 1, Math.max(0, targetPage - 1))
       const el = pages[idx]
       if (!el) return
-      el.scrollIntoView({ behavior: "smooth", block: "start" })
+
+      // Ativa flag de scroll manual e desabilita snap
+      isManualScrolling.current = true
+      if (scrollWrapRef.current) {
+        scrollWrapRef.current.style.scrollSnapType = 'none'
+        scrollWrapRef.current.style.overflow = 'hidden' // Força parada de inércia
+      }
+      setCurrentPage(targetPage)
+
+      // Garante que o estilo foi aplicado antes de scrollar
+      requestAnimationFrame(() => {
+          if (scrollWrapRef.current) {
+             scrollWrapRef.current.style.overflow = '' // Restaura overflow
+          }
+          el.scrollIntoView({ behavior: "smooth", block: "start" })
+      })
+      
+      // Reseta flag e reabilita snap após tempo estimado da animação
+      setTimeout(() => {
+        isManualScrolling.current = false
+        if (scrollWrapRef.current) {
+          scrollWrapRef.current.style.scrollSnapType = ''
+        }
+      }, 1500)
     },
     [computePageMetrics]
   )
+
+  // Desabilita IntersectionObserver quando o usuário clica manualmente para navegar
+  const isManualScrolling = React.useRef(false)
 
   React.useEffect(() => {
     computePageMetrics()
@@ -398,6 +424,8 @@ export function RelatorioPrintViewTrator({ data, period = "diario" }: { data: an
     let rafId = 0
     const observer = new IntersectionObserver(
       (entries) => {
+        if (isManualScrolling.current) return
+
         for (const entry of entries) {
           ratioByEl.set(entry.target, entry.intersectionRatio)
         }

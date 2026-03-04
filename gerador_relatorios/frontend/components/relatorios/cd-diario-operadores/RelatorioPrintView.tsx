@@ -3,19 +3,20 @@ import React from "react"
 import dynamic from 'next/dynamic'
 import { Card, CardContent } from "@/components/ui/card"
 import { ColhedoraFrotaData } from "@/lib/types"
-import { CabecalhoMeta } from "./componentes/CabecalhoMeta"
-import { GraficoEficiencia } from "./componentes/GraficoEficiencia"
-import { GraficoHorasElevador } from "./componentes/GraficoHorasElevador"
-import { GraficoUsoGPS } from "./componentes/GraficoUsoGPS"
-import { GraficoMediaVelocidade } from "./componentes/GraficoMediaVelocidade"
-import { GraficoManobras } from "./componentes/GraficoManobras"
-import { GraficoMotorOcioso } from "./componentes/GraficoMotorOcioso"
-import { GraficoTop5Ofensores } from "./componentes/GraficoTop5Ofensores"
-import { GraficoEficienciaOperacional } from "./componentes/GraficoEficienciaOperacional"
-import { GraficoDisponibilidadeMecanica } from "./componentes/GraficoDisponibilidadeMecanica"
-import { GraficoIntervalos, Intervalo } from "./componentes/GraficoIntervalos"
-import { CardIndicador } from "./componentes/CardIndicador"
-import { TabelaResumo } from "./componentes/TabelaResumo"
+// Ajuste de imports para usar os componentes existentes em cd-diario-frotas
+import { CabecalhoMeta } from "../cd-diario-frotas/componentes/CabecalhoMeta"
+import { GraficoEficiencia } from "../cd-diario-frotas/componentes/GraficoEficiencia"
+import { GraficoHorasElevador } from "../cd-diario-frotas/componentes/GraficoHorasElevador"
+import { GraficoUsoGPS } from "../cd-diario-frotas/componentes/GraficoUsoGPS"
+import { GraficoMediaVelocidade } from "../cd-diario-frotas/componentes/GraficoMediaVelocidade"
+import { GraficoManobras } from "../cd-diario-frotas/componentes/GraficoManobras"
+import { GraficoMotorOcioso } from "../cd-diario-frotas/componentes/GraficoMotorOcioso"
+import { GraficoTop5Ofensores } from "../cd-diario-frotas/componentes/GraficoTop5Ofensores"
+import { GraficoEficienciaOperacional } from "../cd-diario-frotas/componentes/GraficoEficienciaOperacional"
+import { GraficoDisponibilidadeMecanica } from "../cd-diario-frotas/componentes/GraficoDisponibilidadeMecanica"
+import { GraficoIntervalos, Intervalo } from "../cd-diario-frotas/componentes/GraficoIntervalos"
+import { CardIndicador } from "../cd-diario-frotas/componentes/CardIndicador"
+import { TabelaResumoOperadores } from "./TabelaResumoOperadores"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,7 +25,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { generateRelatorioPdfFromUrl } from "@/config/pdf-server"
 import { downloadPdfBuffer } from "@/lib/pdf-utils"
 
-import { MapaIframe } from './componentes/MapaIframe'
+import { MapaIframe } from '../cd-diario-frotas/componentes/MapaIframe'
 
 const LOGO_URL = "/logo.png"
 
@@ -62,7 +63,196 @@ function SectionTitle({ title }: { title: string }) {
   )
 }
 
-export function RelatorioPrintView({ data, period = "diario" }: { data: ColhedoraFrotaData; period?: "diario" | "semanal" }) {
+// Adaptador para transformar dados de Operadores (Objeto) em formato de Frotas (Arrays)
+const adaptarDadosOperadores = (data: any): ColhedoraFrotaData => {
+  // Se já tiver a estrutura de arrays (metadata, eficiencia_energetica array), retorna como está
+  if (data.eficiencia_energetica && Array.isArray(data.eficiencia_energetica)) {
+    return data as ColhedoraFrotaData;
+  }
+
+  // Caso contrário, assume que é o objeto de Operadores
+  // Estrutura esperada: { "Nome Operador": { Metricas... }, ... }
+  
+  const entries = Object.entries(data).filter(([k]) => k !== 'metadata' && k !== 'metas');
+  
+  // Extrair metadados se existirem soltos ou criar default
+  const metadata = data.metadata || {
+    date: new Date().toISOString(),
+    type: 'cd_diario_operadores',
+    frente: 'Desconhecida',
+    generated_at: new Date().toISOString(),
+    fontes: ['solinftec']
+  };
+
+  const metas = data.metas || {
+    eficienciaEnergetica: 90,
+    eficienciaOperacional: 60,
+    horaElevador: 10,
+    usoGPS: 95,
+    mediaVelocidade: 5,
+    manobras: 180, // segundos (3 min)
+    motorOcioso: 20,
+    disponibilidadeMecanica: 90,
+  };
+
+  // Arrays de destino
+  const eficiencia_energetica: any[] = [];
+  const eficiencia_operacional: any[] = [];
+  const horas_elevador: any[] = [];
+  const media_velocidade: any[] = [];
+  const motor_ocioso: any[] = [];
+  const manobras_frotas: any[] = [];
+  const disponibilidade_mecanica: any[] = [];
+  // Operadores geralmente não tem uso_gps detalhado no JSON atual, mas vamos prever
+  const uso_gps: any[] = []; 
+  const horas_por_frota: any[] = [];
+
+  entries.forEach(([nomeKey, metrics]: [string, any], idx) => {
+    // Tentar limpar o nome "ID - NOME" para apenas "NOME" ou manter curto
+    const parts = nomeKey.split(' - ');
+    const nomeDisplay = parts.length > 1 ? parts[1] : nomeKey; // Exibe o nome
+    // Ou se preferir exibir o ID para economizar espaço: parts[0]
+    
+    // IDs únicos
+    const id = idx + 1;
+
+    // Métricas
+    const horasMotor = Number(metrics.Horas_Motor_Ligado || 0);
+    const horasProdutivas = Number(metrics.Horas_Produtivas || 0);
+    const horasManutencao = Number(metrics.Horas_Manutencao || 0);
+
+    // Eficiência Energética
+    let efEnergetica = Number(metrics.Eficiencia_Energetica || 0);
+    if (efEnergetica <= 1 && efEnergetica > 0) efEnergetica *= 100; // Converter 0.9 para 90
+    
+    eficiencia_energetica.push({
+      id,
+      nome: nomeDisplay,
+      eficiencia: efEnergetica,
+      horasMotor,
+      horasElevador: horasProdutivas,
+      fonte: 'solinftec'
+    });
+
+    // Eficiência Operacional
+    let efOperacional = Number(metrics.Eficiencia_Operacional || 0);
+    if (efOperacional <= 1 && efOperacional > 0) efOperacional *= 100;
+
+    eficiencia_operacional.push({
+      id,
+      nome: nomeDisplay,
+      eficiencia: efOperacional,
+      horasMotor: Number(metrics.Horas_Registradas || 0), // Base para operacional geralmente é horas totais/registradas
+      horasElevador: horasProdutivas,
+      fonte: 'solinftec'
+    });
+
+    // Horas Elevador
+    horas_elevador.push({
+      id,
+      nome: nomeDisplay,
+      valor: horasProdutivas,
+      fonte: 'solinftec'
+    });
+
+    // Velocidade
+    media_velocidade.push({
+      id,
+      nome: nomeDisplay,
+      velocidade: Number(metrics.Vel_Colheita_media || metrics.Velocidade_Media || 0),
+      fonte: 'solinftec'
+    });
+
+    // Motor Ocioso
+    motor_ocioso.push({
+      id,
+      nome: nomeDisplay,
+      percentual: Number(metrics.Porcentagem_Motor_Ocioso || 0),
+      tempoLigado: horasMotor,
+      tempoOcioso: Number(metrics.Horas_Motor_Ocioso || 0),
+      fonte: 'solinftec'
+    });
+
+    // Manobras
+    // Converter horas/minutos para string HH:MM:SS para o componente
+    const totalHours = Number(metrics.Tempo_Total_Manobras_h || 0);
+    const totalSecs = Math.round(totalHours * 3600);
+    const tH = Math.floor(totalSecs / 3600);
+    const tM = Math.floor((totalSecs % 3600) / 60);
+    const tS = totalSecs % 60;
+    const totalStr = `${tH.toString().padStart(2, '0')}:${tM.toString().padStart(2, '0')}:${tS.toString().padStart(2, '0')}`;
+
+    const avgMins = Number(metrics.Tempo_Medio_Manobras_min || 0);
+    const avgSecs = Math.round(avgMins * 60);
+    const aH = Math.floor(avgSecs / 3600);
+    const aM = Math.floor((avgSecs % 3600) / 60);
+    const aS = avgSecs % 60;
+    const avgStr = `${aH.toString().padStart(2, '0')}:${aM.toString().padStart(2, '0')}:${aS.toString().padStart(2, '0')}`;
+
+    manobras_frotas.push({
+      Frota: nomeDisplay, // Componente usa chave 'Frota'
+      "Tempo Total": totalHours,
+      "Tempo Médio": avgMins,
+      "Intervalos Válidos": Number(metrics.Quantidade_Manobras || 0),
+      "Tempo Total (hh:mm)": totalStr, 
+      "Tempo Médio (hh:mm)": avgStr,
+      fonte: 'solinftec'
+    });
+
+    // Disponibilidade (Operadores geralmente não tem disponibilidade mecânica própria, é da máquina)
+    // Mas se tivermos dados, preenchemos. Se não, 100% ou 0.
+    // Vamos assumir 100% se não tiver dados de manutenção, ou calcular base 100 - (manut/total)
+    let disp = 100;
+    if (horasMotor + horasManutencao > 0) {
+       // Cálculo aproximado se não vier pronto
+       // Disponibilidade = (Horas Totais - Horas Manutenção) / Horas Totais
+       // Mas operador não "quebra". Isso é métrica de máquina.
+       // Vou deixar 0 ou oculto se não fizer sentido.
+       // Pelo JSON, temos Horas_Manutencao. Talvez o operador parou para manutenção.
+       disp = 100; 
+    }
+    disponibilidade_mecanica.push({
+      id,
+      nome: nomeDisplay,
+      disponibilidade: disp,
+      horasMotor,
+      tempoManutencao: horasManutencao,
+      fonte: 'solinftec'
+    });
+
+    // Horas por Frota (Operador)
+    horas_por_frota.push({
+        id,
+        nome: nomeDisplay,
+        frota: nomeDisplay,
+        horas: horasMotor,
+        fonte: 'solinftec'
+    });
+
+  });
+
+  return {
+    metadata,
+    metas,
+    eficiencia_energetica,
+    eficiencia_operacional,
+    horas_elevador,
+    horas_por_frota,
+    uso_gps: [], // Sem dados para operadores
+    media_velocidade,
+    manobras_frotas,
+    motor_ocioso,
+    disponibilidade_mecanica,
+    intervalos_operacao: [], // Sem linha do tempo para operadores por enquanto
+    ofensores: [], // Top 5 ofensores geralmente é geral, não por operador individual no detalhe
+    imagens: { mapaGPS: "", areaTrabalhada: "" }
+  };
+};
+
+export function RelatorioPrintView({ data: rawData, period = "diario" }: { data: any; period?: "diario" | "semanal" }) {
+  // ADAPTAÇÃO DE DADOS (Hook para garantir que só rode na renderização)
+  const data = React.useMemo(() => adaptarDadosOperadores(rawData), [rawData]);
+
   const [dadosMapa, setDadosMapa] = React.useState<any[]>([]);
   const [mapasDisponiveis, setMapasDisponiveis] = React.useState<{arquivo: string, data: string, tipo: string, area: string, frotas: string[]}[]>([]);
   const [frenteNomeStorage, setFrenteNomeStorage] = React.useState<string | null>(null)
@@ -187,7 +377,26 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     })).sort((a, b) => a.equipamento.localeCompare(b.equipamento))
   }, [intervalos_operacao])
 
-  const endDate = metadata?.date ? new Date(metadata.date) : new Date()
+  const endDate = React.useMemo(() => {
+    if (metadata?.date) {
+      // Tenta parsear formato brasileiro DD-MM-YYYY
+      if (typeof metadata.date === 'string' && metadata.date.includes('-')) {
+         const parts = metadata.date.split('-');
+         if (parts.length === 3) {
+             // Assumindo formato DD-MM-YYYY vindo do JSON/URL
+             if (parts[0].length === 2 && parts[2].length === 4) {
+                 return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+             }
+             // Assumindo formato YYYY-MM-DD
+             if (parts[0].length === 4) {
+                 return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+             }
+         }
+      }
+      return new Date(metadata.date)
+    }
+    return new Date()
+  }, [metadata?.date])
   
   // Detectar fonte primária dos dados
   const fontePrimaria = React.useMemo(() => {
@@ -199,11 +408,19 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     return undefined
   }, [metadata])
 
-  const endStr = endDate.toLocaleDateString("pt-BR")
-  const startDate = new Date(endDate)
-  startDate.setDate(startDate.getDate() - 6)
-  const startStr = startDate.toLocaleDateString("pt-BR")
-  const dataFormatada = period === "semanal" ? `${startStr} - ${endStr}` : endStr
+  const dataFormatada = React.useMemo(() => {
+    // Se o metadado já vier formatado (DD-MM-YYYY ou DD/MM/YYYY), usa ele direto
+    if (period === 'diario' && metadata?.date && /^\d{2}[-/]\d{2}[-/]\d{4}$/.test(metadata.date)) {
+        return metadata.date.replace(/-/g, '/');
+    }
+    // Caso contrário, usa a data convertida
+    const endStr = endDate.toLocaleDateString("pt-BR")
+    const startDateCalc = new Date(endDate)
+    startDateCalc.setDate(startDateCalc.getDate() - 6)
+    const startStr = startDateCalc.toLocaleDateString("pt-BR")
+    return period === "semanal" ? `${startStr} - ${endStr}` : endStr
+  }, [endDate, metadata?.date, period])
+
   const reportRef = React.useRef<HTMLDivElement>(null)
   // Wrapper que faz scroll do relatório; usamos para recalcular a posição do painel ao rolar.
   const scrollWrapRef = React.useRef<HTMLDivElement>(null)
@@ -220,11 +437,12 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   const MAP_FRENTES: Record<string, string> = { 'frente5': 'Frente BP Ituiutaba' }
   const frenteNome = frenteNomeStorage || MAP_FRENTES[frenteCodigo] || (frenteCodigo?.startsWith('Frente') ? frenteCodigo : (frenteCodigo ? `Frente ${frenteCodigo}` : 'Frente Desconhecida'))
   const periodoLabel = period === "semanal" ? "Semanal" : "Diário"
-  const tituloRelatorio = `Relatório ${periodoLabel} de Frotas - Colhedoras`
+  // Ajuste Título para Operadores
+  const tituloRelatorio = `Relatório ${periodoLabel} de Operadores - Colhedoras`
   const nomeDataArquivo =
     period === "semanal"
-      ? `${startStr.replace(/\//g, "_")}-${endStr.replace(/\//g, "_")}`
-      : endStr.replace(/\//g, "_")
+      ? dataFormatada.replace(/ - /g, "_").replace(/\//g, "_")
+      : dataFormatada.replace(/\//g, "_")
 
   React.useEffect(() => {
     try {
@@ -404,6 +622,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   )
 
   // Desabilita IntersectionObserver quando o usuário clica manualmente para navegar
+  // Isso evita que o observer "sobrescreva" a página atual durante a animação de scroll
   const isManualScrolling = React.useRef(false)
 
   React.useEffect(() => {
@@ -418,7 +637,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     let rafId = 0
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isManualScrolling.current) return
+        if (isManualScrolling.current) return // Ignora se for scroll manual
 
         for (const entry of entries) {
           ratioByEl.set(entry.target, entry.intersectionRatio)
@@ -540,8 +759,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
 
   const nomesFrotas = React.useMemo(() => {
     const base = dadosValidosBase.map((d: any) => String(d?.nome || "")).filter((s) => s.trim().length > 0)
-    // Usar nomes numéricos (70xx) para evitar "Frota 00X" e garantir consistência com o pedido do usuário
-    return Array.from({ length: qtdFrotasEfetivo }, (_, idx) => base[idx] || `${7050 + idx}`)
+    return Array.from({ length: qtdFrotasEfetivo }, (_, idx) => base[idx] || `Operador ${idx + 1}`)
   }, [dadosValidosBase, qtdFrotasEfetivo])
 
   const buildNamedSeries = React.useCallback(
@@ -549,54 +767,22 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       const safeCount = clampInt(count, 0, MAX_MOCK_QTD_FROTAS)
       if (safeCount === 0) return []
       
-      // Se estiver em modo mock, usamos apenas a quantidade definida pelo mock, ignorando o array original se ele for maior
-      // Se não estiver em modo mock (count seria o tamanho real), usamos o array original
-      
       return Array.from({ length: safeCount }, (_, idx) => {
-        // Nomes realistas para Colhedoras (70xx)
-        // Começando de 7050 para evitar conflito com 7032-7038 que já existem no mock base
-        const mockName = `${7050 + idx}`
+        const mockName = `Operador ${idx + 1}`
         const name = nomesFrotas[idx] || mockName
         
-        // Se temos dados base suficientes para este índice, usamos
-        // Caso contrário (se mock > real), usamos fallback ou reciclamos
         const base = (idx < baseRows.length) ? baseRows[idx] : undefined
-        
         const next = { ...(base ?? makeFallback(name, idx)) } as any
         
-        // Garantir valores numéricos seguros para evitar NaN
-        // E gerar valores aleatórios realistas para não ficar tudo zerado se for mock
-        const isMocked = !base
+        if (typeof next.eficiencia === 'undefined' || isNaN(next.eficiencia)) next.eficiencia = 0
+        if (typeof next.horasMotor === 'undefined' || isNaN(next.horasMotor)) next.horasMotor = 0
+        if (typeof next.horasElevador === 'undefined' || isNaN(next.horasElevador)) next.horasElevador = 0
+        if (typeof next.velocidade === 'undefined' || isNaN(next.velocidade)) next.velocidade = 0
+        if (typeof next.percentual === 'undefined' || isNaN(next.percentual)) next.percentual = 0
+        if (typeof next.tempoManutencao === 'undefined' || isNaN(next.tempoManutencao)) next.tempoManutencao = 0
+        if (typeof next.disponibilidade === 'undefined' || isNaN(next.disponibilidade)) next.disponibilidade = 0
+        if (typeof next.porcentagem === 'undefined' || isNaN(next.porcentagem)) next.porcentagem = 0
         
-        if (typeof next.eficiencia === 'undefined' || isNaN(next.eficiencia)) next.eficiencia = isMocked ? Math.random() * 100 : 0
-        if (typeof next.horasMotor === 'undefined' || isNaN(next.horasMotor)) next.horasMotor = isMocked ? 5 + Math.random() * 15 : 0
-        if (typeof next.horasElevador === 'undefined' || isNaN(next.horasElevador)) next.horasElevador = isMocked ? 3 + Math.random() * 10 : 0
-        if (typeof next.velocidade === 'undefined' || isNaN(next.velocidade)) next.velocidade = isMocked ? 3 + Math.random() * 4 : 0
-        
-        // Percentual Ocioso (Motor Ocioso) - deve ser coerente com horasMotor e horasElevador?
-        // Aqui percentual é usado diretamente no gráfico de ocioso.
-        if (typeof next.percentual === 'undefined' || isNaN(next.percentual)) next.percentual = isMocked ? Math.random() * 20 : 0
-        
-        // Garantir tempoManutencao também para o GraficoDisponibilidadeMecanica
-        if (typeof next.tempoManutencao === 'undefined' || isNaN(next.tempoManutencao)) next.tempoManutencao = isMocked ? Math.random() * 2 : 0
-        
-        // Disponibilidade = (horasMotor - tempoManutencao) / horasMotor * 100
-        // Se estiver em modo mock e disponibilidade for 0 ou undefined, calcula dinamicamente
-        if (typeof next.disponibilidade === 'undefined' || isNaN(next.disponibilidade) || (isMocked && next.disponibilidade === 0)) {
-           if (next.horasMotor > 0) {
-             const dispCalc = Math.max(0, ((next.horasMotor - (next.tempoManutencao || 0)) / next.horasMotor) * 100)
-             next.disponibilidade = dispCalc
-           } else {
-             next.disponibilidade = isMocked ? 80 + Math.random() * 20 : 0
-           }
-        }
-        
-        if (typeof next.porcentagem === 'undefined' || isNaN(next.porcentagem)) next.porcentagem = isMocked ? 70 + Math.random() * 30 : 0
-        
-        // Ajuste para Motor Ocioso: percentual, tempoLigado, tempoOcioso
-        // Garantir coerência: tempoOcioso = tempoLigado * (percentual / 100)
-        // O GraficoMotorOcioso usa: percentual, tempoLigado, tempoOcioso
-        // Se tempoLigado não existir, usa horasMotor
         if (typeof next.tempoLigado === 'undefined') next.tempoLigado = next.horasMotor
         if (typeof next.tempoOcioso === 'undefined') next.tempoOcioso = next.tempoLigado * (next.percentual / 100)
         
@@ -711,7 +897,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
 
   // Página 7 - Ofensores e Disponibilidade
   const dadosOfensores = (ofensores || []).map(item => {
-    // Tenta extrair o nome após o código (ex: "8040 - MANUTENCAO" -> "MANUTENCAO")
     const rawNome = ((item as any)?.nome ?? (item as any)?.operacao ?? '') as string
     const parts = typeof rawNome === 'string' ? rawNome.split(' - ') : []
     const nome = parts.length > 1 ? parts.slice(1).join(' - ') : rawNome
@@ -723,7 +908,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
   })
 
   // Preparar dados para o Resumo
-  const dadosResumo = dadosValidos.map(f => {
+  const dadosResumoUnsorted = dadosValidos.map(f => {
     const nome = f.nome;
     const disp = (disponibilidadeFiltrada || []).find((d: any) => d.nome === nome);
     const ocioso = (motorOciosoFiltrado || []).find((d: any) => d.nome === nome);
@@ -743,6 +928,14 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       disponibilidade: disp?.disponibilidade || 0
     };
   });
+
+  const dadosResumo = dadosResumoUnsorted.sort((a, b) => {
+    const isNC_A = a.frota.toLowerCase().includes("não cadastrado")
+    const isNC_B = b.frota.toLowerCase().includes("não cadastrado")
+    if (isNC_A && !isNC_B) return 1
+    if (!isNC_A && isNC_B) return -1
+    return a.frota.localeCompare(b.frota)
+  })
   const timeStringToSeconds = (timeStr: string) => {
     if (!timeStr) return 0
     const parts = timeStr.split(':').map(Number)
@@ -899,47 +1092,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
       </div>
       )}
 
-      {/* PÁGINAS DE MAPAS - Carrega HTMLs do index_mapas.json */}
-      {period === "diario" && (() => {
-        // Converter data do relatório para formato DD-MM-YYYY
-        const dataMapas = metadata.date ? (() => {
-          // Parsear direto da string ISO YYYY-MM-DD para DD-MM-YYYY sem new Date()
-          const parts = metadata.date.split('-') // [YYYY, MM, DD]
-          if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`
-          return null
-        })() : null
-
-        if (!dataMapas) return null
-
-        // Filtrar mapas do index que correspondem à data do relatório
-        const mapasDoDia = mapasDisponiveis.filter(m => m.data === dataMapas && m.tipo === 'DIARIO')
-        
-        if (mapasDoDia.length === 0) return null
-
-        return mapasDoDia.map((mapa, idx) => (
-          <div 
-            key={`mapa-${mapa.arquivo}`}
-            data-pdf-page 
-            className="bg-white shadow-lg print:shadow-none" 
-            style={{ width: "210mm", height: "297mm" }}
-          >
-            <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-              <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-              <div className="flex-1 flex flex-col min-h-0">
-                <SectionTitle title={`Área Trabalhada - ${mapa.area} (${mapa.frotas.join(', ')}) - Solinftec`} />
-                <div className="border border-black rounded-lg p-0 flex-1 overflow-hidden min-h-0 relative">
-                  <iframe 
-                    src={`/mapas/${mapa.arquivo}`}
-                    className="w-full h-full border-0"
-                    title={`${mapa.area} - ${dataMapas}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))
-      })()}
-
       {/* PÁGINA 5 - Velocidade e Manobras */}
       {/* PÁGINA 5 - Média de Velocidade */}
       <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
@@ -994,54 +1146,6 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
           </div>
         </div>
       </div>
-
-      {/* PÁGINA 8 - Top 5 Ofensores */}
-      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-          <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col h-full">
-              <SectionTitle title="Top 5 Ofensores" />
-              <div className="border border-black rounded-lg p-3 overflow-hidden flex flex-col" style={{ height: "50%" }}>
-                <div className="flex-1 overflow-hidden flex items-stretch justify-start">
-                  <GraficoTop5Ofensores dados={dadosOfensores} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* PÁGINA 9 - Disponibilidade Mecânica */}
-      <div data-pdf-page className="bg-white shadow-lg print:shadow-none" style={{ width: "210mm", height: "297mm" }}>
-        <div className="flex flex-col border border-black m-2 p-2 rounded-sm" style={{ height: "calc(297mm - 16px)" }}>
-          <Header tituloCompleto={tituloRelatorio} date={dataFormatada} />
-          <div className="flex-1 flex flex-col gap-2">
-            <div className="flex flex-col h-full">
-              <SectionTitle title={`Disponibilidade Mecânica${fontePrimaria ? ` - ${fontePrimaria === 'solinftec' ? 'Solinftec' : fontePrimaria === 'case' ? 'Case IH' : 'OPC'}` : ''}`} />
-              <div className="border border-black rounded-lg p-3 flex-1 overflow-hidden flex flex-col">
-                <CabecalhoMeta 
-                  meta={metasSafe.disponibilidadeMecanica} 
-                  media={(() => {
-                    const vals = (disponibilidadeFiltrada || []).map((d: any) => d.disponibilidade).filter((v: number) => v > 0)
-                    return vals.length > 0 ? vals.reduce((a: number, b: number) => a + b, 0) / vals.length : 0
-                  })()}
-                  tipo="porcentagem"
-                  compact={false}
-                />
-                <div className="flex-1 overflow-hidden mt-1">
-                  <GraficoDisponibilidadeMecanica 
-                    dados={disponibilidadeFiltrada || []} 
-                    meta={metasSafe.disponibilidadeMecanica} 
-                    compact={false}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
 
       {/* PÁGINAS DINÂMICAS - Intervalos de Operação */}
       {/* 
@@ -1137,7 +1241,7 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
               <CardIndicador 
                 titulo="Manobras"
                 meta={metasSafe.manobras}
-                unidade=""
+                unidade=" min"
                 dados={dadosCardManobras}
                 tipo="desc"
                 formatarValor={(v) => formatMmSsFromSeconds(v)}
@@ -1149,17 +1253,10 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
                 dados={dadosResumo.map(d => ({ valor: d.ocioso }))}
                 tipo="desc"
               />
-              <CardIndicador 
-                titulo="Disponibilidade Mecânica"
-                meta={metasSafe.disponibilidadeMecanica}
-                unidade="%"
-                dados={dadosResumo.map(d => ({ valor: d.disponibilidade }))}
-                tipo="asc"
-              />
               </div>
 
             <div className="mt-4">
-               <TabelaResumo dados={dadosResumo} metas={metasSafe} />
+               <TabelaResumoOperadores dados={dadosResumo} metas={metasSafe} />
             </div>
 
           </div>
@@ -1269,5 +1366,3 @@ export function RelatorioPrintView({ data, period = "diario" }: { data: Colhedor
     </div>
   )
 }
-
-

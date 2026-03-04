@@ -559,6 +559,11 @@ def main():
                                             chave_nome_encontrada = k
                                             break
                                     
+                                    # Formatar lista de frotas se existir
+                                    frotas_dia = item.get("Frotas_no_dia", "")
+                                    if frotas_dia and isinstance(frotas_dia, str):
+                                        nome_op = f"{nome_op} ({frotas_dia})"
+                                    
                                     if id_op is not None:
                                         # Formatar chave: "Cód - Nome"
                                         chave_final = f"{id_op} - {nome_op}"

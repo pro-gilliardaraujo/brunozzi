@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { getReportByDate, formatDateForDisplay } from "@/lib/data/reports"
-import { RelatorioPrintView } from "@/components/relatorios/cd-diario-operadores/RelatorioPrintView"
+import { RelatorioPrintViewTrator } from "@/components/relatorios/tt-diario-operadores/RelatorioPrintView"
 
 interface PageProps {
   params: {
@@ -8,8 +8,8 @@ interface PageProps {
   }
 }
 
-export default function ColhedoraOperadoresDiarioPage({ params }: PageProps) {
-  const rawData = getReportByDate('colhedora', 'operadores', params.data)
+export default function TratorOperadoresDiarioPage({ params }: PageProps) {
+  const rawData = getReportByDate('tratores', 'operadores', params.data)
 
   if (!rawData) {
     notFound()
@@ -24,5 +24,5 @@ export default function ColhedoraOperadoresDiarioPage({ params }: PageProps) {
     }
   }
 
-  return <RelatorioPrintView data={data} />
+  return <RelatorioPrintViewTrator data={data} />
 }

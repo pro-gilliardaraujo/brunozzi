@@ -1,5 +1,5 @@
 {
-  "102 - NILTON FRANCISCO DA SILVA": {
+  "102 - NILTON FRANCISCO DA SILVA (279, 369)": {
     "Horas_Registradas": 47.9977777778,
     "Horas_Produtivas": 23.5355555556,
     "Horas_Improdutivas": 21.7313888889,
@@ -22,7 +22,7 @@
     "Frotas_no_dia": "279, 369",
     "Vel_Colheita_media": 5.5863363349
   },
-  "9999 - Não cadastrado": {
+  "9999 - Não cadastrado (235, 279, 298, 354, 560)": {
     "Horas_Registradas": 40.0241666667,
     "Horas_Produtivas": 23.0294444444,
     "Horas_Improdutivas": 15.965,
@@ -45,7 +45,7 @@
     "Frotas_no_dia": "235, 279, 298, 354, 560",
     "Vel_Colheita_media": 5.9799911641
   },
-  "10143 - GILSINEY FERREIRA SILVA": {
+  "10143 - GILSINEY FERREIRA SILVA (547)": {
     "Horas_Registradas": 6.8647222222,
     "Horas_Produtivas": 0.8666666667,
     "Horas_Improdutivas": 0.0,
@@ -68,7 +68,7 @@
     "Frotas_no_dia": "547",
     "Vel_Colheita_media": 4.3096527428
   },
-  "10232 - CLEOMEDES FERREIRA DE MATOS": {
+  "10232 - CLEOMEDES FERREIRA DE MATOS (375)": {
     "Horas_Registradas": 15.6261111111,
     "Horas_Produtivas": 8.3363888889,
     "Horas_Improdutivas": 4.5369444444,
@@ -91,7 +91,7 @@
     "Frotas_no_dia": "375",
     "Vel_Colheita_media": 5.5254028938
   },
-  "10412 - TIAGO ALMEIDA NUNES": {
+  "10412 - TIAGO ALMEIDA NUNES (547)": {
     "Horas_Registradas": 17.135,
     "Horas_Produtivas": 5.8611111111,
     "Horas_Improdutivas": 1.2427777778,
@@ -114,7 +114,7 @@
     "Frotas_no_dia": "547",
     "Vel_Colheita_media": 4.6355643082
   },
-  "10562 - JULIO CESAR FREITAS JUNIOR": {
+  "10562 - JULIO CESAR FREITAS JUNIOR (235)": {
     "Horas_Registradas": 6.2369444444,
     "Horas_Produtivas": 4.5497222222,
     "Horas_Improdutivas": 1.5794444444,
@@ -137,7 +137,7 @@
     "Frotas_no_dia": "235",
     "Vel_Colheita_media": 5.7592889326
   },
-  "10594 - MARCO VINICIO OLIVEIRA ROSA": {
+  "10594 - MARCO VINICIO OLIVEIRA ROSA (235, 517)": {
     "Horas_Registradas": 41.2897222222,
     "Horas_Produtivas": 4.6966666667,
     "Horas_Improdutivas": 17.2375,
@@ -160,7 +160,7 @@
     "Frotas_no_dia": "235, 517",
     "Vel_Colheita_media": 4.2727138371
   },
-  "10605 - ANTONIO MACEDO BORGES": {
+  "10605 - ANTONIO MACEDO BORGES (375)": {
     "Horas_Registradas": 4.8591666667,
     "Horas_Produtivas": 2.8705555556,
     "Horas_Improdutivas": 1.97,
@@ -183,7 +183,7 @@
     "Frotas_no_dia": "375",
     "Vel_Colheita_media": 5.3694475665
   },
-  "10679 - HELDER RICARDO BORGES": {
+  "10679 - HELDER RICARDO BORGES (298)": {
     "Horas_Registradas": 6.7297222222,
     "Horas_Produtivas": 5.0,
     "Horas_Improdutivas": 1.4241666667,
@@ -206,7 +206,7 @@
     "Frotas_no_dia": "298",
     "Vel_Colheita_media": 3.9709694077
   },
-  "10710 - JOCIVAL OLIVEIRA SOUSA": {
+  "10710 - JOCIVAL OLIVEIRA SOUSA (354, 375)": {
     "Horas_Registradas": 11.9669444444,
     "Horas_Produtivas": 8.43,
     "Horas_Improdutivas": 2.2886111111,
@@ -229,7 +229,7 @@
     "Frotas_no_dia": "354, 375",
     "Vel_Colheita_media": 5.1980314241
   },
-  "10770 - CHARLES FERREIRA BARBOSA": {
+  "10770 - CHARLES FERREIRA BARBOSA (298, 469)": {
     "Horas_Registradas": 40.4897222222,
     "Horas_Produtivas": 0.0,
     "Horas_Improdutivas": 24.3094444444,

@@ -1,5 +1,5 @@
 {
-  "9999 - Não cadastrado": {
+  "9999 - Não cadastrado (153, 163, 202, 317, 421, 422, 507)": {
     "Horas_Registradas": 78.8016666667,
     "Horas_Produtivas": 29.4825,
     "Horas_Improdutivas": 37.8680555556,
@@ -27,7 +27,7 @@
     "Vel_Desl_Vazio_media": 7.8924980473,
     "Vel_Desl_Carregado_media": 8.4167133208
   },
-  "10568 - DIEISON ALVES CARDOSO": {
+  "10568 - DIEISON ALVES CARDOSO (371)": {
     "Horas_Registradas": 17.1669444444,
     "Horas_Produtivas": 3.0911111111,
     "Horas_Improdutivas": 5.4044444444,
@@ -55,7 +55,7 @@
     "Vel_Desl_Vazio_media": 6.7192797075,
     "Vel_Desl_Carregado_media": 4.8771574132
   },
-  "10675 - MAICON DOUGLAS JUSTINO DA SILVA": {
+  "10675 - MAICON DOUGLAS JUSTINO DA SILVA (507)": {
     "Horas_Registradas": 6.1941666667,
     "Horas_Produtivas": 3.7419444444,
     "Horas_Improdutivas": 1.5786111111,
@@ -83,7 +83,7 @@
     "Vel_Desl_Vazio_media": 7.0730947368,
     "Vel_Desl_Carregado_media": 5.983308634
   },
-  "10726 - KAUAN INACIO FELISBINO DUARTE": {
+  "10726 - KAUAN INACIO FELISBINO DUARTE (508)": {
     "Horas_Registradas": 13.7186111111,
     "Horas_Produtivas": 3.3380555556,
     "Horas_Improdutivas": 10.0547222222,
@@ -111,7 +111,7 @@
     "Vel_Desl_Vazio_media": 10.2996274962,
     "Vel_Desl_Carregado_media": 9.0403770681
   },
-  "10728 - RENATA SILVA ARAUJO": {
+  "10728 - RENATA SILVA ARAUJO (422)": {
     "Horas_Registradas": 13.1958333333,
     "Horas_Produtivas": 5.5736111111,
     "Horas_Improdutivas": 5.3477777778,
@@ -139,7 +139,7 @@
     "Vel_Desl_Vazio_media": 6.4606837242,
     "Vel_Desl_Carregado_media": 6.3337585421
   },
-  "10771 - SAMARA BORGES MENEZES": {
+  "10771 - SAMARA BORGES MENEZES (507)": {
     "Horas_Registradas": 11.6608333333,
     "Horas_Produtivas": 5.6552777778,
     "Horas_Improdutivas": 5.5525,
@@ -167,7 +167,7 @@
     "Vel_Desl_Vazio_media": 5.6946802552,
     "Vel_Desl_Carregado_media": 6.5278795077
   },
-  "10814 - VITOR HUGO CRUZ SILVA": {
+  "10814 - VITOR HUGO CRUZ SILVA (371, 422)": {
     "Horas_Registradas": 11.1302777778,
     "Horas_Produtivas": 3.5680555556,
     "Horas_Improdutivas": 3.0805555556,
@@ -195,7 +195,7 @@
     "Vel_Desl_Vazio_media": 6.1288754616,
     "Vel_Desl_Carregado_media": 7.191101083
   },
-  "10819 - LUCIENE NASCIMENTO OLIVEIRA": {
+  "10819 - LUCIENE NASCIMENTO OLIVEIRA (317)": {
     "Horas_Registradas": 11.5794444444,
     "Horas_Produtivas": 7.2180555556,
     "Horas_Improdutivas": 3.8736111111,
@@ -223,7 +223,7 @@
     "Vel_Desl_Vazio_media": 10.5567561684,
     "Vel_Desl_Carregado_media": 9.1356053812
   },
-  "10831 - DEBORA SOUZA RAMOS": {
+  "10831 - DEBORA SOUZA RAMOS (506)": {
     "Horas_Registradas": 23.9997222222,
     "Horas_Produtivas": 0.0,
     "Horas_Improdutivas": 23.9997222222,
@@ -251,7 +251,7 @@
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": null
   },
-  "10840 - JEAN GONÇALVES MORAIS": {
+  "10840 - JEAN GONÇALVES MORAIS (112, 317)": {
     "Horas_Registradas": 30.4977777778,
     "Horas_Produtivas": 7.0797222222,
     "Horas_Improdutivas": 23.3022222222,
@@ -279,7 +279,7 @@
     "Vel_Desl_Vazio_media": 9.6227627628,
     "Vel_Desl_Carregado_media": 7.8134733526
   },
-  "10847 - LEANDRO SILVA FERREIRA MARQUES": {
+  "10847 - LEANDRO SILVA FERREIRA MARQUES (421)": {
     "Horas_Registradas": 6.6463888889,
     "Horas_Produtivas": 1.9411111111,
     "Horas_Improdutivas": 4.7052777778,
@@ -307,7 +307,7 @@
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": 10.2129527233
   },
-  "10851 - CATIA ALMEIDA SANTOS": {
+  "10851 - CATIA ALMEIDA SANTOS (508)": {
     "Horas_Registradas": 10.2811111111,
     "Horas_Produtivas": 7.9172222222,
     "Horas_Improdutivas": 2.3638888889,
@@ -335,7 +335,7 @@
     "Vel_Desl_Vazio_media": 11.4249823811,
     "Vel_Desl_Carregado_media": 9.0089085465
   },
-  "10875 - JESSICA SILVA SANTOS": {
+  "10875 - JESSICA SILVA SANTOS (421, 422)": {
     "Horas_Registradas": 23.8516666667,
     "Horas_Produtivas": 9.0197222222,
     "Horas_Improdutivas": 8.1261111111,
@@ -363,7 +363,7 @@
     "Vel_Desl_Vazio_media": 8.8671782622,
     "Vel_Desl_Carregado_media": 5.8694650976
   },
-  "107770 - SHELDON ANTUNES SILVA": {
+  "107770 - SHELDON ANTUNES SILVA (317)": {
     "Horas_Registradas": 5.2725,
     "Horas_Produtivas": 3.4036111111,
     "Horas_Improdutivas": 1.0277777778,
@@ -391,7 +391,7 @@
     "Vel_Desl_Vazio_media": 8.383122963,
     "Vel_Desl_Carregado_media": 8.4475351351
   },
-  "108149 - JOSE RODRIGUES MEDEIROS FILHO": {
+  "108149 - JOSE RODRIGUES MEDEIROS FILHO (372)": {
     "Horas_Registradas": 10.6880555556,
     "Horas_Produtivas": 4.3516666667,
     "Horas_Improdutivas": 6.3363888889,
@@ -419,7 +419,7 @@
     "Vel_Desl_Vazio_media": null,
     "Vel_Desl_Carregado_media": 5.6088171735
   },
-  "109119 - GEOVANIO FRANÇA DOS SANTOS": {
+  "109119 - GEOVANIO FRANÇA DOS SANTOS (372)": {
     "Horas_Registradas": 13.3116666667,
     "Horas_Produtivas": 4.7602777778,
     "Horas_Improdutivas": 8.3736111111,
